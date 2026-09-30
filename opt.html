@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Оптовые поставки ЛКМ — КолорМСК</title>
+<meta name="description" content="Оптовые поставки лакокрасочных материалов в Москве. Минимальная партия от 100 000 ₽. Скидки обсуждаются индивидуально. Доставка по РФ.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;color:#1a2a3a;min-height:100vh;line-height:1.6}
+.t-header{background:rgba(26,42,58,.95);padding:14px 30px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1000}
+.t-header img{height:40px;width:auto;border-radius:4px}
+.t-header a{font-size:24px;font-weight:700;color:#fff;text-decoration:none}
+.t-header .t-back{margin-left:auto;color:#ffd166;text-decoration:none;font-size:14px;font-weight:600}
+.t-header .t-back:hover{color:#fff}
+.t-container{max-width:900px;margin:30px auto;padding:0 20px}
+.t-main{background:#fff;border-radius:16px;padding:32px 40px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.t-main h1{font-size:30px;font-weight:700;color:#1a2a3a;margin-bottom:8px}
+.t-main .t-intro{font-size:15px;color:#6a7a8a;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #f0f2f5}
+.t-main h2{font-size:22px;font-weight:700;color:#1a2a3a;margin:26px 0 14px;display:flex;align-items:center;gap:10px}
+.t-main h2::before{content:'';width:4px;height:22px;background:#2c7a3e;border-radius:2px}
+.t-main p{font-size:15px;color:#4a5a6a;margin:10px 0;line-height:1.7}
+.t-main ul,.t-main ol{margin:12px 0 12px 22px;font-size:15px;color:#4a5a6a}
+.t-main ul li,.t-main ol li{margin:8px 0;line-height:1.6}
+.t-main strong{color:#1a2a3a;font-weight:700}
+.t-opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:16px 0}
+.t-opt-card{background:#f8faff;border-radius:12px;padding:18px 20px;border-left:4px solid #2c6b9e}
+.t-opt-card .t-opt-icon{font-size:32px;display:block;margin-bottom:8px}
+.t-opt-card h3{font-size:16px;font-weight:700;color:#1a2a3a;margin-bottom:6px}
+.t-opt-card p{font-size:14px;color:#4a5a6a;margin:0;line-height:1.5}
+.t-highlight{background:#eaf4ec;border-radius:12px;padding:16px 20px;margin:14px 0;border-left:4px solid #2c7a3e;font-size:14px;color:#1a2a3a;line-height:1.7}
+.t-highlight strong{color:#1a2a3a}
+.t-note{background:#fff8e8;border-radius:12px;padding:16px 20px;margin:14px 0;border-left:4px solid #d4880f;font-size:14px;color:#1a2a3a;line-height:1.7}
+.t-steps{counter-reset:step;list-style:none;margin:16px 0 16px 0;padding:0}
+.t-steps li{counter-increment:step;position:relative;padding:14px 20px 14px 60px;margin-bottom:12px;background:#f8faff;border-radius:12px;border:1px solid #eaeef3;font-size:14px;color:#4a5a6a;line-height:1.6}
+.t-steps li::before{content:counter(step);position:absolute;left:16px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:#2c6b9e;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center}
+.t-steps li strong{color:#1a2a3a;display:block;margin-bottom:4px}
+.t-faq{background:#f8faff;border-radius:16px;padding:24px 28px;margin:30px 0 20px;border:1px solid #eaeef3}
+.t-faq h2{margin-top:0}
+.t-faq details{border:1px solid #eef1f5;border-radius:10px;padding:14px 18px;margin-bottom:10px;background:#fff}
+.t-faq details summary{font-weight:600;cursor:pointer;color:#1a2a3a;font-size:15px;list-style:none;position:relative;padding-right:24px}
+.t-faq details summary::after{content:'+';position:absolute;right:0;top:0;font-size:20px;color:#2c6b9e;font-weight:400;line-height:1}
+.t-faq details[open] summary::after{content:'−'}
+.t-faq details p{margin-top:12px;font-size:14px;color:#4a5a6a;line-height:1.7}
+.t-contact{background:linear-gradient(135deg,#f0f8ff,#e8f4f8);border-radius:14px;padding:28px;margin:30px 0;border:1px solid #d0e4ed;text-align:center}
+.t-contact h3{font-size:22px;font-weight:700;color:#1a2a3a;margin-bottom:12px}
+.t-contact p{font-size:15px;color:#4a5a6a;margin-bottom:10px}
+.t-contact .t-contact-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:12px}
+.t-contact a{color:#2c6b9e;text-decoration:none;font-weight:600;font-size:17px;display:flex;align-items:center;gap:8px}
+.t-contact a:hover{text-decoration:underline}
+.t-footer{background:rgba(26,42,58,.95);color:rgba(255,255,255,.7);padding:24px 30px;margin-top:40px;font-size:12px;text-align:center}
+.t-footer a{color:#ffd166;text-decoration:none}
+@media(max-width:700px){.t-main{padding:20px}.t-main h1{font-size:22px}.t-main h2{font-size:19px}.t-header{padding:10px 16px}.t-header a{font-size:20px}.t-opt-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="t-header">
+<img src="images/logo.png" alt="КолорМСК">
+<a href="/colormsk-test/">КолорМСК</a>
+<a href="/colormsk-test/" class="t-back">← На главную</a>
+</header>
+
+<div class="t-container">
+<div class="t-main">
+
+<h1>🏢 Оптовые поставки ЛКМ</h1>
+<p class="t-intro">Оптовые поставки лакокрасочных материалов для строительных организаций, ремонтных бригад и розничных магазинов. Работаем с юридическими лицами и ИП.</p>
+
+<h2>Кому подходит опт</h2>
+<div class="t-opt-grid">
+<div class="t-opt-card">
+<span class="t-opt-icon">🏗️</span>
+<h3>Строительным организациям</h3>
+<p>Для объектов любого масштаба: жилых, коммерческих, промышленных.</p>
+</div>
+<div class="t-opt-card">
+<span class="t-opt-icon">🔨</span>
+<h3>Ремонтным бригадам</h3>
+<p>Регулярные закупки материалов для отделочных работ.</p>
+</div>
+<div class="t-opt-card">
+<span class="t-opt-icon">🏪</span>
+<h3>Розничным магазинам</h3>
+<p>Пополнение ассортимента для перепродажи.</p>
+</div>
+<div class="t-opt-card">
+<span class="t-opt-icon">🏢</span>
+<h3>Подрядчикам</h3>
+<p>Комплексные поставки на тендеры и крупные проекты.</p>
+</div>
+</div>
+
+<h2>Условия опта</h2>
+<div class="t-highlight">
+<strong>📦 Минимальная партия:</strong> от <strong>100 000 ₽</strong>.
+</div>
+<div class="t-highlight">
+<strong>💰 Скидки:</strong> обсуждаются <strong>индивидуально</strong> по вашему запросу. Учитываем объём, регулярность закупок и условия сотрудничества.
+</div>
+<div class="t-highlight">
+<strong>📅 Отсрочка платежа:</strong> обсуждается индивидуально для постоянных клиентов.
+</div>
+<div class="t-highlight">
+<strong>👤 Персональный менеджер:</strong> закрепляется за каждым оптовым клиентом.
+</div>
+
+<h2>Как получить прайс и оформить заказ</h2>
+<ol class="t-steps">
+<li>
+<strong>Свяжитесь с нами</strong>
+Позвоните по телефону +7 (903) 669-25-34 или напишите на info@colormsk.ru.
+</li>
+<li>
+<strong>Согласуйте условия</strong>
+Обсудим объём, скидку и сроки. Вышлем актуальный прайс-лист.
+</li>
+<li>
+<strong>Оформите заявку</strong>
+Пришлите список товаров и реквизиты для выставления счёта.
+</li>
+<li>
+<strong>Получите товар</strong>
+Отгружаем со склада в Москве. Доставка ТК в любой регион РФ.
+</li>
+</ol>
+
+<h2>Преимущества работы с нами</h2>
+<ul>
+<li><strong>Прямой поставщик.</strong> Работаем без посредников, что даёт лучшие цены.</li>
+<li><strong>Склад в Москве.</strong> Быстрая отгрузка — не нужно ждать поставки.</li>
+<li><strong>Доставка по РФ.</strong> Отправляем транспортными компаниями (СДЭК, Деловые Линии, ПЭК).</li>
+<li><strong>Полный пакет документов.</strong> Счёт, УПД, товарные накладные, сертификаты.</li>
+<li><strong>Гибкие условия.</strong> Подберём оптимальные условия под ваш объём закупок.</li>
+</ul>
+
+<h2>Частые вопросы</h2>
+<div class="t-faq">
+<details>
+<summary>Какая минимальная партия для опта?</summary>
+<p>Минимальная сумма оптового заказа — <strong>100 000 ₽</strong>. Если сумма меньше — можно оформить обычный розничный заказ.</p>
+</details>
+<details>
+<summary>Какие скидки вы предоставляете?</summary>
+<p>Скидки <strong>рассчитываются индивидуально</strong> в зависимости от объёма, регулярности закупок и других условий. Свяжитесь с нами для расчёта.</p>
+</details>
+<details>
+<summary>Работаете ли вы с отсрочкой платежа?</summary>
+<p>Да, для постоянных клиентов возможна отсрочка. Условия обсуждаются индивидуально.</p>
+</details>
+<details>
+<summary>Можно ли получить сертификаты на товары?</summary>
+<p>Да, предоставляем все необходимые сертификаты и документы на продукцию.</p>
+</details>
+<details>
+<summary>Как быстро отгружаете заказ?</summary>
+<p>Отгрузка со склада в Москве — <strong>в течение 1–2 рабочих дней</strong> после оплаты. Точные сроки согласуем при оформлении.</p>
+</details>
+</div>
+
+<div class="t-contact">
+<h3>Обсудить оптовые поставки</h3>
+<p>Свяжитесь с нами — рассчитаем скидку и условия</p>
+<div class="t-contact-links">
+<a href="tel:+79036692534">📞 +7 (903) 669-25-34</a>
+<a href="mailto:info@colormsk.ru">✉️ info@colormsk.ru</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer class="t-footer">
+<p>© 2026 КолорМСК — Лакокрасочные материалы в Москве. <a href="/colormsk-test/">На главную</a></p>
+</footer>
+</body>
+</html>
