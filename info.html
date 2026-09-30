@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#f5f5f5;color:#1a2a3a;min-height:100vh;line-height:1.6}
-.t-header{background:rgba(26,42,58,.95);padding:14px 30px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1000;backdrop-filter:blur(10px)}
+.t-header{background:rgba(26,42,58,.95);padding:14px 30px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1000}
 .t-header img{height:40px;width:auto;border-radius:4px}
 .t-header a{font-size:24px;font-weight:700;color:#fff;text-decoration:none}
 .t-header .t-back{margin-left:auto;color:#ffd166;text-decoration:none;font-size:14px;font-weight:600}
@@ -32,8 +32,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .t-article p{font-size:15px;color:#4a5a6a;line-height:1.7;margin:8px 0}
 .t-article ul,.t-article ol{margin:10px 0 10px 22px;color:#4a5a6a}
 .t-article li{margin:5px 0;line-height:1.6}
-.t-article a{color:#2c6b9e;text-decoration:none;border-bottom:1px dashed #2c6b9e}
-.t-article a:hover{color:#1a4a6e;border-bottom-style:solid}
+.t-article a.t-cat-link{color:#2c6b9e;text-decoration:none;border-bottom:1px dashed #2c6b9e}
+.t-article a.t-cat-link:hover{color:#1a4a6e;border-bottom-style:solid}
+.t-product-link{color:#2c6b9e;font-weight:600;text-decoration:none;border-bottom:1px dashed #2c6b9e;transition:all .2s;cursor:pointer}
+.t-product-link:hover{color:#1a4a6e;border-bottom-style:solid}
 .t-tip{background:#eaf4ec;border-radius:12px;padding:16px 20px;margin:14px 0;border-left:4px solid #2c7a3e;font-size:14px;color:#1a2a3a;line-height:1.7}
 .t-scheme{display:flex;flex-wrap:wrap;gap:12px;background:#f8faff;border-radius:12px;padding:16px;margin:12px 0;align-items:center;justify-content:center;border-left:4px solid #2c7a3e}
 .t-scheme-item{text-align:center;padding:8px 12px;font-size:14px}
@@ -44,6 +46,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .t-shop-link p{font-size:13px;color:#4a5a6a;margin:2px 0 10px}
 .t-shop-btn{display:inline-block;background:#2c6b9e;color:#fff;padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px}
 .t-shop-btn:hover{background:#1a4a6e}
+.t-related{background:#f8faff;border-radius:16px;padding:20px 24px;margin:30px 0 20px;border:1px solid #eaeef3}
+.t-related-title{font-size:18px;font-weight:700;color:#1a2a3a;margin-bottom:12px}
+.t-related-grid{display:flex;flex-wrap:wrap;gap:8px}
+.t-related-link{background:#fff;padding:6px 14px;border-radius:20px;font-size:14px;color:#2c6b9e;text-decoration:none;border:1px solid #dce3ec;transition:all .2s}
+.t-related-link:hover{background:#2c6b9e;color:#fff;border-color:#2c6b9e}
 .t-faq{background:#f8faff;border-radius:16px;padding:24px 28px;margin:30px 0 20px;border:1px solid #eaeef3}
 .t-faq-title{font-size:20px;font-weight:700;color:#1a2a3a;margin-bottom:16px}
 .t-faq-item{border-bottom:1px solid #eaeef3;padding:14px 0}
@@ -52,7 +59,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .t-faq-a{font-size:14px;color:#4a5a6a;margin:0;line-height:1.7}
 .t-footer{background:rgba(26,42,58,.95);color:rgba(255,255,255,.7);padding:24px 30px;margin-top:40px;font-size:12px;text-align:center}
 .t-footer a{color:#ffd166;text-decoration:none}
-@media(max-width:700px){.t-main{padding:20px}.t-main h1{font-size:22px}.t-article h2{font-size:20px}.t-header{padding:10px 16px}.t-header a{font-size:20px}}
+.t-product-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,42,58,.6);z-index:999999;justify-content:center;align-items:center;padding:20px;overflow-y:auto}
+.t-product-modal.active{display:flex}
+.t-modal-content{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:95vh;overflow-y:auto;padding:32px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.t-modal-close{position:absolute;top:16px;right:20px;background:transparent;border:none;font-size:28px;cursor:pointer;color:#9aaabb;line-height:1}
+.t-modal-close:hover{color:#1a2a3a}
+.t-modal-brand{font-size:13px;font-weight:700;color:#9aaabb;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.t-modal-name{font-size:24px;font-weight:700;color:#1a2a3a;margin:4px 0 2px;line-height:1.2}
+.t-modal-sku{font-size:13px;color:#9aaabb;margin-bottom:16px}
+.t-modal-grid{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px}
+.t-modal-image{flex:0 0 200px;min-width:150px;background:#f8faff;border-radius:12px;border:1px solid #eaedf2;display:flex;align-items:center;justify-content:center;height:200px;overflow:hidden}
+.t-modal-image img{width:100%;height:100%;object-fit:contain}
+.t-modal-info{flex:1;min-width:180px}
+.t-modal-price{font-size:28px;font-weight:700;color:#1a2a3a;margin-bottom:6px}
+.t-modal-stock{font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;display:inline-block;margin:2px 0 8px}
+.t-modal-stock.in-stock{color:#3d7a4a;background:rgba(61,122,74,.12)}
+.t-modal-stock.on-order{color:#d4880f;background:rgba(212,136,15,.12)}
+.t-modal-description{padding:14px 18px;background:#fafbfc;border-radius:12px;border-left:4px solid #2c7a3e;margin:12px 0;font-size:14px;line-height:1.6;color:#4a5a6a;max-height:200px;overflow-y:auto}
+.t-modal-tech{padding:14px 18px;background:#fafbfc;border-radius:12px;border:1px solid #eaedf2;margin:8px 0;font-size:13px;color:#4a5a6a;line-height:1.6}
+.t-modal-buy{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:16px;border-top:2px solid #eef1f5;margin-top:8px}
+.t-modal-price-large{font-size:26px;font-weight:700;color:#1a2a3a}
+.t-modal-buy .t-btn-buy{background:#1a2a3a;color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+.t-modal-buy .t-btn-buy:hover{background:#2c3e50}
+.t-modal-buy .t-btn-buy.on-order{background:#9aaabb;cursor:default;pointer-events:none}
+.t-modal-loading{text-align:center;padding:60px;color:#6a7a8a;font-size:14px}
+.t-toast{position:fixed;bottom:30px;right:30px;background:#1a6a2a;color:#fff;padding:14px 24px;font-size:14px;font-weight:500;border-radius:10px;z-index:9999999;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+@media(max-width:700px){.t-main{padding:20px}.t-main h1{font-size:22px}.t-article h2{font-size:20px}.t-header{padding:10px 16px}.t-header a{font-size:20px}.t-modal-grid{flex-direction:column}.t-modal-image{flex:none;width:100%;height:160px}}
 </style>
 </head>
 <body>
@@ -131,11 +163,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </div>
 <h4>Грунтование поверхности</h4>
 <p>Грунтовка улучшает адгезию, заполняет поры и выравнивает впитывающую способность.</p>
+<p><a href="#" data-sku="00-00009377" class="t-product-link">EURO-Balance primer</a> — грунтовка на акрилатной основе с антисептическими добавками.</p>
+<p><a href="#" data-sku="00-00009297" class="t-product-link">DEEP CONTACT</a> — адгезионная грунтовка для плотных оснований (бетон, кирпич, камень).</p>
 <div class="t-tip">
 <strong>🎨 Как выбрать краску для интерьера:</strong><br>
-• <strong>Потолки в сухих помещениях:</strong> матовые водоразбавляемые краски<br>
-• <strong>Стены в сухих помещениях:</strong> матовые, полуматовые<br>
-• <strong>Влажные помещения:</strong> полуматовые, влагостойкие<br>
+• <strong>Потолки в сухих помещениях:</strong> матовые водоразбавляемые краски (<a href="#" data-sku="00-00008953" class="t-product-link">CABINET-Royal</a>, <a href="#" data-sku="00-01100281" class="t-product-link">EURO-Balance 2</a>)<br>
+• <strong>Стены в сухих помещениях:</strong> матовые, полуматовые (<a href="#" data-sku="00-01101606" class="t-product-link">AQUA-Marina</a>, <a href="#" data-sku="00-01100282" class="t-product-link">EURO-Balance 7</a>)<br>
+• <strong>Влажные помещения (кухни, ванные):</strong> полуматовые, полуглянцевые с повышенной стойкостью к мытью (<a href="#" data-sku="00-01100263" class="t-product-link">EURO-Life</a>)<br>
 • <strong>Детские комнаты:</strong> экологически чистые, сертифицированные
 </div>
 <div class="t-shop-link">
@@ -160,6 +194,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </ul>
 <h3>Лакировка</h3>
 <p>Для сохранения текстуры и защиты поверхности требуется обработка дерева бесцветными или колеруемыми лаками.</p>
+<div class="t-scheme">
+<div class="t-scheme-item"><strong>🪵</strong>Без покрытия</div>
+<div class="t-scheme-item"><strong>💧</strong>Лак на акриловой основе</div>
+<div class="t-scheme-item"><strong>🟡</strong>Лак на алкидной основе</div>
+</div>
 <div class="t-tip">
 <strong>✨ Советы по лакировке:</strong><br>
 • Очистить от грязи и пыли<br>
@@ -167,12 +206,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 • Заделать неровности шпатлёвкой по дереву<br>
 • Отшлифовать и удалить пыль
 </div>
+<h4>Ассортимент лаков SYMPHONY</h4>
+<ul>
+<li><a href="#" data-sku="00-01100994" class="t-product-link">RESTAVRATOR</a> — лак-антисептик для панелей, вагонки, досок, брёвен</li>
+<li><a href="#" data-sku="00-00013100" class="t-product-link">PREMIERA</a> — лак для мебели, дверей, стен</li>
+<li><a href="#" data-sku="00-00012980" class="t-product-link">HARDWOOD Aqua</a> — полиуретановый лак для паркета и полов</li>
+<li><a href="#" data-sku="00-00010734" class="t-product-link">NORDIC Sauna</a> — защитный состав для саун и бань</li>
+<li><a href="#" data-sku="00-00009554" class="t-product-link">HARDWOOD яхтный</a> — полиуретановый лак для наружных работ</li>
+</ul>
 <div class="t-shop-link">
 <span class="t-shop-icon">🛠️</span>
 <div>
 <strong>Подобрать лак для дерева</strong>
 <p>Акриловые, полиуретановые, яхтные — для любых задач.</p>
-<a href="/colormsk-test/laki" class="t-shop-btn">Смотреть лаки →</a>
+<a href="/colormsk-test/laki" class="t-shop-btn">Смотреть лаки SYMPHONY →</a>
 </div>
 </div>
 </div>
@@ -188,7 +235,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 <li><strong>Биологические факторы</strong> — грибки, плесень, насекомые</li>
 </ul>
 <h3>Антисептики</h3>
-<p><a href="/colormsk-test/antiseptiki">Антисептики</a> — ЛКМ с биоцидными, фунгицидными и инсектицидными свойствами.</p>
+<p><a href="/colormsk-test/antiseptiki" class="t-cat-link">Антисептики</a> — ЛКМ с биоцидными, фунгицидными и инсектицидными свойствами.</p>
 <div class="t-tip">
 <strong>🌳 Последовательность работ:</strong><br>
 1. Очистка от грязи, пыли, синевы<br>
@@ -219,9 +266,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </ul>
 <div class="t-tip">
 <strong>🏠 Ассортимент фасадных красок SYMPHONY:</strong><br>
-• EURO-Balance Facade Aqua — водоразбавляемая акриловая<br>
-• EURO-Balance Facade Nord — акриловая на растворителях (до -20°С)<br>
-• EURO-Balance Facade Siloxan — силоксанмодифицированная
+• <a href="#" data-sku="00-01101608" class="t-product-link">EURO-Balance Facade Aqua</a> — водоразбавляемая акриловая<br>
+• <a href="#" data-sku="00-00010827" class="t-product-link">EURO-Balance Facade Nord</a> — акриловая на растворителях (до -20°С)<br>
+• <a href="#" data-sku="00-01100250" class="t-product-link">EURO-Balance Facade Siloxan</a> — силоксанмодифицированная
 </div>
 <div class="t-shop-link">
 <span class="t-shop-icon">🏗️</span>
@@ -242,6 +289,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 <li><strong>Металлические покрытия</strong> — гальваника</li>
 <li><strong>Лакокрасочные покрытия</strong> — грунтовка + финиш</li>
 </ol>
+<h4>Антикоррозионные материалы SYMPHONY</h4>
+<ul>
+<li><a href="#" data-sku="00-00011318" class="t-product-link">FerOx-Stopper</a> — противокоррозионная грунтовка для чёрных металлов</li>
+<li><a href="#" data-sku="00-00009949" class="t-product-link">WINNER</a> — полиуретановая эмаль с противокоррозионными пигментами</li>
+</ul>
 <div class="t-shop-link">
 <span class="t-shop-icon">🔧</span>
 <div>
@@ -286,15 +338,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </div>
 </div>
 
+<div class="t-related">
+<h3 class="t-related-title">📚 Читайте также:</h3>
+<div class="t-related-grid">
+<a href="#section1" class="t-related-link">Основные сведения о ЛКМ</a>
+<a href="#section2" class="t-related-link">Окраска интерьера</a>
+<a href="#section4" class="t-related-link">Лакировка дерева</a>
+<a href="#section5" class="t-related-link">Защита деревянных фасадов</a>
+<a href="#section6" class="t-related-link">Защита каменных фасадов</a>
+<a href="#section7" class="t-related-link">Антикоррозионная защита</a>
+<a href="#section8" class="t-related-link">Малярный инструмент</a>
+<a href="#section9" class="t-related-link">Дефекты покрытий</a>
+</div>
+</div>
+
 <div class="t-faq">
 <h3 class="t-faq-title">❓ Часто задаваемые вопросы</h3>
 <div class="t-faq-item">
 <strong class="t-faq-q">1. Какую краску выбрать для ванной?</strong>
-<p class="t-faq-a">Выбирайте влагостойкие краски с пометкой «для влажных помещений».</p>
+<p class="t-faq-a">Выбирайте влагостойкие краски с пометкой «для влажных помещений». Подойдут <a href="#" data-sku="00-01100263" class="t-product-link">EURO-Life</a>.</p>
 </div>
 <div class="t-faq-item">
 <strong class="t-faq-q">2. Нужно ли грунтовать стены перед покраской?</strong>
-<p class="t-faq-a">Да! Грунтовка улучшает сцепление, выравнивает впитываемость и продлевает срок службы.</p>
+<p class="t-faq-a">Да! Грунтовка улучшает сцепление, выравнивает впитываемость и продлевает срок службы. Выбирайте <a href="#" data-sku="00-00009377" class="t-product-link">EURO-Balance primer</a> или <a href="#" data-sku="00-00009297" class="t-product-link">DEEP CONTACT</a>.</p>
 </div>
 <div class="t-faq-item">
 <strong class="t-faq-q">3. Чем отличается акриловая краска от алкидной?</strong>
@@ -306,11 +372,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </div>
 <div class="t-faq-item">
 <strong class="t-faq-q">5. Чем обработать дерево на улице?</strong>
-<p class="t-faq-a">Антисептиками с УФ-фильтром для наружных работ.</p>
+<p class="t-faq-a">Антисептиками с УФ-фильтром для наружных работ. Например, <a href="/colormsk-test/antiseptiki" class="t-cat-link">антисептики SYMPHONY</a>.</p>
 </div>
 <div class="t-faq-item">
 <strong class="t-faq-q">6. Как защитить металл от коррозии?</strong>
-<p class="t-faq-a">Система «грунтовка + финишный слой». Например, FerOx-Stopper + WINNER.</p>
+<p class="t-faq-a">Система «грунтовка + финишный слой». Например, <a href="#" data-sku="00-00011318" class="t-product-link">FerOx-Stopper</a> + <a href="#" data-sku="00-00009949" class="t-product-link">WINNER</a>.</p>
 </div>
 </div>
 
@@ -320,5 +386,123 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 <footer class="t-footer">
 <p>© 2026 КолорМСК — Лакокрасочные материалы в Москве. <a href="/colormsk-test/">На главную</a></p>
 </footer>
+
+<div class="t-product-modal" id="t-product-modal">
+<div class="t-modal-content">
+<button class="t-modal-close" onclick="closeProductModal()">×</button>
+<div id="t-modal-body"><div class="t-modal-loading">Загрузка товара...</div></div>
+</div>
+</div>
+
+<script>
+const PRODUCTS_URL='https://raw.githubusercontent.com/gerasimov197789-gif/colormsk-products/main/products/';
+const CATEGORIES=['antiseptiki','kraski-interiernye','kraski-fasadnye','laki','gruntovki','dekorativnye-shtukaturki','alkidnye-kraski','rastvoriteli'];
+const productCache={};
+let currentProduct=null;
+let currentSize=null;
+let currentOption=null;
+
+async function findProductBySku(sku){
+  for(const cat of CATEGORIES){
+    try{
+      if(!productCache[cat]){
+        const r=await fetch(PRODUCTS_URL+cat+'.json');
+        if(!r.ok)continue;
+        productCache[cat]=await r.json();
+      }
+      for(const product of productCache[cat]){
+        if(!product.sizes)continue;
+        for(const size of product.sizes){
+          if(!size.options)continue;
+          for(const opt of size.options){
+            if(opt.sku===sku)return{product,size,option:opt};
+          }
+        }
+      }
+    }catch(e){continue}
+  }
+  return null;
+}
+
+async function openProductModal(sku){
+  const modal=document.getElementById('t-product-modal');
+  const body=document.getElementById('t-modal-body');
+  modal.classList.add('active');
+  document.body.style.overflow='hidden';
+  body.innerHTML='<div class="t-modal-loading">Загрузка...</div>';
+  const found=await findProductBySku(sku);
+  if(!found){body.innerHTML='<div class="t-modal-loading">Товар не найден: '+sku+'</div>';return}
+  currentProduct=found.product;
+  currentSize=found.size;
+  currentOption=found.option;
+  const p=found.product;
+  const opt=found.option;
+  const stock=opt.stock||'Много';
+  const stockClass=stock==='Под заказ'?'on-order':'in-stock';
+  const stockText=stock==='Под заказ'?'Под заказ':'В наличии';
+  let h='';
+  h+='<div class="t-modal-brand">'+(p.brand||'')+'</div>';
+  h+='<h2 class="t-modal-name">'+(p.name||'')+'</h2>';
+  h+='<div class="t-modal-sku">Артикул: '+opt.sku+'</div>';
+  h+='<div class="t-modal-grid">';
+  h+='<div class="t-modal-image"><img src="'+(p.photo||'')+'" onerror="this.style.display=\'none\'"></div>';
+  h+='<div class="t-modal-info"><div class="t-modal-price">'+opt.price.toLocaleString()+' ₽</div><div class="t-modal-stock '+stockClass+'">'+stockText+'</div></div>';
+  h+='</div>';
+  if(p.desc)h+='<div class="t-modal-description"><strong>Описание:</strong><br>'+p.desc+'</div>';
+  if(p.tech)h+='<div class="t-modal-tech"><strong>Характеристики:</strong><br>'+p.tech+'</div>';
+  h+='<div class="t-modal-buy"><div class="t-modal-price-large">'+opt.price.toLocaleString()+' ₽</div>';
+  if(stock==='Под заказ'){h+='<button class="t-btn-buy on-order" disabled>Под заказ</button>'}
+  else{h+='<button class="t-btn-buy" onclick="buyFromModal()">В корзину</button>'}
+  h+='</div>';
+  body.innerHTML=h;
+}
+
+function closeProductModal(){
+  document.getElementById('t-product-modal').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+function buyFromModal(){
+  if(!currentProduct||!currentOption)return;
+  if(currentOption.stock==='Под заказ')return;
+  let cart=[];
+  try{cart=JSON.parse(localStorage.getItem('colormsk_cart')||'[]')}catch(e){}
+  const key=currentOption.sku+(currentOption.color?'|'+currentOption.color:'')+(currentOption.gloss?'|'+currentOption.gloss:'');
+  const existing=cart.find(c=>c.key===key);
+  if(existing)existing.qty+=1;
+  else cart.push({key,brand:currentProduct.brand||'',name:currentProduct.name,sku:currentOption.sku,price:currentOption.price,color:currentOption.color||'',gloss:currentOption.gloss||'',volume:currentSize.volume||'',fill:currentSize.fill||'',photo:currentProduct.photo||'',qty:1});
+  localStorage.setItem('colormsk_cart',JSON.stringify(cart));
+  showToast('✓ Товар добавлен в корзину');
+  closeProductModal();
+}
+
+function showToast(msg){
+  const old=document.querySelector('.t-toast');
+  if(old)old.remove();
+  const t=document.createElement('div');
+  t.className='t-toast';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},2500);
+}
+
+document.addEventListener('click',function(e){
+  const link=e.target.closest('a[data-sku]');
+  if(link){
+    e.preventDefault();
+    const sku=link.getAttribute('data-sku');
+    if(sku)openProductModal(sku);
+  }
+});
+
+document.addEventListener('click',function(e){
+  const m=document.getElementById('t-product-modal');
+  if(m&&e.target===m)closeProductModal();
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeProductModal();
+});
+</script>
 </body>
 </html>
