@@ -1,0 +1,8 @@
+﻿User-Agent: *
+Allow: /
+
+Disallow: /account
+Disallow: /account.html
+Disallow: /admin
+
+Sitemap: https://colormsk.ru/sitemap.xml
