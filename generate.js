@@ -6,7 +6,6 @@ const PRODUCTS_DIR = './products';
 const OUTPUT_DIR = './output';
 const SITE_URL = 'https://colormsk.ru';
 
-// Названия категорий
 const CATEGORIES = {
   'antiseptiki': 'Антисептики',
   'kraski-interiernye': 'Краски интерьерные',
@@ -18,7 +17,6 @@ const CATEGORIES = {
   'rastvoriteli': 'Растворители'
 };
 
-// Транслитерация (как в вашем index.html)
 function translit(str) {
   const map = {
     'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
@@ -36,7 +34,6 @@ function translit(str) {
   return result.replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
 }
 
-// Экранирование HTML
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
@@ -45,12 +42,10 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Генерация HTML для одного товара
 function generateProductHtml(product, category, categoryName, firstOption) {
   const url = `${SITE_URL}/${category}/${translit(product.name)}--${firstOption.sku}`;
   const title = `${product.brand} ${product.name} — купить в Москве | КолорМСК`;
   const description = `Купить ${product.brand} ${product.name} по цене от ${firstOption.price} ₽. ${categoryName} с доставкой по Москве и РФ. Артикул: ${firstOption.sku}.`;
-  const canonical = url;
   
   return `<!DOCTYPE html>
 <html lang="ru">
@@ -59,7 +54,7 @@ function generateProductHtml(product, category, categoryName, firstOption) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}">
-    <link rel="canonical" href="${canonical}">
+    <link rel="canonical" href="${url}">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #1a2a3a; }
         .container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
@@ -100,7 +95,6 @@ function generateProductHtml(product, category, categoryName, firstOption) {
 </html>`;
 }
 
-// Основная функция
 function generateAll() {
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
@@ -118,7 +112,13 @@ function generateAll() {
     
     console.log(`\nОбработка: ${category} (${categoryName})`);
     
-    const products = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // === Читаем файл и убираем BOM ===
+    let content = fs.readFileSync(filePath, 'utf8');
+    if (content.charCodeAt(0) === 0xFEFF) {
+      content = content.slice(1);
+    }
+    
+    const products = JSON.parse(content);
     console.log(`  Товаров: ${products.length}`);
     
     const categoryDir = path.join(OUTPUT_DIR, category);
@@ -128,7 +128,7 @@ function generateAll() {
     
     products.forEach(product => {
       if (!product.sizes || !product.sizes[0] || !product.sizes[0].options || !product.sizes[0].options[0]) {
-        console.log(`  ⚠️  Пропущен: ${product.name} (нет данных)`);
+        console.log(`  Пропущен: ${product.name} (нет данных)`);
         return;
       }
       
@@ -138,9 +138,10 @@ function generateAll() {
       const outputPath = path.join(categoryDir, fileName);
       
       const html = generateProductHtml(product, category, categoryName, firstOption);
-      fs.writeFileSync(outputPath, html, 'utf8');
+      // Убираем BOM из вывода
+      fs.writeFileSync(outputPath, html.replace(/^\uFEFF/, ''), 'utf8');
       
-      console.log(`  ✅ ${fileName}`);
+      console.log(`  OK: ${fileName}`);
       totalGenerated++;
     });
   });
