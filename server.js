@@ -42,7 +42,6 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 }
-
 function renderHeader() {
     return `<header class="t-header">
         <div class="t-logo"><img class="t-logo-img" src="/images/logo.png" alt="КолорМСК">
@@ -50,16 +49,19 @@ function renderHeader() {
                 <div class="t-slogan">Лакокрасочные материалы</div>
             </div>
         </div>
+        <div class="t-search-wrapper"><input type="text" class="t-search-input" id="t-search-input" placeholder="Поиск товаров..." autocomplete="off">
+            <div class="t-search-results" id="t-search-results"></div>
+        </div>
         <div class="t-contacts"><a href="mailto:info@colormsk.ru">info@colormsk.ru</a><a href="tel:+79036692534">+7 (903) 669-25-34</a></div>
     </header>`;
 }
 
 function renderSidebar(activeCat) {
-    const items = Object.entries(CATEGORIES).map(([slug, name]) => {
+    let items = '';
+    for (const [slug, name] of Object.entries(CATEGORIES)) {
         const active = slug === activeCat ? ' active' : '';
-        return `<a href="/${slug}" class="t-nav-link${active}">${name}</a>`;
-    }).join('');
-    
+        items += `<a href="/${slug}" class="t-nav-link${active}">${name}</a>`;
+    }
     return `<aside class="t-sidebar">
         <nav class="t-sidebar-nav">
             <a href="/" class="t-nav-link">Главная</a>
@@ -101,7 +103,6 @@ function renderFooter() {
         </div>
     </footer>`;
 }
-
 function renderStyles() {
     return `<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,15 +148,44 @@ function renderStyles() {
         .t-seo-footer { background: rgba(26,42,58,.95); color: rgba(255,255,255,.7); padding: 30px; margin-top: 30px; font-size: 12px; line-height: 1.6; }
         .t-seo-footer h3 { color: #fff; font-size: 16px; margin-bottom: 10px; }
         .t-seo-footer a { color: #ffd166; text-decoration: none; }
+        .sizes-block { margin: 20px 0; }
+        .sizes-block label { font-size: 13px; font-weight: 600; color: #1a2a3a; margin-right: 10px; }
+        .sizes-block select { padding: 8px 12px; border: 2px solid #dce3ec; border-radius: 8px; font-size: 14px; background: #f8faff; margin-bottom: 10px; min-width: 200px; }
+        .specs-list { margin: 16px 0; }
+        .specs-list div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #eaeef3; }
+        .specs-list .label { font-weight: 600; color: #1a2a3a; }
+        .specs-list .value { color: #4a5a6a; }
     </style>`;
 }
-
 function renderProductPage(category, product, firstOption) {
     const categoryName = CATEGORIES[category] || category;
     const title = product.brand + ' ' + product.name + ' — купить в Москве | КолорМСК';
     const description = 'Купить ' + product.brand + ' ' + product.name + ' по цене от ' + firstOption.price + ' ₽. ' + categoryName + ' с доставкой по Москве и РФ. Артикул: ' + firstOption.sku + '.';
     const canonical = SITE_URL + '/' + category + '/' + translit(product.name) + '--' + firstOption.sku;
-    
+
+    // Выбор фасовок
+    let sizesHtml = '';
+    if (product.sizes && product.sizes.length > 0) {
+        sizesHtml += '<div class="sizes-block"><label>Фасовка:</label>';
+        sizesHtml += '<select id="size-select">';
+        product.sizes.forEach(function(size, idx) {
+            const opt = size.options && size.options[0] || {};
+            sizesHtml += '<option value="' + idx + '">' + size.volume + ' (' + size.fill + ') — ' + (opt.price || '') + ' ₽</option>';
+        });
+        sizesHtml += '</select></div>';
+    }
+
+    // Характеристики
+    let specsHtml = '';
+    if (product.tech) {
+        specsHtml += '<div class="tech"><strong>Характеристики:</strong>';
+        specsHtml += '<div class="specs-list">';
+        product.tech.split('.').filter(function(s) { return s.trim(); }).forEach(function(item) {
+            specsHtml += '<div><span class="label">•</span><span class="value">' + escapeHtml(item.trim()) + '</span></div>';
+        });
+        specsHtml += '</div></div>';
+    }
+
     return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
         '<meta charset="UTF-8">\n' +
         '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
@@ -174,11 +204,12 @@ function renderProductPage(category, product, firstOption) {
         '<div class="brand">' + escapeHtml(product.brand) + '</div>\n' +
         '<h1>' + escapeHtml(product.name) + '</h1>\n' +
         '<div class="sku">Артикул: ' + firstOption.sku + '</div>\n' +
-        '<div class="stock ' + (firstOption.stock === 'Под заказ' ? 'on-order' : 'in-stock') + '">' + escapeHtml(firstOption.stock) + '</div>\n' +
+        '<div class="stock ' + (firstOption.stock === 'Под заказ' ? 'on-order' : 'in-stock') + '">' + escapeHtml(firstOption.stock || 'В наличии') + '</div>\n' +
         '<img class="photo" src="' + SITE_URL + '/' + product.photo + '" alt="' + escapeHtml(product.name) + '">\n' +
         '<div class="price">' + firstOption.price.toLocaleString('ru-RU') + ' <span class="currency">₽</span></div>\n' +
+        sizesHtml +
         '<div class="desc"><strong>Описание:</strong><br>' + escapeHtml(product.desc) + '</div>\n' +
-        '<div class="tech"><strong>Характеристики:</strong><br>' + escapeHtml(product.tech) + '</div>\n' +
+        specsHtml +
         '<a href="/?product=' + firstOption.sku + '" class="btn-buy">🛒 Купить в корзине</a>\n' +
         '</div>\n' +
         renderFooter() + '\n' +
@@ -186,30 +217,29 @@ function renderProductPage(category, product, firstOption) {
         renderSidebarRight() + '\n' +
         '</div>\n</div>\n</body>\n</html>';
 }
-
 app.use(express.static(ROOT));
 
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
     const sku = req.params.sku;
-    
+
     if (!CATEGORIES[category]) {
         return res.sendFile(path.join(ROOT, 'index.html'));
     }
-    
+
     const jsonPath = path.join(ROOT, 'products', category + '.json');
     if (!fs.existsSync(jsonPath)) {
         return res.sendFile(path.join(ROOT, 'index.html'));
     }
-    
+
     try {
         let content = fs.readFileSync(jsonPath, 'utf8');
         if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1);
         const products = JSON.parse(content);
-        
+
         let foundProduct = null;
         let foundOption = null;
-        
+
         for (let i = 0; i < products.length; i++) {
             const product = products[i];
             if (!product.sizes) continue;
@@ -228,11 +258,11 @@ app.get('/:category/:slug--:sku', (req, res) => {
             }
             if (foundOption) break;
         }
-        
+
         if (!foundProduct) {
             return res.sendFile(path.join(ROOT, 'index.html'));
         }
-        
+
         res.send(renderProductPage(category, foundProduct, foundOption));
     } catch (e) {
         console.error('Ошибка:', e);
