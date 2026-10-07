@@ -317,6 +317,13 @@ function renderSidebar(activeCat) {
 function renderSidebarRight() {
     return `<aside class="t-sidebar-right">
         <div class="t-sidebar-card">
+            <h3>Личный кабинет</h3>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <a href="/account.html" class="t-sidebar-card-btn" style="flex:1;">Войти</a>
+                <a href="/account.html" class="t-sidebar-card-btn" style="flex:1;">Регистрация</a>
+            </div>
+        </div>
+        <div class="t-sidebar-card">
             <h3>Доставка и оплата</h3>
             <p>По Москве и МО — <strong>800 ₽</strong>. Бесплатно от <strong>15 000 ₽</strong>. В регионы — ТК.</p>
             <a href="/dostavka.html" class="t-sidebar-card-btn">Подробнее о доставке</a>
