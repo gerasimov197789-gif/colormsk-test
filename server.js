@@ -298,6 +298,7 @@ function renderSidebar(activeCat) {
             <div class="t-nav-section-title">Бренды</div>
             <a href="/brands/symphony" class="t-nav-link t-nav-external">SYMPHONY</a>
             <a href="/brands/decotech" class="t-nav-link t-nav-external">DecoTech</a>
+            <a href="/brands/artigiano" class="t-nav-link t-nav-external">ARTIGIANO</a>
         </nav>
     </aside>`;
 }
