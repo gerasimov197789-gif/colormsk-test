@@ -28,6 +28,17 @@ const CATEGORIES = {
 };
 
 // ------------------------------------------------------------
+// Бренды: slug → { name, match[] }
+// match — список значений поля brand в JSON, которые относятся
+// к этому бренду (например, DecoTech + DecoTech Eco → decotech)
+// ------------------------------------------------------------
+const BRANDS = {
+    'symphony': { name: 'SYMPHONY', match: ['SYMPHONY'] },
+    'decotech': { name: 'DecoTech', match: ['DecoTech', 'DecoTech Eco'] },
+    'artigiano': { name: 'ARTIGIANO', match: ['ARTIGIANO'] }
+};
+
+// ------------------------------------------------------------
 // Транслит
 // ------------------------------------------------------------
 function translit(str) {
@@ -587,9 +598,6 @@ function renderShareModal() {
     </div>`;
 }
 
-// ------------------------------------------------------------
-// СТРАНИЦА ТОВАРА (с правильным порядком: breadcrumbs → product-page)
-// ------------------------------------------------------------
 function renderProductPage(category, product, firstOption) {
     const categoryName = CATEGORIES[category] || category;
     const productUrl = SITE_URL + '/' + category + '/' + translit(product.name) + '--' + firstOption.sku;
@@ -732,9 +740,6 @@ function renderProductPage(category, product, firstOption) {
         '</body>\n</html>';
 }
 
-// ------------------------------------------------------------
-// СКРИПТ страницы товара
-// ------------------------------------------------------------
 function renderProductScript(product, category) {
     const sizesJson = JSON.stringify(product.sizes || []);
     const productMeta = JSON.stringify({
@@ -799,7 +804,6 @@ function renderProductScript(product, category) {
                 btnCart.dataset.volume = sz ? sz.volume : '';
                 btnCart.dataset.fill = sz ? sz.fill : '';
             }
-
             try {
                 var newUrl = '/' + CATEGORY + '/' + SLUG + '--' + opt.sku;
                 if (window.location.pathname !== newUrl) {
@@ -944,7 +948,7 @@ function renderProductScript(product, category) {
 // ============================================================
 // === ЧАСТЬ 4 из 5 ===
 // ============================================================
-// renderCategoryPage + renderCategoryScript
+// renderCategoryPage + renderCategoryScript + renderBrandPage
 // ============================================================
 
 function renderCategoryPage(category, products) {
@@ -1155,7 +1159,7 @@ function renderCategoryScript(category) {
                     fill: buyBtn.dataset.fill || '',
                     photo: card.getAttribute('data-photo') || '',
                     qty: 1,
-                    cat: category
+                    cat: card.getAttribute('data-category') || category
                 };
                 var found = null;
                 for (var i = 0; i < cart.length; i++) {
@@ -1172,12 +1176,142 @@ function renderCategoryScript(category) {
     })();
     </script>`;
 }
+
+// ------------------------------------------------------------
+// СТРАНИЦА БРЕНДА
+// ------------------------------------------------------------
+function renderBrandPage(brandSlug, brandName, products) {
+    const brandUrl = SITE_URL + '/brands/' + brandSlug;
+
+    const title = brandName + ' — купить продукцию бренда в Москве | КолорМСК';
+    const description = 'Купить продукцию ' + brandName + ' в Москве с доставкой. Каталог товаров бренда ' + brandName + ' по низким ценам. Оптом и в розницу.';
+
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": brandName, "item": brandUrl }
+        ]
+    };
+
+    const schemaBrand = {
+        "@context": "https://schema.org/",
+        "@type": "Brand",
+        "name": brandName,
+        "url": brandUrl
+    };
+
+    const schemaCollection = {
+        "@context": "https://schema.org/",
+        "@type": "CollectionPage",
+        "name": brandName,
+        "url": brandUrl,
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": products.length,
+            "itemListElement": products.slice(0, 30).map(function(item, idx) {
+                const p = item.product;
+                const opt = p.sizes && p.sizes[0] && p.sizes[0].options && p.sizes[0].options[0];
+                if (!opt) return null;
+                const url = SITE_URL + '/' + item.category + '/' + translit(p.name) + '--' + opt.sku;
+                return { "@type": "ListItem", "position": idx + 1, "url": url, "name": p.brand + ' ' + p.name };
+            }).filter(Boolean)
+        }
+    };
+
+    let cardsHtml = '';
+    products.forEach(function(item) {
+        const category = item.category;
+        const product = item.product;
+        if (!product.sizes || product.sizes.length === 0) return;
+
+        const cheapest = findCheapestOption(product);
+        const cheapestOpt = cheapest.opt;
+        const cheapestSizeIdx = cheapest.sizeIdx;
+        if (!cheapestOpt) return;
+
+        const productUrl = '/' + category + '/' + translit(product.name) + '--' + cheapestOpt.sku;
+        const photoUrl = '/' + (product.photo || 'images/logo.png');
+
+        let sizesOptions = '';
+        product.sizes.forEach(function(size, idx) {
+            const opt = size.options && size.options[0] || {};
+            const selected = idx === cheapestSizeIdx ? ' selected' : '';
+            sizesOptions += '<option value="' + idx + '"' + selected + '>' + size.volume + ' — ' + formatPrice(opt.price) + ' ₽</option>';
+        });
+
+        let colorOptions = '';
+        let colorLabel = '';
+        if (product.selectorLabel && product.colors && product.colors.length > 0) {
+            colorLabel = product.selectorLabel;
+            product.colors.forEach(function(color) {
+                const selected = (color === cheapestOpt.color) ? ' selected' : '';
+                colorOptions += '<option value="' + escapeHtml(color) + '"' + selected + '>' + escapeHtml(color) + '</option>';
+            });
+        }
+
+        const shortDesc = (product.desc || '').slice(0, 160) + '...';
+        const sizesJson = escapeHtml(JSON.stringify(product.sizes || []));
+
+        cardsHtml += '<div class="cat-card" data-category="' + category + '" data-name="' + escapeHtml(product.name) + '" data-brand="' + escapeHtml(product.brand) + '" data-photo="' + escapeHtml(product.photo) + '" data-sizes="' + sizesJson + '">' +
+            '<a href="' + productUrl + '"><img class="cat-card-img" src="' + photoUrl + '" alt="' + escapeHtml(product.brand + ' ' + product.name) + '"></a>' +
+            '<div class="cat-card-brand">' + escapeHtml(product.brand) + '</div>' +
+            '<a class="cat-card-name" href="' + productUrl + '">' + escapeHtml(product.name) + '</a>' +
+            '<div class="cat-card-sku">Арт. <span class="cat-card-sku-value">' + cheapestOpt.sku + '</span></div>' +
+            '<div class="cat-card-selectors">' +
+                '<select class="cat-card-size-select">' + sizesOptions + '</select>' +
+                (colorOptions ? '<select class="cat-card-color-select" data-label="' + escapeHtml(colorLabel) + '">' + colorOptions + '</select>' : '') +
+            '</div>' +
+            '<div class="cat-card-desc">' + escapeHtml(shortDesc) + '</div>' +
+            '<div class="cat-card-foot">' +
+                '<div class="cat-card-price"><span class="cat-card-price-value">' + formatPrice(cheapestOpt.price) + '</span><span class="currency">₽</span></div>' +
+                '<button class="cat-card-buy" type="button" data-sku="' + cheapestOpt.sku + '">В корзину</button>' +
+            '</div>' +
+        '</div>';
+    });
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + brandUrl + '">\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBrand) + '</script>\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaCollection) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › ' + escapeHtml(brandName) + '</div>\n' +
+        '<h1 class="page-title">' + escapeHtml(brandName) + '</h1>\n' +
+        '<div class="cat-grid" id="cat-grid">' + cardsHtml + '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCategoryScript('__brand__') + '\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        '</body>\n</html>';
+}
 // ============================================================
 // === ЧАСТЬ 5 из 5 ===
 // ============================================================
 // Роуты + app.listen
 // ============================================================
 
+// ------------------------------------------------------------
+// Загрузка JSON категории
+// ------------------------------------------------------------
 function loadCategory(category) {
     const jsonPath = path.join(ROOT, 'products', category + '.json');
     if (!fs.existsSync(jsonPath)) return null;
@@ -1191,6 +1325,44 @@ function loadCategory(category) {
     }
 }
 
+// ------------------------------------------------------------
+// Сбор товаров бренда из всех категорий
+// ------------------------------------------------------------
+function collectBrandProducts(brandConfig) {
+    const result = [];
+    Object.keys(CATEGORIES).forEach(function(cat) {
+        const products = loadCategory(cat);
+        if (!products) return;
+        products.forEach(function(p) {
+            if (brandConfig.match.indexOf(p.brand) !== -1) {
+                result.push({ category: cat, product: p });
+            }
+        });
+    });
+    return result;
+}
+
+// ------------------------------------------------------------
+// Роут: страница бренда
+// /brands/:brand
+// ------------------------------------------------------------
+app.get('/brands/:brand', (req, res) => {
+    const brandSlug = req.params.brand;
+    const brandConfig = BRANDS[brandSlug];
+    if (!brandConfig) {
+        return res.sendFile(path.join(ROOT, 'index.html'));
+    }
+    const products = collectBrandProducts(brandConfig);
+    if (!products.length) {
+        return res.sendFile(path.join(ROOT, 'index.html'));
+    }
+    res.send(renderBrandPage(brandSlug, brandConfig.name, products));
+});
+
+// ------------------------------------------------------------
+// Роут: страница товара
+// /:category/:slug--:sku
+// ------------------------------------------------------------
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
     const sku = req.params.sku;
@@ -1230,6 +1402,10 @@ app.get('/:category/:slug--:sku', (req, res) => {
     res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
+// ------------------------------------------------------------
+// Роут: страница раздела
+// /:category
+// ------------------------------------------------------------
 app.get('/:category', (req, res) => {
     const category = req.params.category;
     if (!CATEGORIES[category]) {
@@ -1242,12 +1418,21 @@ app.get('/:category', (req, res) => {
     res.send(renderCategoryPage(category, products));
 });
 
+// ------------------------------------------------------------
+// Статика
+// ------------------------------------------------------------
 app.use(express.static(ROOT));
 
+// ------------------------------------------------------------
+// Fallback — SPA (главная)
+// ------------------------------------------------------------
 app.use((req, res) => {
     res.sendFile(path.join(ROOT, 'index.html'));
 });
 
+// ------------------------------------------------------------
+// Запуск
+// ------------------------------------------------------------
 app.listen(PORT, () => {
     console.log('SSR-сервер запущен на порту ' + PORT);
 });
