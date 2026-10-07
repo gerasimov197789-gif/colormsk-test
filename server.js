@@ -380,7 +380,7 @@ function renderStyles() {
         /* --- Заголовки --- */
         .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
         .breadcrumbs { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.55); }
-        .breadcrumbs a { color: #fff; text-decoration: none; opacity: .85; }
+        .breadcrumbs a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
         .breadcrumbs a:hover { color: #1a2a3a; }
 
         /* --- Страница товара (ЦЕНТРИРОВАНИЕ) --- */
