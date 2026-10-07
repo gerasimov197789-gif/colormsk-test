@@ -210,7 +210,7 @@ function renderProductPage(category, product, firstOption) {
         sizesHtml +
         '<div class="desc"><strong>Описание:</strong><br>' + escapeHtml(product.desc) + '</div>\n' +
         specsHtml +
-        '<a href="/?product=' + firstOption.sku + '" class="btn-buy">🛒 Купить в корзине</a>\n' +
+        '<a href="/' + category + '" class="btn-buy">← Вернуться в каталог</a>\n' +
         '</div>\n' +
         renderFooter() + '\n' +
         '</main>\n' +
