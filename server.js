@@ -348,8 +348,10 @@ function renderSidebar(activeCat) {
 
 function renderSidebarRight() {
     return `<aside class="t-sidebar-right">
-        <div class="t-sidebar-card">
+                <div class="t-sidebar-card">
             <h3>Личный кабинет</h3>
+            <input type="email" class="t-account-input" placeholder="Email" autocomplete="email">
+            <input type="password" class="t-account-input" placeholder="Пароль" autocomplete="current-password">
             <div style="display:flex;gap:8px;margin-top:8px;">
                 <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="login" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Войти</button>
                 <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="register" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Регистрация</button>
@@ -462,6 +464,10 @@ function renderStyles() {
         .t-sidebar-card p { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.4; margin-bottom: 8px; }
         .t-sidebar-card-btn { display: block; background: rgba(255,209,102,.15); color: #ffd166; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11px; text-align: center; transition: background .2s; }
         .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
+        
+        .t-account-input { width: 100%; padding: 8px 10px; border: 1px solid rgba(255,255,255,.15); border-radius: 8px; background: rgba(255,255,255,.08); color: #fff; font-size: 12px; font-family: inherit; outline: none; margin-bottom: 6px; transition: border-color .2s, background .2s; }
+        .t-account-input::placeholder { color: rgba(255,255,255,.45); }
+        .t-account-input:focus { border-color: rgba(255,209,102,.5); background: rgba(255,255,255,.12); }
 
         .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
         .breadcrumbs { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.55); }
