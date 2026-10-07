@@ -3,7 +3,6 @@
 // ============================================================
 // Сервер SSR для colormsk.ru
 // Express + Node.js
-// Рендерит страницы товаров, разделов, брендов, главную
 // ============================================================
 
 const express = require('express');
@@ -16,7 +15,7 @@ const ROOT = '/var/www/colormsk';
 const SITE_URL = 'https://colormsk.ru';
 
 // ------------------------------------------------------------
-// Справочник категорий (slug -> читаемое имя)
+// Категории
 // ------------------------------------------------------------
 const CATEGORIES = {
     'antiseptiki': 'Антисептики',
@@ -30,7 +29,7 @@ const CATEGORIES = {
 };
 
 // ------------------------------------------------------------
-// Транслитерация (кириллица -> латиница)
+// Транслит
 // ------------------------------------------------------------
 function translit(str) {
     const map = {
@@ -50,7 +49,7 @@ function translit(str) {
 }
 
 // ------------------------------------------------------------
-// Экранирование HTML
+// escapeHtml
 // ------------------------------------------------------------
 function escapeHtml(str) {
     return String(str || '')
@@ -61,15 +60,245 @@ function escapeHtml(str) {
 }
 
 // ------------------------------------------------------------
-// Форматирование цены (1075 -> "1 075")
+// Форматирование цены
 // ------------------------------------------------------------
 function formatPrice(price) {
     return String(price || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
+
+// ============================================================
+// ОБЩИЕ КОМПОНЕНТЫ КОРЗИНЫ (используются на всех SSR-страницах)
+// ============================================================
+
+// ------------------------------------------------------------
+// Плашка «Корзина» внизу справа
+// ------------------------------------------------------------
+function renderCartFab() {
+    return `<div class="cart-fab-wrap">
+        <button class="cart-fab" id="cart-fab" type="button" aria-label="Открыть корзину">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span>Корзина</span>
+            <span class="cart-fab-count" id="cart-fab-count" style="display:none;">0</span>
+        </button>
+    </div>`;
+}
+
+// ------------------------------------------------------------
+// Модальное окно корзины
+// ------------------------------------------------------------
+function renderCartModal() {
+    return `<div class="cart-modal-bg" id="cart-modal-bg">
+        <div class="cart-modal">
+            <div class="cart-modal-head">
+                <h2>Корзина</h2>
+                <button class="cart-modal-close" id="cart-modal-close" type="button" aria-label="Закрыть">×</button>
+            </div>
+            <div class="cart-modal-body" id="cart-modal-body"></div>
+            <div class="cart-modal-foot" id="cart-modal-foot" style="display:none;">
+                <div class="cart-total">
+                    <span>Итого:</span>
+                    <strong id="cart-total-sum">0 ₽</strong>
+                </div>
+                <div class="cart-actions">
+                    <button class="cart-btn-clear" id="cart-btn-clear" type="button">Очистить</button>
+                    <button class="cart-btn-checkout" id="cart-btn-checkout" type="button">Оформить заказ</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ------------------------------------------------------------
+// Общий JS корзины (встраивается в каждую SSR-страницу)
+// ------------------------------------------------------------
+function renderCartScript() {
+    return `<script>
+    (function() {
+        var CART_KEY = 'colormsk_cart';
+
+        function getCart() {
+            try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; }
+        }
+        function saveCart(cart) {
+            try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
+        }
+        function cartTotalQty(cart) {
+            var t = 0; cart.forEach(function(it) { t += parseInt(it.qty) || 1; }); return t;
+        }
+        function fmt(n) {
+            return String(n || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' ');
+        }
+        function buildProductUrl(item) {
+            if (!item.cat) return null;
+            var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
+            var slug = item.name.toLowerCase().replace(/[а-яё]/g, function(ch) { return map[ch] || '-'; }).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            return '/' + item.cat + '/' + slug + '--' + item.sku;
+        }
+
+        var cartFab = document.getElementById('cart-fab');
+        var cartFabCount = document.getElementById('cart-fab-count');
+        var cartModalBg = document.getElementById('cart-modal-bg');
+        var cartModalClose = document.getElementById('cart-modal-close');
+        var cartModalBody = document.getElementById('cart-modal-body');
+        var cartModalFoot = document.getElementById('cart-modal-foot');
+        var cartTotalSum = document.getElementById('cart-total-sum');
+        var cartBtnClear = document.getElementById('cart-btn-clear');
+        var cartBtnCheckout = document.getElementById('cart-btn-checkout');
+
+        function updateFabCount() {
+            var cart = getCart();
+            var q = cartTotalQty(cart);
+            if (!cartFabCount) return;
+            if (q > 0) { cartFabCount.textContent = q; cartFabCount.style.display = 'flex'; }
+            else { cartFabCount.style.display = 'none'; }
+        }
+
+        function renderCart() {
+            var cart = getCart();
+            if (!cartModalBody) return;
+            if (cart.length === 0) {
+                cartModalBody.innerHTML = '<div class="cart-empty">Корзина пуста. Добавьте товары из каталога.</div>';
+                if (cartModalFoot) cartModalFoot.style.display = 'none';
+                return;
+            }
+            if (cartModalFoot) cartModalFoot.style.display = 'block';
+            var html = '';
+            var total = 0;
+            cart.forEach(function(item, idx) {
+                var sum = (parseInt(item.price) || 0) * (parseInt(item.qty) || 1);
+                total += sum;
+                var url = buildProductUrl(item);
+                var nameHtml = url ? '<a href="' + url + '">' + item.brand + ' ' + item.name + '</a>' : (item.brand + ' ' + item.name);
+                var meta = [];
+                if (item.color) meta.push(item.color);
+                if (item.gloss) meta.push(item.gloss);
+                if (item.volume) meta.push(item.volume);
+                html += '<div class="cart-item">' +
+                    '<img class="cart-item-img" src="/' + (item.photo || 'images/logo.png') + '" alt="">' +
+                    '<div class="cart-item-info">' +
+                        '<div class="cart-item-name">' + nameHtml + '</div>' +
+                        '<div class="cart-item-meta">' + meta.join(' · ') + '</div>' +
+                    '</div>' +
+                    '<div class="cart-item-right">' +
+                        '<div class="cart-item-price">' + fmt(sum) + ' ₽</div>' +
+                        '<div class="cart-item-qty">' +
+                            '<button type="button" data-act="dec" data-idx="' + idx + '">−</button>' +
+                            '<span>' + item.qty + '</span>' +
+                            '<button type="button" data-act="inc" data-idx="' + idx + '">+</button>' +
+                        '</div>' +
+                        '<button class="cart-item-remove" type="button" data-act="rm" data-idx="' + idx + '">Удалить</button>' +
+                    '</div>' +
+                '</div>';
+            });
+            cartModalBody.innerHTML = html;
+            if (cartTotalSum) cartTotalSum.textContent = fmt(total) + ' ₽';
+
+            cartModalBody.querySelectorAll('button[data-act]').forEach(function(b) {
+                b.addEventListener('click', function() {
+                    var act = b.getAttribute('data-act');
+                    var i = parseInt(b.getAttribute('data-idx'));
+                    var c = getCart();
+                    if (!c[i]) return;
+                    if (act === 'inc') c[i].qty = (parseInt(c[i].qty) || 1) + 1;
+                    else if (act === 'dec') { c[i].qty = (parseInt(c[i].qty) || 1) - 1; if (c[i].qty <= 0) c.splice(i, 1); }
+                    else if (act === 'rm') c.splice(i, 1);
+                    saveCart(c);
+                    updateFabCount();
+                    renderCart();
+                });
+            });
+        }
+
+        if (cartFab) cartFab.addEventListener('click', function() {
+            renderCart();
+            cartModalBg.classList.add('open');
+        });
+        if (cartModalClose) cartModalClose.addEventListener('click', function() {
+            cartModalBg.classList.remove('open');
+        });
+        if (cartModalBg) cartModalBg.addEventListener('click', function(e) {
+            if (e.target === cartModalBg) cartModalBg.classList.remove('open');
+        });
+        if (cartBtnClear) cartBtnClear.addEventListener('click', function() {
+            saveCart([]);
+            updateFabCount();
+            renderCart();
+        });
+        if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() {
+            alert('Оформление заказа — следующий этап разработки.');
+        });
+
+        // Экспортируем для использования в других скриптах
+        window.CMSK_CART = {
+            getCart: getCart,
+            saveCart: saveCart,
+            updateFabCount: updateFabCount,
+            renderCart: renderCart,
+            cartTotalQty: cartTotalQty,
+            fmt: fmt,
+            buildProductUrl: buildProductUrl
+        };
+
+        updateFabCount();
+    })();
+    </script>`;
+}
+
+// ------------------------------------------------------------
+// Скрипт «Хиты продаж» (используется на всех SSR-страницах)
+// ------------------------------------------------------------
+function renderHitsScript() {
+    return `<script>
+    (function() {
+        try {
+            var raw = localStorage.getItem('t_hits_cache');
+            if (!raw) return;
+            var hits = JSON.parse(raw);
+            if (!hits || !hits.hits || hits.hits.length === 0) return;
+            var block = document.getElementById('hits-block');
+            var grid = document.getElementById('hits-grid');
+            if (!block || !grid) return;
+
+            var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
+            function fmt(n) { return String(n || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' '); }
+            function slug(name) {
+                return name.toLowerCase().replace(/[а-яё]/g, function(ch) { return map[ch] || '-'; }).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            }
+
+            block.style.display = 'block';
+            var html = '';
+            hits.hits.forEach(function(h) {
+                if (!h.product || !h.product.sizes || !h.product.sizes[0]) return;
+                var opt = h.product.sizes[0].options && h.product.sizes[0].options[0];
+                if (!opt) return;
+                var url = '/' + h.cat + '/' + slug(h.product.name) + '--' + opt.sku;
+                html += '<a class="hit-card" href="' + url + '">' +
+                    '<img class="hit-card-img" src="/' + h.product.photo + '" alt="">' +
+                    '<div class="hit-card-brand">' + (h.product.brand || '') + '</div>' +
+                    '<div class="hit-card-name">' + (h.product.name || '') + '</div>' +
+                    '<div class="hit-card-price">' + fmt(opt.price) + ' ₽</div>' +
+                '</a>';
+            });
+            grid.innerHTML = html;
+        } catch (e) {}
+    })();
+    </script>`;
+}
+
+// ------------------------------------------------------------
+// Общий блок «Хиты продаж» (HTML-контейнер)
+// ------------------------------------------------------------
+function renderHitsBlock() {
+    return `<div class="hits-block" id="hits-block" style="display:none;">
+        <h2 class="hits-title">Хиты продаж</h2>
+        <div class="hits-grid" id="hits-grid"></div>
+    </div>`;
+}
 // ============================================================
 // === ЧАСТЬ 2 из 4 ===
 // ============================================================
-// Компоненты: шапка, левый сайдбар, правый сайдбар, футер
+// Компоненты: шапка, сайдбары, футер
+// + renderStyles (CSS)
 // ============================================================
 
 // ------------------------------------------------------------
@@ -151,13 +380,10 @@ function renderFooter() {
         </div>
     </footer>`;
 }
-// ============================================================
-// === ЧАСТЬ 3 из 4 ===
-// ============================================================
-// renderStyles — CSS
-// renderProductPage — HTML страницы товара
-// ============================================================
 
+// ------------------------------------------------------------
+// СТИЛИ
+// ------------------------------------------------------------
 function renderStyles() {
     return `<style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -197,11 +423,14 @@ function renderStyles() {
         .t-sidebar-card-btn { display: block; background: rgba(255,209,102,.15); color: #ffd166; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11px; text-align: center; transition: background .2s; }
         .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
 
-        .product-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; }
+        /* --- Заголовки страниц --- */
+        .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; padding-left: 4px; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
         .breadcrumbs { font-size: 13px; color: #6a7a8a; margin-bottom: 20px; }
         .breadcrumbs a { color: #6a7a8a; text-decoration: none; }
         .breadcrumbs a:hover { color: #1a2a3a; }
 
+        /* --- Страница товара --- */
+        .product-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; }
         .product-grid { display: grid; grid-template-columns: 340px 1fr; gap: 30px; margin-bottom: 20px; }
         .product-photo-block { text-align: center; }
         .product-photo { width: 100%; max-width: 340px; border-radius: 12px; background: #f8faff; border: 1px solid #eef1f5; }
@@ -242,22 +471,42 @@ function renderStyles() {
         .btn-back { display: inline-block; margin-top: 20px; padding: 10px 22px; background: transparent; color: #6a7a8a; text-decoration: none; border: 1px solid #dce3ec; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all .2s; }
         .btn-back:hover { background: #f8faff; color: #1a2a3a; border-color: #1a2a3a; }
 
+        /* --- Сетка карточек категорий --- */
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .cat-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+        .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .cat-card-img { width: 100%; height: 200px; object-fit: contain; border-radius: 10px; background: #f8faff; border: 1px solid #eef1f5; margin-bottom: 12px; }
+        .cat-card-brand { font-size: 11px; color: #6a7a8a; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .5px; }
+        .cat-card-name { font-size: 15px; font-weight: 600; color: #1a2a3a; line-height: 1.3; margin-bottom: 6px; text-decoration: none; }
+        .cat-card-name:hover { color: #ff8f2e; }
+        .cat-card-sku { font-size: 11px; color: #9aaabb; margin-bottom: 10px; }
+        .cat-card-selectors { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .cat-card-selectors select { padding: 6px 10px; border: 1px solid #dce3ec; border-radius: 6px; font-size: 12px; background: #fff; color: #1a2a3a; cursor: pointer; font-family: inherit; outline: none; }
+        .cat-card-desc { font-size: 12px; color: #6a7a8a; line-height: 1.5; margin-bottom: 12px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .cat-card-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid #eef1f5; }
+        .cat-card-price { font-size: 18px; font-weight: 700; color: #1a2a3a; }
+        .cat-card-price .currency { font-size: 13px; font-weight: 400; color: #6a7a8a; margin-left: 2px; }
+        .cat-card-buy { padding: 8px 16px; background: #f1f5f9; color: #1a2a3a; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .cat-card-buy:hover { background: #e2e8f0; }
+
+        /* --- Toast --- */
         .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(26,42,58,.95); color: #fff; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 5000; box-shadow: 0 8px 30px rgba(0,0,0,.3); pointer-events: none; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+        /* --- Футер --- */
         .t-seo-footer { background: rgba(26,42,58,.95); color: rgba(255,255,255,.7); padding: 30px; margin-top: 30px; font-size: 12px; line-height: 1.6; }
         .t-seo-footer h3 { color: #fff; font-size: 16px; margin-bottom: 10px; }
         .t-seo-footer a { color: #ffd166; text-decoration: none; }
         .t-seo-footer a:hover { text-decoration: underline; }
 
-        /* --- Плашка «Корзина» внизу справа --- */
+        /* --- Плашка корзины --- */
         .cart-fab-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 4000; }
         .cart-fab { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #1a2a3a; color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.35); cursor: pointer; font-size: 14px; font-weight: 600; transition: transform .2s, box-shadow .2s; border: none; font-family: inherit; position: relative; }
         .cart-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.45); }
         .cart-fab svg { width: 20px; height: 20px; }
         .cart-fab-count { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #ff5c5c; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
-        /* --- Модальное окно корзины --- */
+        /* --- Модалка корзины --- */
         .cart-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4500; display: none; align-items: center; justify-content: center; padding: 20px; }
         .cart-modal-bg.open { display: flex; }
         .cart-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
@@ -308,6 +557,7 @@ function renderStyles() {
         @media (max-width: 1100px) {
             .t-sidebar-right { display: none; }
             .hits-grid { grid-template-columns: repeat(2, 1fr); }
+            .cat-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 800px) {
             .t-sidebar { display: none; }
@@ -319,10 +569,17 @@ function renderStyles() {
         }
         @media (max-width: 600px) {
             .hits-grid { grid-template-columns: 1fr; }
+            .cat-grid { grid-template-columns: 1fr; }
             .cart-fab-wrap { bottom: 12px; right: 12px; }
         }
     </style>`;
 }
+// ============================================================
+// === ЧАСТЬ 3 из 4 ===
+// ============================================================
+// renderProductPage — страница товара
+// renderCategoryPage — страница раздела
+// ============================================================
 
 // ------------------------------------------------------------
 // СТРАНИЦА ТОВАРА
@@ -347,7 +604,7 @@ function renderProductPage(category, product, firstOption) {
         sizesHtml += '</select></div>';
     }
 
-    // Селект «Цвет»/«База»/«Блеск»
+    // Селект «Цвет/База/Блеск»
     let colorHtml = '';
     if (product.selectorLabel && product.colors && product.colors.length > 0) {
         colorHtml += '<div class="select-group"><label>' + escapeHtml(product.selectorLabel) + '</label><select id="color-select">';
@@ -357,7 +614,7 @@ function renderProductPage(category, product, firstOption) {
         colorHtml += '</select></div>';
     }
 
-    // Селект «Блеск» (если есть отдельно от color)
+    // Селект «Блеск» (если есть отдельно)
     let glossHtml = '';
     if (product.gloss && product.gloss.length > 0) {
         glossHtml += '<div class="select-group"><label>Блеск</label><select id="gloss-select">';
@@ -447,57 +704,28 @@ function renderProductPage(category, product, firstOption) {
         specsHtml +
         '<a href="/' + category + '" class="btn-back">← Вернуться в каталог</a>\n' +
         '</div>\n' +
-        '<div class="hits-block" id="hits-block" style="display:none;">\n' +
-        '<h2 class="hits-title">Хиты продаж</h2>\n' +
-        '<div class="hits-grid" id="hits-grid"></div>\n' +
-        '</div>\n' +
+        renderHitsBlock() + '\n' +
         renderFooter() + '\n' +
         '</main>\n' +
         renderSidebarRight() + '\n' +
         '</div>\n</div>\n' +
-        '<div class="cart-fab-wrap">\n' +
-        '<button class="cart-fab" id="cart-fab" type="button">\n' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>\n' +
-        'Корзина\n' +
-        '<span class="cart-fab-count" id="cart-fab-count" style="display:none;">0</span>\n' +
-        '</button>\n' +
-        '</div>\n' +
-        '<div class="cart-modal-bg" id="cart-modal-bg">\n' +
-        '<div class="cart-modal">\n' +
-        '<div class="cart-modal-head">\n' +
-        '<h2>Корзина</h2>\n' +
-        '<button class="cart-modal-close" id="cart-modal-close" type="button">×</button>\n' +
-        '</div>\n' +
-        '<div class="cart-modal-body" id="cart-modal-body"></div>\n' +
-        '<div class="cart-modal-foot" id="cart-modal-foot" style="display:none;">\n' +
-        '<div class="cart-total"><span>Итого:</span><strong id="cart-total-sum">0 ₽</strong></div>\n' +
-        '<div class="cart-actions">\n' +
-        '<button class="cart-btn-clear" id="cart-btn-clear" type="button">Очистить</button>\n' +
-        '<button class="cart-btn-checkout" id="cart-btn-checkout" type="button">Оформить заказ</button>\n' +
-        '</div>\n' +
-        '</div>\n' +
-        '</div>\n' +
-        '</div>\n' +
-        '<div class="toast" id="toast">Добавлено в корзину</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderProductScript(product, category) + '\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
         '</body>\n</html>';
 }
-// ============================================================
-// === ЧАСТЬ 4 из 4 ===
-// ============================================================
-// renderProductScript — JS-интерактив на странице товара
-// SSR-роуты + app.listen
-// ============================================================
 
 // ------------------------------------------------------------
-// JS-СКРИПТ на странице товара
+// СКРИПТ страницы товара (селекты + добавление в корзину)
 // ------------------------------------------------------------
 function renderProductScript(product, category) {
     const sizesJson = JSON.stringify(product.sizes || []);
     const productMeta = JSON.stringify({
         brand: product.brand || '',
         name: product.name || '',
-        selectorLabel: product.selectorLabel || '',
         photo: product.photo || ''
     });
 
@@ -516,21 +744,15 @@ function renderProductScript(product, category) {
         var btnCart = document.getElementById('btn-cart');
         var toast = document.getElementById('toast');
 
-        // --- ФОРМАТИРОВАНИЕ ---
-        function fmt(price) {
-            return String(price || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' ');
-        }
+        function fmt(p) { return String(p || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' '); }
 
-        // --- ВЫБОР ОПЦИИ по текущему состоянию селектов ---
         function findCurrentOption() {
             if (!sizeSelect) return null;
             var si = parseInt(sizeSelect.value) || 0;
             var size = SIZES[si];
             if (!size || !size.options) return null;
-
             var colorText = colorSelect ? colorSelect.options[colorSelect.selectedIndex].textContent : '';
             var glossText = glossSelect ? glossSelect.options[glossSelect.selectedIndex].textContent : '';
-
             var found = null;
             for (var i = 0; i < size.options.length; i++) {
                 var o = size.options[i];
@@ -542,7 +764,6 @@ function renderProductScript(product, category) {
             return found;
         }
 
-        // --- ОБНОВЛЕНИЕ ЦЕНЫ / SKU / НАЛИЧИЯ ---
         function updatePrice() {
             var opt = findCurrentOption();
             if (!opt) return;
@@ -554,7 +775,6 @@ function renderProductScript(product, category) {
             }
             btnCart.dataset.sku = opt.sku;
             btnCart.dataset.price = opt.price;
-            btnCart.dataset.sizeIndex = sizeSelect ? sizeSelect.value : '0';
             btnCart.dataset.color = opt.color || '';
             btnCart.dataset.gloss = opt.gloss || '';
             if (sizeSelect) {
@@ -564,43 +784,25 @@ function renderProductScript(product, category) {
             }
         }
 
-        // --- ОБНОВЛЕНИЕ СПИСКОВ ЦВЕТА/БЛЕСКА при смене фасовки ---
         function updateColorOptions() {
             if (!sizeSelect) return;
             var si = parseInt(sizeSelect.value) || 0;
             var size = SIZES[si];
             if (!size || !size.options) return;
-
             if (colorSelect) {
                 var colors = [], seen = {};
-                size.options.forEach(function(o) {
-                    if (o.color && !seen[o.color]) { seen[o.color] = 1; colors.push(o.color); }
-                });
+                size.options.forEach(function(o) { if (o.color && !seen[o.color]) { seen[o.color] = 1; colors.push(o.color); } });
                 if (colors.length > 0) {
-                    var prev = colorSelect.value;
                     colorSelect.innerHTML = '';
-                    colors.forEach(function(c) {
-                        var op = document.createElement('option');
-                        op.textContent = c;
-                        colorSelect.appendChild(op);
-                    });
-                    if (prev && prev < colorSelect.options.length) colorSelect.value = prev;
+                    colors.forEach(function(c) { var op = document.createElement('option'); op.textContent = c; colorSelect.appendChild(op); });
                 }
             }
             if (glossSelect) {
                 var glosses = [], seen2 = {};
-                size.options.forEach(function(o) {
-                    if (o.gloss && !seen2[o.gloss]) { seen2[o.gloss] = 1; glosses.push(o.gloss); }
-                });
+                size.options.forEach(function(o) { if (o.gloss && !seen2[o.gloss]) { seen2[o.gloss] = 1; glosses.push(o.gloss); } });
                 if (glosses.length > 0) {
-                    var prev2 = glossSelect.value;
                     glossSelect.innerHTML = '';
-                    glosses.forEach(function(g) {
-                        var op = document.createElement('option');
-                        op.textContent = g;
-                        glossSelect.appendChild(op);
-                    });
-                    if (prev2 && prev2 < glossSelect.options.length) glossSelect.value = prev2;
+                    glosses.forEach(function(g) { var op = document.createElement('option'); op.textContent = g; glossSelect.appendChild(op); });
                 }
             }
         }
@@ -610,19 +812,6 @@ function renderProductScript(product, category) {
         if (colorSelect) colorSelect.addEventListener('change', updatePrice);
         if (glossSelect) glossSelect.addEventListener('change', updatePrice);
 
-        // --- LOCALSTORAGE: КОРЗИНА ---
-        var CART_KEY = 'colormsk_cart';
-        function getCart() {
-            try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; }
-        }
-        function saveCart(cart) {
-            try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
-        }
-        function cartTotalQty(cart) {
-            var t = 0; cart.forEach(function(it) { t += parseInt(it.qty) || 1; }); return t;
-        }
-
-        // --- TOAST ---
         function showToast(msg) {
             if (!toast) return;
             toast.textContent = msg;
@@ -630,11 +819,11 @@ function renderProductScript(product, category) {
             setTimeout(function() { toast.classList.remove('show'); }, 2000);
         }
 
-        // --- ДОБАВЛЕНИЕ В КОРЗИНУ ---
         if (btnCart) {
             btnCart.addEventListener('click', function() {
                 var sku = btnCart.dataset.sku;
                 if (!sku) return;
+                var cart = window.CMSK_CART.getCart();
                 var newItem = {
                     key: sku,
                     brand: META.brand,
@@ -649,177 +838,265 @@ function renderProductScript(product, category) {
                     qty: 1,
                     cat: CATEGORY
                 };
-                var cart = getCart();
                 var found = null;
                 for (var i = 0; i < cart.length; i++) {
-                    if (cart[i].key === sku && (cart[i].color || '') === newItem.color && (cart[i].gloss || '') === newItem.gloss) {
-                        found = cart[i]; break;
-                    }
+                    if (cart[i].key === sku && (cart[i].color || '') === newItem.color && (cart[i].gloss || '') === newItem.gloss) { found = cart[i]; break; }
                 }
                 if (found) found.qty = (parseInt(found.qty) || 1) + 1;
                 else cart.push(newItem);
-                saveCart(cart);
-                updateCartFabCount();
-                renderCart();
+                window.CMSK_CART.saveCart(cart);
+                window.CMSK_CART.updateFabCount();
+                window.CMSK_CART.renderCart();
                 showToast('Товар добавлен в корзину');
             });
         }
-
-        // --- ПЛАШКА КОРЗИНЫ ---
-        var cartFab = document.getElementById('cart-fab');
-        var cartFabCount = document.getElementById('cart-fab-count');
-        var cartModalBg = document.getElementById('cart-modal-bg');
-        var cartModalClose = document.getElementById('cart-modal-close');
-        var cartModalBody = document.getElementById('cart-modal-body');
-        var cartModalFoot = document.getElementById('cart-modal-foot');
-        var cartTotalSum = document.getElementById('cart-total-sum');
-        var cartBtnClear = document.getElementById('cart-btn-clear');
-        var cartBtnCheckout = document.getElementById('cart-btn-checkout');
-
-        function updateCartFabCount() {
-            var cart = getCart();
-            var q = cartTotalQty(cart);
-            if (!cartFabCount) return;
-            if (q > 0) {
-                cartFabCount.textContent = q;
-                cartFabCount.style.display = 'flex';
-            } else {
-                cartFabCount.style.display = 'none';
-            }
-        }
-
-        // --- ОТРИСОВКА МОДАЛКИ КОРЗИНЫ ---
-        function buildProductUrl(item) {
-            var cat = item.cat;
-            if (!cat) return null;
-            var slug = item.name.toLowerCase()
-                .replace(/[а-яё]/g, function(ch) {
-                    var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
-                    return map[ch] || '-';
-                })
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-|-$/g, '');
-            return '/' + cat + '/' + slug + '--' + item.sku;
-        }
-
-        function renderCart() {
-            var cart = getCart();
-            if (!cartModalBody) return;
-            if (cart.length === 0) {
-                cartModalBody.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
-                if (cartModalFoot) cartModalFoot.style.display = 'none';
-                return;
-            }
-            if (cartModalFoot) cartModalFoot.style.display = 'block';
-
-            var html = '';
-            var total = 0;
-            cart.forEach(function(item, idx) {
-                var sum = (parseInt(item.price) || 0) * (parseInt(item.qty) || 1);
-                total += sum;
-                var url = buildProductUrl(item);
-                var nameHtml = url ? '<a href="' + url + '">' + item.brand + ' ' + item.name + '</a>' : (item.brand + ' ' + item.name);
-                var meta = [];
-                if (item.color) meta.push(item.color);
-                if (item.gloss) meta.push(item.gloss);
-                if (item.volume) meta.push(item.volume);
-                html += '<div class="cart-item">' +
-                    '<img class="cart-item-img" src="/' + (item.photo || 'images/logo.png') + '" alt="">' +
-                    '<div class="cart-item-info">' +
-                        '<div class="cart-item-name">' + nameHtml + '</div>' +
-                        '<div class="cart-item-meta">' + meta.join(' · ') + '</div>' +
-                    '</div>' +
-                    '<div class="cart-item-right">' +
-                        '<div class="cart-item-price">' + fmt(sum) + ' ₽</div>' +
-                        '<div class="cart-item-qty">' +
-                            '<button type="button" data-act="dec" data-idx="' + idx + '">−</button>' +
-                            '<span>' + item.qty + '</span>' +
-                            '<button type="button" data-act="inc" data-idx="' + idx + '">+</button>' +
-                        '</div>' +
-                        '<button class="cart-item-remove" type="button" data-act="rm" data-idx="' + idx + '">Удалить</button>' +
-                    '</div>' +
-                '</div>';
-            });
-            cartModalBody.innerHTML = html;
-            if (cartTotalSum) cartTotalSum.textContent = fmt(total) + ' ₽';
-
-            // Кнопки внутри
-            cartModalBody.querySelectorAll('button[data-act]').forEach(function(b) {
-                b.addEventListener('click', function() {
-                    var act = b.getAttribute('data-act');
-                    var i = parseInt(b.getAttribute('data-idx'));
-                    var c = getCart();
-                    if (!c[i]) return;
-                    if (act === 'inc') c[i].qty = (parseInt(c[i].qty) || 1) + 1;
-                    else if (act === 'dec') { c[i].qty = (parseInt(c[i].qty) || 1) - 1; if (c[i].qty <= 0) c.splice(i, 1); }
-                    else if (act === 'rm') c.splice(i, 1);
-                    saveCart(c);
-                    updateCartFabCount();
-                    renderCart();
-                });
-            });
-        }
-
-        if (cartFab) cartFab.addEventListener('click', function() {
-            renderCart();
-            cartModalBg.classList.add('open');
-        });
-        if (cartModalClose) cartModalClose.addEventListener('click', function() {
-            cartModalBg.classList.remove('open');
-        });
-        if (cartModalBg) cartModalBg.addEventListener('click', function(e) {
-            if (e.target === cartModalBg) cartModalBg.classList.remove('open');
-        });
-        if (cartBtnClear) cartBtnClear.addEventListener('click', function() {
-            saveCart([]);
-            updateCartFabCount();
-            renderCart();
-        });
-        if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() {
-            alert('Оформление заказа — следующий этап разработки.');
-        });
-
-        updateCartFabCount();
-
-        // --- ХИТЫ ПРОДАЖ ---
-        try {
-            var hits = JSON.parse(localStorage.getItem('t_hits_cache') || '{}');
-            if (hits && hits.hits && hits.hits.length > 0) {
-                var block = document.getElementById('hits-block');
-                var grid = document.getElementById('hits-grid');
-                if (block && grid) {
-                    block.style.display = 'block';
-                    var html2 = '';
-                    hits.hits.forEach(function(h) {
-                        if (!h.product || !h.product.sizes || !h.product.sizes[0]) return;
-                        var opt = h.product.sizes[0].options && h.product.sizes[0].options[0];
-                        if (!opt) return;
-                        var slugName = h.product.name.toLowerCase()
-                            .replace(/[а-яё]/g, function(ch) {
-                                var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
-                                return map[ch] || '-';
-                            })
-                            .replace(/[^a-z0-9]+/g, '-')
-                            .replace(/^-|-$/g, '');
-                        var url = '/' + h.cat + '/' + slugName + '--' + opt.sku;
-                        html2 += '<a class="hit-card" href="' + url + '">' +
-                            '<img class="hit-card-img" src="/' + h.product.photo + '" alt="">' +
-                            '<div class="hit-card-brand">' + (h.product.brand || '') + '</div>' +
-                            '<div class="hit-card-name">' + (h.product.name || '') + '</div>' +
-                            '<div class="hit-card-price">' + fmt(opt.price) + ' ₽</div>' +
-                        '</a>';
-                    });
-                    grid.innerHTML = html2;
-                }
-            }
-        } catch (e) {}
-
     })();
     </script>`;
 }
 
 // ------------------------------------------------------------
-// РОУТ: страница товара
+// СТРАНИЦА РАЗДЕЛА (категории)
+// ------------------------------------------------------------
+function renderCategoryPage(category, products) {
+    const categoryName = CATEGORIES[category] || category;
+    const categoryUrl = SITE_URL + '/' + category;
+
+    const title = categoryName + ' — купить в Москве | КолорМСК';
+    const description = 'Купить ' + categoryName.toLowerCase() + ' в Москве с доставкой. Каталог ' + categoryName.toLowerCase() + ' по низким ценам. Оптом и в розницу.';
+
+    // Schema.org BreadcrumbList
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": categoryName, "item": categoryUrl }
+        ]
+    };
+
+    // Schema.org CollectionPage + ItemList
+    const schemaCollection = {
+        "@context": "https://schema.org/",
+        "@type": "CollectionPage",
+        "name": categoryName,
+        "url": categoryUrl,
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": products.length,
+            "itemListElement": products.slice(0, 20).map(function(p, idx) {
+                const opt = p.sizes && p.sizes[0] && p.sizes[0].options && p.sizes[0].options[0];
+                if (!opt) return null;
+                const url = SITE_URL + '/' + category + '/' + translit(p.name) + '--' + opt.sku;
+                return {
+                    "@type": "ListItem",
+                    "position": idx + 1,
+                    "url": url,
+                    "name": p.brand + ' ' + p.name
+                };
+            }).filter(Boolean)
+        }
+    };
+
+    // Сетка карточек
+    let cardsHtml = '';
+    products.forEach(function(product) {
+        if (!product.sizes || product.sizes.length === 0) return;
+        const firstOpt = product.sizes[0].options && product.sizes[0].options[0];
+        if (!firstOpt) return;
+
+        const productUrl = '/' + category + '/' + translit(product.name) + '--' + firstOpt.sku;
+        const photoUrl = '/' + (product.photo || 'images/logo.png');
+
+        // Селект фасовки
+        let sizesOptions = '';
+        product.sizes.forEach(function(size, idx) {
+            const opt = size.options && size.options[0] || {};
+            sizesOptions += '<option value="' + idx + '">' + size.volume + ' — ' + formatPrice(opt.price) + ' ₽</option>';
+        });
+
+        // Селект цвета/базы/блеска
+        let colorOptions = '';
+        let colorLabel = '';
+        if (product.selectorLabel && product.colors && product.colors.length > 0) {
+            colorLabel = product.selectorLabel;
+            product.colors.forEach(function(color) {
+                colorOptions += '<option value="' + escapeHtml(color) + '">' + escapeHtml(color) + '</option>';
+            });
+        }
+
+        // Обрезанное описание
+        const shortDesc = (product.desc || '').slice(0, 160) + '...';
+
+        cardsHtml += '<div class="cat-card" data-category="' + category + '" data-name="' + escapeHtml(product.name) + '" data-brand="' + escapeHtml(product.brand) + '" data-photo="' + escapeHtml(product.photo) + '">' +
+            '<a href="' + productUrl + '"><img class="cat-card-img" src="' + photoUrl + '" alt="' + escapeHtml(product.brand + ' ' + product.name) + '"></a>' +
+            '<div class="cat-card-brand">' + escapeHtml(product.brand) + '</div>' +
+            '<a class="cat-card-name" href="' + productUrl + '">' + escapeHtml(product.name) + '</a>' +
+            '<div class="cat-card-sku">Арт. <span class="cat-card-sku-value">' + firstOpt.sku + '</span></div>' +
+            '<div class="cat-card-selectors">' +
+                '<select class="cat-card-size-select" data-category="' + category + '">' + sizesOptions + '</select>' +
+                (colorOptions ? '<select class="cat-card-color-select" data-label="' + escapeHtml(colorLabel) + '"><option value="">— ' + escapeHtml(colorLabel) + ' —</option>' + colorOptions + '</select>' : '') +
+            '</div>' +
+            '<div class="cat-card-desc">' + escapeHtml(shortDesc) + '</div>' +
+            '<div class="cat-card-foot">' +
+                '<div class="cat-card-price"><span class="cat-card-price-value">' + formatPrice(firstOpt.price) + '</span><span class="currency">₽</span></div>' +
+                '<button class="cat-card-buy" type="button" data-category="' + category + '" data-sku="' + firstOpt.sku + '" data-price="' + firstOpt.price + '">В корзину</button>' +
+            '</div>' +
+        '</div>';
+    });
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + categoryUrl + '">\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaCollection) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar(category) + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › ' + escapeHtml(categoryName) + '</div>\n' +
+        '<h1 class="page-title">' + escapeHtml(categoryName) + '</h1>\n' +
+        '<div class="cat-grid" id="cat-grid">' + cardsHtml + '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCategoryScript(category) + '\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        '</body>\n</html>';
+}
+
+// ------------------------------------------------------------
+// СКРИПТ страницы раздела (пересчёт цены, добавление в корзину)
+// ------------------------------------------------------------
+function renderCategoryScript(category) {
+    return `<script>
+    (function() {
+        var category = ${JSON.stringify(category)};
+        var toast = document.getElementById('toast');
+
+        function fmt(p) { return String(p || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' '); }
+        function showToast(msg) {
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2000);
+        }
+
+        // Для каждой карточки — слушатели
+        document.querySelectorAll('.cat-card').forEach(function(card) {
+            var sizeSel = card.querySelector('.cat-card-size-select');
+            var colorSel = card.querySelector('.cat-card-color-select');
+            var priceEl = card.querySelector('.cat-card-price-value');
+            var skuEl = card.querySelector('.cat-card-sku-value');
+            var buyBtn = card.querySelector('.cat-card-buy');
+            var nameEl = card.querySelector('.cat-card-name');
+            if (!sizeSel || !buyBtn) return;
+
+            // Данные товара — возьмём из имени ссылки
+            var productUrl = nameEl ? nameEl.getAttribute('href') : '';
+            var parts = productUrl.split('/').pop().split('--');
+            var baseSlug = parts[0];
+            var categoryFromUrl = productUrl.split('/')[1];
+
+            // Опции селекта size — из HTML
+            var sizesData = [];
+            var sizeOptions = sizeSel.querySelectorAll('option');
+            sizeOptions.forEach(function(o) {
+                var text = o.textContent;
+                var match = text.match(/^(.+?)\\s+—\\s+(\\d[\\d\\s]*)\\s/);
+                var vol = match ? match[1].trim() : text;
+                var price = match ? parseInt(match[2].replace(/\\s/g, '')) : 0;
+                sizesData.push({ vol: vol, price: price });
+            });
+
+            function updateCard() {
+                var si = parseInt(sizeSel.value) || 0;
+                var sizeData = sizesData[si] || sizesData[0];
+                if (sizeData && priceEl) priceEl.textContent = fmt(sizeData.price);
+                // SKU не меняем — он для первого option
+            }
+
+            // Валидация цвета — при смене size
+            sizeSel.addEventListener('change', updateCard);
+
+            buyBtn.addEventListener('click', function() {
+                var sku = buyBtn.dataset.sku;
+                if (!sku) return;
+                var price = parseInt(buyBtn.dataset.price) || 0;
+                var si = parseInt(sizeSel.value) || 0;
+                var sizeData = sizesData[si];
+                if (sizeData) price = sizeData.price;
+
+                var brandEl = card.querySelector('.cat-card-brand');
+                var skuValue = card.querySelector('.cat-card-sku-value');
+                var actualSku = skuValue ? skuValue.textContent : sku;
+
+                var cart = window.CMSK_CART.getCart();
+                var newItem = {
+                    key: actualSku,
+                    brand: brandEl ? brandEl.textContent : '',
+                    name: card.getAttribute('data-name') || '',
+                    sku: actualSku,
+                    price: price,
+                    color: colorSel ? colorSel.value : '',
+                    gloss: '',
+                    volume: sizeData ? sizeData.vol : '',
+                    fill: '',
+                    photo: card.getAttribute('data-photo') || '',
+                    qty: 1,
+                    cat: category
+                };
+                var found = null;
+                for (var i = 0; i < cart.length; i++) {
+                    if (cart[i].key === newItem.key && (cart[i].color || '') === newItem.color) { found = cart[i]; break; }
+                }
+                if (found) found.qty = (parseInt(found.qty) || 1) + 1;
+                else cart.push(newItem);
+                window.CMSK_CART.saveCart(cart);
+                window.CMSK_CART.updateFabCount();
+                window.CMSK_CART.renderCart();
+                showToast('Товар добавлен в корзину');
+            });
+        });
+    })();
+    </script>`;
+}
+// ============================================================
+// === ЧАСТЬ 4 из 4 ===
+// ============================================================
+// Роуты + app.listen
+// ============================================================
+
+// ------------------------------------------------------------
+// Утилита: чтение и парсинг JSON категории
+// ------------------------------------------------------------
+function loadCategory(category) {
+    const jsonPath = path.join(ROOT, 'products', category + '.json');
+    if (!fs.existsSync(jsonPath)) return null;
+    try {
+        let content = fs.readFileSync(jsonPath, 'utf8');
+        if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1);
+        return JSON.parse(content);
+    } catch (e) {
+        console.error('Ошибка чтения JSON:', e);
+        return null;
+    }
+}
+
+// ------------------------------------------------------------
+// Роут: страница товара
+// /:category/:slug--:sku
 // ------------------------------------------------------------
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
@@ -829,62 +1106,72 @@ app.get('/:category/:slug--:sku', (req, res) => {
         return res.sendFile(path.join(ROOT, 'index.html'));
     }
 
-    const jsonPath = path.join(ROOT, 'products', category + '.json');
-    if (!fs.existsSync(jsonPath)) {
+    const products = loadCategory(category);
+    if (!products) {
         return res.sendFile(path.join(ROOT, 'index.html'));
     }
 
-    try {
-        let content = fs.readFileSync(jsonPath, 'utf8');
-        if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1);
-        const products = JSON.parse(content);
-
-        let foundProduct = null, foundOption = null;
-        for (let i = 0; i < products.length; i++) {
-            const p = products[i];
-            if (!p.sizes) continue;
-            for (let j = 0; j < p.sizes.length; j++) {
-                const s = p.sizes[j];
-                if (!s.options) continue;
-                for (let k = 0; k < s.options.length; k++) {
-                    if (s.options[k].sku === sku) {
-                        foundProduct = p; foundOption = s.options[k]; break;
-                    }
+    let foundProduct = null, foundOption = null;
+    for (let i = 0; i < products.length; i++) {
+        const p = products[i];
+        if (!p.sizes) continue;
+        for (let j = 0; j < p.sizes.length; j++) {
+            const s = p.sizes[j];
+            if (!s.options) continue;
+            for (let k = 0; k < s.options.length; k++) {
+                if (s.options[k].sku === sku) {
+                    foundProduct = p;
+                    foundOption = s.options[k];
+                    break;
                 }
-                if (foundOption) break;
             }
             if (foundOption) break;
         }
-
-        if (!foundProduct) return res.sendFile(path.join(ROOT, 'index.html'));
-        res.send(renderProductPage(category, foundProduct, foundOption));
-    } catch (e) {
-        console.error('Ошибка SSR:', e);
-        res.sendFile(path.join(ROOT, 'index.html'));
+        if (foundOption) break;
     }
+
+    if (!foundProduct) {
+        return res.sendFile(path.join(ROOT, 'index.html'));
+    }
+
+    res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
 // ------------------------------------------------------------
-// РОУТ: раздел (заглушка)
+// Роут: раздел (категория)
+// /:category
 // ------------------------------------------------------------
 app.get('/:category', (req, res) => {
-    res.sendFile(path.join(ROOT, 'index.html'));
+    const category = req.params.category;
+
+    // Только наши категории → SSR
+    if (!CATEGORIES[category]) {
+        return res.sendFile(path.join(ROOT, 'index.html'));
+    }
+
+    const products = loadCategory(category);
+    if (!products) {
+        return res.sendFile(path.join(ROOT, 'index.html'));
+    }
+
+    res.send(renderCategoryPage(category, products));
 });
 
 // ------------------------------------------------------------
-// СТАТИКА
+// Статика
 // ------------------------------------------------------------
 app.use(express.static(ROOT));
 
 // ------------------------------------------------------------
-// FALLBACK
+// Fallback: всё остальное — на index.html (SPA)
+// Главная, бренды, страницы .html
 // ------------------------------------------------------------
 app.use((req, res) => {
     res.sendFile(path.join(ROOT, 'index.html'));
 });
 
 // ------------------------------------------------------------
-// ЗАПУСК
+// Запуск сервера
 // ------------------------------------------------------------
 app.listen(PORT, () => {
     console.log('SSR-сервер запущен на порту ' + PORT);
