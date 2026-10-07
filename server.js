@@ -88,7 +88,6 @@ function findCheapestOption(product) {
 // ОБЩИЕ КОМПОНЕНТЫ КОРЗИНЫ
 // ============================================================
 
-// Плашка корзины
 function renderCartFab() {
     return `<div class="cart-fab-wrap">
         <button class="cart-fab" id="cart-fab" type="button" aria-label="Открыть корзину">
@@ -99,7 +98,6 @@ function renderCartFab() {
     </div>`;
 }
 
-// Модалка корзины
 function renderCartModal() {
     return `<div class="cart-modal-bg" id="cart-modal-bg">
         <div class="cart-modal">
@@ -122,7 +120,6 @@ function renderCartModal() {
     </div>`;
 }
 
-// Общий JS корзины
 function renderCartScript() {
     return `<script>
     (function() {
@@ -221,7 +218,6 @@ function renderCartScript() {
     </script>`;
 }
 
-// Скрипт хитов
 function renderHitsScript() {
     return `<script>
     (function() {
@@ -256,7 +252,6 @@ function renderHitsScript() {
     </script>`;
 }
 
-// Блок хитов (HTML)
 function renderHitsBlock() {
     return `<div class="hits-block" id="hits-block" style="display:none;">
         <h2 class="hits-title">Хиты продаж</h2>
@@ -266,8 +261,7 @@ function renderHitsBlock() {
 // ============================================================
 // === ЧАСТЬ 2 из 5 ===
 // ============================================================
-// Компоненты: шапка, сайдбары, футер
-// + renderStyles (CSS) с 4-колоночной сеткой и центрированием
+// Компоненты: шапка, сайдбары, футер + renderStyles
 // ============================================================
 
 function renderHeader() {
@@ -377,13 +371,11 @@ function renderStyles() {
         .t-sidebar-card-btn { display: block; background: rgba(255,209,102,.15); color: #ffd166; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11px; text-align: center; transition: background .2s; }
         .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
 
-        /* --- Заголовки --- */
         .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
         .breadcrumbs { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.55); }
         .breadcrumbs a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
-        .breadcrumbs a:hover { color: #1a2a3a; }
+        .breadcrumbs a:hover { color: #ffd166; opacity: 1; }
 
-        /* --- Страница товара (ЦЕНТРИРОВАНИЕ) --- */
         .product-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; margin: 0 auto; }
         .product-grid { display: grid; grid-template-columns: 340px 1fr; gap: 30px; margin-bottom: 20px; }
         .product-photo-block { text-align: center; }
@@ -412,7 +404,7 @@ function renderStyles() {
         .price .currency { font-size: 20px; font-weight: 400; color: #6a7a8a; margin-left: 4px; }
 
         .btn-cart { padding: 14px 32px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
-        .btn-cart:hover { background: #e2e8f0; }
+        .btn-cart:hover { background: #2c3e50; }
         .btn-cart:active { transform: scale(.97); }
 
         .product-desc { line-height: 1.65; margin: 20px 0; color: #2c3e50; font-size: 14px; }
@@ -429,7 +421,6 @@ function renderStyles() {
         .btn-back { display: inline-block; margin-top: 20px; padding: 10px 22px; background: transparent; color: #6a7a8a; text-decoration: none; border: 1px solid #dce3ec; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all .2s; }
         .btn-back:hover { background: #f8faff; color: #1a2a3a; border-color: #1a2a3a; }
 
-        /* --- Сетка карточек категорий (4 КОЛОНКИ) --- */
         .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
         .cat-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
         .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
@@ -445,9 +436,8 @@ function renderStyles() {
         .cat-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
         .cat-card-price .currency { font-size: 12px; font-weight: 400; color: #6a7a8a; margin-left: 2px; }
         .cat-card-buy { padding: 8px 16px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
-        .cat-card-buy:hover { background: #e2e8f0; }
+        .cat-card-buy:hover { background: #2c3e50; }
 
-        /* --- Toast --- */
         .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(26,42,58,.95); color: #fff; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 5000; box-shadow: 0 8px 30px rgba(0,0,0,.3); pointer-events: none; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -456,14 +446,12 @@ function renderStyles() {
         .t-seo-footer a { color: #ffd166; text-decoration: none; }
         .t-seo-footer a:hover { text-decoration: underline; }
 
-        /* --- Плашка корзины --- */
         .cart-fab-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 4000; }
         .cart-fab { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #1a2a3a; color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.35); cursor: pointer; font-size: 14px; font-weight: 600; transition: transform .2s, box-shadow .2s; border: none; font-family: inherit; position: relative; }
         .cart-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.45); }
         .cart-fab svg { width: 20px; height: 20px; }
         .cart-fab-count { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #ff5c5c; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
-        /* --- Модалка корзины --- */
         .cart-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4500; display: none; align-items: center; justify-content: center; padding: 20px; }
         .cart-modal-bg.open { display: flex; }
         .cart-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
@@ -498,7 +486,6 @@ function renderStyles() {
         .cart-btn-checkout { background: #1a2a3a; color: #fff; }
         .cart-btn-checkout:hover { background: #2c3e50; }
 
-        /* --- Модалка «Поделиться» --- */
         .share-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4600; display: none; align-items: center; justify-content: center; padding: 20px; }
         .share-modal-bg.open { display: flex; }
         .share-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
@@ -523,7 +510,6 @@ function renderStyles() {
         .share-social.ok { background: rgba(237,129,46,.1); color: #ed812e; }
         .share-social.em { background: rgba(107,114,128,.1); color: #4b5563; }
 
-        /* --- Хиты продаж --- */
         .hits-block { margin-top: 30px; }
         .hits-title { font-size: 20px; font-weight: 700; color: #1a2a3a; margin-bottom: 16px; padding-left: 4px; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
         .hits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -558,13 +544,9 @@ function renderStyles() {
 // ============================================================
 // === ЧАСТЬ 3 из 5 ===
 // ============================================================
-// renderProductPage + renderProductScript
-// (центрирование, дешёвая опция, кнопка «Поделиться», pushState)
+// renderShareModal + renderProductPage + renderProductScript
 // ============================================================
 
-// ------------------------------------------------------------
-// HTML модалки «Поделиться»
-// ------------------------------------------------------------
 function renderShareModal() {
     return `<div class="share-modal-bg" id="share-modal-bg">
         <div class="share-modal">
@@ -605,7 +587,7 @@ function renderShareModal() {
 }
 
 // ------------------------------------------------------------
-// СТРАНИЦА ТОВАРА
+// СТРАНИЦА ТОВАРА (с правильным порядком: breadcrumbs → product-page)
 // ------------------------------------------------------------
 function renderProductPage(category, product, firstOption) {
     const categoryName = CATEGORIES[category] || category;
@@ -616,12 +598,10 @@ function renderProductPage(category, product, firstOption) {
 
     const photoUrl = SITE_URL + '/' + (product.photo || 'images/logo.png');
 
-    // Самая дешёвая опция
     const cheapest = findCheapestOption(product);
     const cheapestOpt = cheapest.opt || firstOption;
     const cheapestSizeIdx = cheapest.sizeIdx || 0;
 
-    // Селект «Фасовка» — самая дешёвая выбрана
     let sizesHtml = '';
     if (product.sizes && product.sizes.length > 0) {
         sizesHtml += '<div class="select-group"><label>Фасовка</label><select id="size-select">';
@@ -633,7 +613,6 @@ function renderProductPage(category, product, firstOption) {
         sizesHtml += '</select></div>';
     }
 
-    // Селект «Цвет/База/Блеск»
     let colorHtml = '';
     if (product.selectorLabel && product.colors && product.colors.length > 0) {
         colorHtml += '<div class="select-group"><label>' + escapeHtml(product.selectorLabel) + '</label><select id="color-select">';
@@ -644,7 +623,6 @@ function renderProductPage(category, product, firstOption) {
         colorHtml += '</select></div>';
     }
 
-    // Селект «Блеск»
     let glossHtml = '';
     if (product.gloss && product.gloss.length > 0) {
         glossHtml += '<div class="select-group"><label>Блеск</label><select id="gloss-select">';
@@ -655,7 +633,6 @@ function renderProductPage(category, product, firstOption) {
         glossHtml += '</select></div>';
     }
 
-    // Характеристики
     let specsHtml = '';
     if (product.tech) {
         specsHtml += '<div class="tech"><strong>Характеристики:</strong><div class="specs-list">';
@@ -670,7 +647,6 @@ function renderProductPage(category, product, firstOption) {
         specsHtml += '</div></div>';
     }
 
-    // Schema.org
     const schemaProduct = {
         "@context": "https://schema.org/",
         "@type": "Product",
@@ -713,8 +689,8 @@ function renderProductPage(category, product, firstOption) {
         renderSidebar(category) + '\n' +
         '<div class="t-main-wrap">\n' +
         '<main class="t-main">\n' +
-        '<div class="product-page">\n' +
         '<div class="breadcrumbs"><a href="/">Главная</a> › <a href="/' + category + '">' + categoryName + '</a> › ' + escapeHtml(product.name) + '</div>\n' +
+        '<div class="product-page">\n' +
         '<div class="product-grid">\n' +
         '<div class="product-photo-block">\n' +
         '<img class="product-photo" src="' + photoUrl + '" alt="' + escapeHtml(product.brand + ' ' + product.name) + '">\n' +
@@ -823,7 +799,6 @@ function renderProductScript(product, category) {
                 btnCart.dataset.fill = sz ? sz.fill : '';
             }
 
-            // Меняем URL в адресной строке (pushState)
             try {
                 var newUrl = '/' + CATEGORY + '/' + SLUG + '--' + opt.sku;
                 if (window.location.pathname !== newUrl) {
@@ -871,7 +846,6 @@ function renderProductScript(product, category) {
             setTimeout(function() { toast.classList.remove('show'); }, 2000);
         }
 
-        // Добавление в корзину
         if (btnCart) {
             btnCart.addEventListener('click', function() {
                 var sku = btnCart.dataset.sku;
@@ -904,7 +878,6 @@ function renderProductScript(product, category) {
             });
         }
 
-        // --- ПОДЕЛИТЬСЯ ---
         var shareBtn = document.getElementById('btn-share');
         var shareModalBg = document.getElementById('share-modal-bg');
         var shareModalClose = document.getElementById('share-modal-close');
@@ -971,12 +944,8 @@ function renderProductScript(product, category) {
 // === ЧАСТЬ 4 из 5 ===
 // ============================================================
 // renderCategoryPage + renderCategoryScript
-// (4 колонки, полный sizes, дешёвая опция)
 // ============================================================
 
-// ------------------------------------------------------------
-// СТРАНИЦА РАЗДЕЛА
-// ------------------------------------------------------------
 function renderCategoryPage(category, products) {
     const categoryName = CATEGORIES[category] || category;
     const categoryUrl = SITE_URL + '/' + category;
@@ -1010,12 +979,10 @@ function renderCategoryPage(category, products) {
         }
     };
 
-    // Сетка карточек
     let cardsHtml = '';
     products.forEach(function(product) {
         if (!product.sizes || product.sizes.length === 0) return;
 
-        // Находим самую дешёвую опцию
         const cheapest = findCheapestOption(product);
         const cheapestOpt = cheapest.opt;
         const cheapestSizeIdx = cheapest.sizeIdx;
@@ -1024,7 +991,6 @@ function renderCategoryPage(category, products) {
         const productUrl = '/' + category + '/' + translit(product.name) + '--' + cheapestOpt.sku;
         const photoUrl = '/' + (product.photo || 'images/logo.png');
 
-        // Селект фасовки — дешёвая выбрана
         let sizesOptions = '';
         product.sizes.forEach(function(size, idx) {
             const opt = size.options && size.options[0] || {};
@@ -1032,7 +998,6 @@ function renderCategoryPage(category, products) {
             sizesOptions += '<option value="' + idx + '"' + selected + '>' + size.volume + ' — ' + formatPrice(opt.price) + ' ₽</option>';
         });
 
-        // Селект цвета/базы/блеска
         let colorOptions = '';
         let colorLabel = '';
         if (product.selectorLabel && product.colors && product.colors.length > 0) {
@@ -1095,9 +1060,6 @@ function renderCategoryPage(category, products) {
         '</body>\n</html>';
 }
 
-// ------------------------------------------------------------
-// СКРИПТ страницы раздела
-// ------------------------------------------------------------
 function renderCategoryScript(category) {
     return `<script>
     (function() {
@@ -1119,7 +1081,6 @@ function renderCategoryScript(category) {
             var skuEl = card.querySelector('.cat-card-sku-value');
             var buyBtn = card.querySelector('.cat-card-buy');
 
-            // Парсим полные sizes из data-атрибута
             var SIZES = [];
             try { SIZES = JSON.parse(card.getAttribute('data-sizes') || '[]'); } catch (e) {}
 
@@ -1216,9 +1177,6 @@ function renderCategoryScript(category) {
 // Роуты + app.listen
 // ============================================================
 
-// ------------------------------------------------------------
-// Утилита: чтение JSON категории
-// ------------------------------------------------------------
 function loadCategory(category) {
     const jsonPath = path.join(ROOT, 'products', category + '.json');
     if (!fs.existsSync(jsonPath)) return null;
@@ -1232,9 +1190,6 @@ function loadCategory(category) {
     }
 }
 
-// ------------------------------------------------------------
-// Роут: страница товара
-// ------------------------------------------------------------
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
     const sku = req.params.sku;
@@ -1274,9 +1229,6 @@ app.get('/:category/:slug--:sku', (req, res) => {
     res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
-// ------------------------------------------------------------
-// Роут: раздел
-// ------------------------------------------------------------
 app.get('/:category', (req, res) => {
     const category = req.params.category;
     if (!CATEGORIES[category]) {
@@ -1289,21 +1241,12 @@ app.get('/:category', (req, res) => {
     res.send(renderCategoryPage(category, products));
 });
 
-// ------------------------------------------------------------
-// Статика
-// ------------------------------------------------------------
 app.use(express.static(ROOT));
 
-// ------------------------------------------------------------
-// Fallback
-// ------------------------------------------------------------
 app.use((req, res) => {
     res.sendFile(path.join(ROOT, 'index.html'));
 });
 
-// ------------------------------------------------------------
-// Запуск
-// ------------------------------------------------------------
 app.listen(PORT, () => {
     console.log('SSR-сервер запущен на порту ' + PORT);
 });
