@@ -378,9 +378,9 @@ function renderStyles() {
         .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
 
         /* --- Заголовки --- */
-        .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; padding-left: 4px; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
-        .breadcrumbs { font-size: 13px; color: #6a7a8a; margin-bottom: 20px; }
-        .breadcrumbs a { color: #6a7a8a; text-decoration: none; }
+        .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
+        .breadcrumbs { font-size: 13px; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+        .breadcrumbs a { color: #fff; text-decoration: none; opacity: .85; }
         .breadcrumbs a:hover { color: #1a2a3a; }
 
         /* --- Страница товара (ЦЕНТРИРОВАНИЕ) --- */
@@ -411,7 +411,7 @@ function renderStyles() {
         .price { font-size: 34px; font-weight: 700; color: #1a2a3a; line-height: 1; }
         .price .currency { font-size: 20px; font-weight: 400; color: #6a7a8a; margin-left: 4px; }
 
-        .btn-cart { padding: 14px 32px; background: #f1f5f9; color: #1a2a3a; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .btn-cart { padding: 14px 32px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
         .btn-cart:hover { background: #e2e8f0; }
         .btn-cart:active { transform: scale(.97); }
 
@@ -444,7 +444,7 @@ function renderStyles() {
         .cat-card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid #eef1f5; }
         .cat-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
         .cat-card-price .currency { font-size: 12px; font-weight: 400; color: #6a7a8a; margin-left: 2px; }
-        .cat-card-buy { padding: 7px 14px; background: #f1f5f9; color: #1a2a3a; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .cat-card-buy { padding: 8px 16px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
         .cat-card-buy:hover { background: #e2e8f0; }
 
         /* --- Toast --- */
