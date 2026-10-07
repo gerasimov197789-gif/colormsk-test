@@ -13,9 +13,6 @@ const PORT = 3000;
 const ROOT = '/var/www/colormsk';
 const SITE_URL = 'https://colormsk.ru';
 
-// ------------------------------------------------------------
-// Категории
-// ------------------------------------------------------------
 const CATEGORIES = {
     'antiseptiki': 'Антисептики',
     'kraski-interiernye': 'Краски интерьерные',
@@ -27,20 +24,12 @@ const CATEGORIES = {
     'rastvoriteli': 'Растворители'
 };
 
-// ------------------------------------------------------------
-// Бренды: slug → { name, match[] }
-// match — список значений поля brand в JSON, которые относятся
-// к этому бренду (например, DecoTech + DecoTech Eco → decotech)
-// ------------------------------------------------------------
 const BRANDS = {
     'symphony': { name: 'SYMPHONY', match: ['SYMPHONY'] },
     'decotech': { name: 'DecoTech', match: ['DecoTech', 'DecoTech Eco'] },
     'artigiano': { name: 'ARTIGIANO', match: ['ARTIGIANO'] }
 };
 
-// ------------------------------------------------------------
-// Транслит
-// ------------------------------------------------------------
 function translit(str) {
     const map = {
         'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
@@ -58,9 +47,6 @@ function translit(str) {
     return result.replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
 }
 
-// ------------------------------------------------------------
-// escapeHtml
-// ------------------------------------------------------------
 function escapeHtml(str) {
     return String(str || '')
         .replace(/&/g, '&amp;')
@@ -69,16 +55,10 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
-// ------------------------------------------------------------
-// Форматирование цены
-// ------------------------------------------------------------
 function formatPrice(price) {
     return String(price || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
-// ------------------------------------------------------------
-// Поиск самой дешёвой опции в товаре
-// ------------------------------------------------------------
 function findCheapestOption(product) {
     let cheapest = null;
     let sizeIdx = 0;
@@ -94,10 +74,6 @@ function findCheapestOption(product) {
     });
     return { opt: cheapest, sizeIdx: sizeIdx };
 }
-
-// ============================================================
-// ОБЩИЕ КОМПОНЕНТЫ КОРЗИНЫ
-// ============================================================
 
 function renderCartFab() {
     return `<div class="cart-fab-wrap">
@@ -225,6 +201,40 @@ function renderCartScript() {
 
         window.CMSK_CART = { getCart: getCart, saveCart: saveCart, updateFabCount: updateFabCount, renderCart: renderCart, cartTotalQty: cartTotalQty, fmt: fmt, buildProductUrl: buildProductUrl };
         updateFabCount();
+
+        // --- Модальное окно личного кабинета ---
+        var accModalBg = document.getElementById('account-modal-bg');
+        var accModalClose = document.getElementById('account-modal-close');
+        var accModalTitle = document.getElementById('account-modal-title');
+        var accOpenBtns = document.querySelectorAll('.t-account-open');
+        var accTabs = document.querySelectorAll('.account-tab');
+        var accFormLogin = document.getElementById('account-form-login');
+        var accFormRegister = document.getElementById('account-form-register');
+
+        function accSetTab(mode) {
+            if (accModalTitle) accModalTitle.textContent = (mode === 'register') ? 'Регистрация' : 'Вход';
+            accTabs.forEach(function(t) {
+                if (t.getAttribute('data-tab') === mode) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+            if (accFormLogin) accFormLogin.style.display = (mode === 'register') ? 'none' : 'flex';
+            if (accFormRegister) accFormRegister.style.display = (mode === 'register') ? 'flex' : 'none';
+        }
+
+        accOpenBtns.forEach(function(b) {
+            b.addEventListener('click', function() {
+                var mode = b.getAttribute('data-mode') || 'login';
+                accSetTab(mode);
+                if (accModalBg) accModalBg.classList.add('open');
+            });
+        });
+        accTabs.forEach(function(t) {
+            t.addEventListener('click', function() { accSetTab(t.getAttribute('data-tab')); });
+        });
+        if (accModalClose) accModalClose.addEventListener('click', function() { accModalBg.classList.remove('open'); });
+        if (accModalBg) accModalBg.addEventListener('click', function(e) { if (e.target === accModalBg) accModalBg.classList.remove('open'); });
+        if (accFormLogin) accFormLogin.addEventListener('submit', function(e) { e.preventDefault(); alert('Вход — функция в разработке.'); });
+        if (accFormRegister) accFormRegister.addEventListener('submit', function(e) { e.preventDefault(); alert('Регистрация — функция в разработке.'); });
     })();
     </script>`;
 }
@@ -258,6 +268,25 @@ function renderHitsScript() {
                 '</a>';
             });
             grid.innerHTML = html;
+
+            var sidebarGrid = document.getElementById('hits-sidebar-grid');
+            if (sidebarGrid) {
+                var htmlMini = '';
+                hits.hits.forEach(function(h) {
+                    if (!h.product || !h.product.sizes || !h.product.sizes[0]) return;
+                    var opt2 = h.product.sizes[0].options && h.product.sizes[0].options[0];
+                    if (!opt2) return;
+                    var url2 = '/' + h.cat + '/' + slug(h.product.name) + '--' + opt2.sku;
+                    htmlMini += '<a class="hit-card-mini" href="' + url2 + '">' +
+                        '<img src="/' + h.product.photo + '" alt="">' +
+                        '<div class="hit-card-mini-info">' +
+                            '<div class="hit-card-mini-name">' + (h.product.name || '') + '</div>' +
+                            '<div class="hit-card-mini-price">' + fmt(opt2.price) + ' ₽</div>' +
+                        '</div>' +
+                    '</a>';
+                });
+                sidebarGrid.innerHTML = htmlMini;
+            }
         } catch (e) {}
     })();
     </script>`;
@@ -310,6 +339,9 @@ function renderSidebar(activeCat) {
             <a href="/brands/symphony" class="t-nav-link t-nav-external">SYMPHONY</a>
             <a href="/brands/decotech" class="t-nav-link t-nav-external">DecoTech</a>
             <a href="/brands/artigiano" class="t-nav-link t-nav-external">ARTIGIANO</a>
+            <div class="t-nav-divider"></div>
+            <div class="t-nav-section-title">Хиты продаж</div>
+            <div class="hits-sidebar" id="hits-sidebar-grid"></div>
         </nav>
     </aside>`;
 }
@@ -319,8 +351,8 @@ function renderSidebarRight() {
         <div class="t-sidebar-card">
             <h3>Личный кабинет</h3>
             <div style="display:flex;gap:8px;margin-top:8px;">
-                <a href="/account.html" class="t-sidebar-card-btn" style="flex:1;">Войти</a>
-                <a href="/account.html" class="t-sidebar-card-btn" style="flex:1;">Регистрация</a>
+                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="login" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Войти</button>
+                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="register" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Регистрация</button>
             </div>
         </div>
         <div class="t-sidebar-card">
@@ -337,6 +369,47 @@ function renderSidebarRight() {
             <h3>Полезная информация</h3>
             <p>Основные сведения о ЛКМ, технологии окраски.</p>
             <a href="/info.html" class="t-sidebar-card-btn">Читать подробнее</a>
+        </div>
+        <div class="account-modal-bg" id="account-modal-bg">
+            <div class="account-modal">
+                <div class="account-modal-head">
+                    <h2 id="account-modal-title">Вход</h2>
+                    <button class="account-modal-close" id="account-modal-close" type="button" aria-label="Закрыть">×</button>
+                </div>
+                <div class="account-modal-body">
+                    <div class="account-tabs">
+                        <button type="button" class="account-tab active" data-tab="login">Вход</button>
+                        <button type="button" class="account-tab" data-tab="register">Регистрация</button>
+                    </div>
+                    <form class="account-form" id="account-form-login">
+                        <label class="account-label">Email
+                            <input type="email" class="account-input" placeholder="ivan@example.com">
+                        </label>
+                        <label class="account-label">Пароль
+                            <input type="password" class="account-input" placeholder="••••••">
+                        </label>
+                        <button type="submit" class="account-submit">Войти</button>
+                    </form>
+                    <form class="account-form" id="account-form-register" style="display:none;">
+                        <label class="account-label">Имя
+                            <input type="text" class="account-input" placeholder="Иван Иванов">
+                        </label>
+                        <label class="account-label">Email
+                            <input type="email" class="account-input" placeholder="ivan@example.com">
+                        </label>
+                        <label class="account-label">Телефон
+                            <input type="tel" class="account-input" placeholder="+7 (999) 123-45-67">
+                        </label>
+                        <label class="account-label">Пароль (минимум 6 символов)
+                            <input type="password" class="account-input" placeholder="••••••">
+                        </label>
+                        <label class="account-label">Повторите пароль
+                            <input type="password" class="account-input" placeholder="••••••">
+                        </label>
+                        <button type="submit" class="account-submit">Зарегистрироваться</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </aside>`;
 }
@@ -538,6 +611,32 @@ function renderStyles() {
         .hit-card-brand { font-size: 11px; color: #6a7a8a; margin-bottom: 2px; }
         .hit-card-name { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; flex: 1; }
         .hit-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
+
+        .hits-sidebar { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
+        .hit-card-mini { display: flex; gap: 8px; padding: 8px; background: rgba(255,255,255,.05); border-radius: 8px; text-decoration: none; color: #fff; align-items: center; font-size: 11px; transition: background .2s; }
+        .hit-card-mini:hover { background: rgba(255,255,255,.1); }
+        .hit-card-mini img { width: 32px; height: 32px; object-fit: contain; background: #fff; border-radius: 4px; flex-shrink: 0; }
+        .hit-card-mini-info { flex: 1; min-width: 0; }
+        .hit-card-mini-name { line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 2px; color: rgba(255,255,255,.75); }
+        .hit-card-mini-price { font-weight: 700; color: #ffd166; white-space: nowrap; }
+
+        .account-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4700; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .account-modal-bg.open { display: flex; }
+        .account-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 460px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+        .account-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
+        .account-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
+        .account-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
+        .account-modal-close:hover { color: #1a2a3a; }
+        .account-modal-body { padding: 20px 24px 24px; overflow-y: auto; }
+        .account-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f1f5f9; padding: 4px; border-radius: 10px; }
+        .account-tab { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: #6a7a8a; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .account-tab.active { background: #fff; color: #1a2a3a; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+        .account-form { display: flex; flex-direction: column; gap: 14px; }
+        .account-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
+        .account-input { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; font-family: inherit; outline: none; transition: border-color .2s; }
+        .account-input:focus { border-color: #1a2a3a; }
+        .account-submit { padding: 12px 24px; background: #1a2a3a; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; margin-top: 6px; }
+        .account-submit:hover { background: #2c3e50; }
 
         @media (max-width: 1300px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 1100px) {
@@ -1184,9 +1283,6 @@ function renderCategoryScript(category) {
     </script>`;
 }
 
-// ------------------------------------------------------------
-// СТРАНИЦА БРЕНДА
-// ------------------------------------------------------------
 function renderBrandPage(brandSlug, brandName, products) {
     const brandUrl = SITE_URL + '/brands/' + brandSlug;
 
@@ -1316,9 +1412,6 @@ function renderBrandPage(brandSlug, brandName, products) {
 // Роуты + app.listen
 // ============================================================
 
-// ------------------------------------------------------------
-// Загрузка JSON категории
-// ------------------------------------------------------------
 function loadCategory(category) {
     const jsonPath = path.join(ROOT, 'products', category + '.json');
     if (!fs.existsSync(jsonPath)) return null;
@@ -1332,9 +1425,6 @@ function loadCategory(category) {
     }
 }
 
-// ------------------------------------------------------------
-// Сбор товаров бренда из всех категорий
-// ------------------------------------------------------------
 function collectBrandProducts(brandConfig) {
     const result = [];
     Object.keys(CATEGORIES).forEach(function(cat) {
@@ -1349,10 +1439,6 @@ function collectBrandProducts(brandConfig) {
     return result;
 }
 
-// ------------------------------------------------------------
-// Роут: страница бренда
-// /brands/:brand
-// ------------------------------------------------------------
 app.get('/brands/:brand', (req, res) => {
     const brandSlug = req.params.brand;
     const brandConfig = BRANDS[brandSlug];
@@ -1366,10 +1452,6 @@ app.get('/brands/:brand', (req, res) => {
     res.send(renderBrandPage(brandSlug, brandConfig.name, products));
 });
 
-// ------------------------------------------------------------
-// Роут: страница товара
-// /:category/:slug--:sku
-// ------------------------------------------------------------
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
     const sku = req.params.sku;
@@ -1409,10 +1491,6 @@ app.get('/:category/:slug--:sku', (req, res) => {
     res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
-// ------------------------------------------------------------
-// Роут: страница раздела
-// /:category
-// ------------------------------------------------------------
 app.get('/:category', (req, res) => {
     const category = req.params.category;
     if (!CATEGORIES[category]) {
@@ -1425,21 +1503,12 @@ app.get('/:category', (req, res) => {
     res.send(renderCategoryPage(category, products));
 });
 
-// ------------------------------------------------------------
-// Статика
-// ------------------------------------------------------------
 app.use(express.static(ROOT));
 
-// ------------------------------------------------------------
-// Fallback — SPA (главная)
-// ------------------------------------------------------------
 app.use((req, res) => {
     res.sendFile(path.join(ROOT, 'index.html'));
 });
 
-// ------------------------------------------------------------
-// Запуск
-// ------------------------------------------------------------
 app.listen(PORT, () => {
     console.log('SSR-сервер запущен на порту ' + PORT);
 });
