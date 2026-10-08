@@ -372,6 +372,7 @@ function renderSidebarRight() {
             <p>Основные сведения о ЛКМ, технологии окраски.</p>
             <a href="/info.html" class="t-sidebar-card-btn">Читать подробнее</a>
         </div>
+            </aside>
         <div class="account-modal-bg" id="account-modal-bg">
             <div class="account-modal">
                 <div class="account-modal-head">
@@ -413,7 +414,6 @@ function renderSidebarRight() {
                 </div>
             </div>
         </div>
-    </aside>`;
 }
 
 function renderFooter() {
