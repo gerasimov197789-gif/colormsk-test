@@ -654,6 +654,18 @@ function renderStyles() {
         .hit-card-mini-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
         .hit-card-mini-name { font-size: 11px; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #1a2a3a; }
         .hit-card-mini-price { font-size: 13px; font-weight: 700; color: #1a2a3a; }
+        
+        /* --- Главная страница: сетка карточек категорий --- */
+        .t-home-title-main { font-size: 28px; font-weight: 700; color: #1a2a3a; margin-bottom: 24px; text-align: center; text-shadow: 0 2px 8px rgba(255,255,255,.8); }
+        .t-home-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .t-home-card { background: rgba(255,255,255,.97); border-radius: 16px; padding: 20px; text-align: center; text-decoration: none; color: #1a2a3a; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); display: block; }
+        .t-home-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .t-home-image { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; display: block; }
+        .t-home-title { font-size: 18px; font-weight: 600; color: #1a2a3a; margin-bottom: 4px; display: block; }
+        .t-home-desc { font-size: 13px; color: #6a7a8a; display: block; }
+        @media (max-width: 1300px) { .t-home-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1100px) { .t-home-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px)  { .t-home-grid { grid-template-columns: 1fr; } }
 
         .account-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4700; display: none; align-items: center; justify-content: center; padding: 20px; }
         .account-modal-bg.open { display: flex; }
@@ -1092,6 +1104,90 @@ function renderProductScript(product, category) {
 // ============================================================
 // renderCategoryPage + renderCategoryScript + renderBrandPage
 // ============================================================
+// ============================================================
+// ГЛАВНАЯ СТРАНИЦА (SSR)
+// ============================================================
+function renderHomePage() {
+    const homeUrl = SITE_URL + '/';
+    const title = 'Лакокрасочные материалы для дома и бизнеса — купить в Москве | КолорМСК';
+    const description = 'Магазин лакокрасочных материалов в Москве. Купить краску, эмаль, лак, грунтовку с доставкой. Оптом и в розницу. SYMPHONY (Симфония), DecoTech (Декотек). ColorMSK / Колор МСК.';
+
+    // Schema.org Organization
+    const schemaOrganization = {
+        "@context": "https://schema.org/",
+        "@type": "Organization",
+        "name": "КолорМСК",
+        "url": SITE_URL,
+        "logo": SITE_URL + "/images/logo.png",
+        "description": description
+    };
+
+    // Schema.org ItemList — категории
+    const homeCards = [
+        { slug: 'antiseptiki', title: 'Антисептики', desc: 'Защита древесины', img: 'cat-antiseptiki.jpg' },
+        { slug: 'kraski-interiernye', title: 'Краски интерьерные', desc: 'Для стен и потолков', img: 'cat-kraski-interiernye.jpg' },
+        { slug: 'kraski-fasadnye', title: 'Краски фасадные', desc: 'Для наружных работ', img: 'cat-kraski-fasadnye.jpg' },
+        { slug: 'laki', title: 'Лаки', desc: 'Защита и блеск', img: 'cat-laki.jpg' },
+        { slug: 'gruntovki', title: 'Грунтовки и Шпатлевки', desc: 'Подготовка поверхности', img: 'cat-gruntovki.jpg' },
+        { slug: 'dekorativnye-shtukaturki', title: 'Декоративные штукатурки', desc: 'Для создания фактур', img: 'cat-dekorativnye.jpg' },
+        { slug: 'alkidnye-kraski', title: 'Эмали', desc: 'Для металла и дерева', img: 'cat-emali.jpg' },
+        { slug: 'rastvoriteli', title: 'Растворители', desc: 'Для красок и лаков', img: 'cat-rastvoriteli.jpg' }
+    ];
+
+    let cardsHtml = '';
+    homeCards.forEach(function(c) {
+        cardsHtml += '<a class="t-home-card" href="/' + c.slug + '">' +
+            '<img class="t-home-image" src="/images/' + c.img + '" alt="' + escapeHtml(c.title) + '" loading="lazy" onerror="this.src=\'/images/logo.png\'">' +
+            '<span class="t-home-title">' + escapeHtml(c.title) + '</span>' +
+            '<span class="t-home-desc">' + escapeHtml(c.desc) + '</span>' +
+        '</a>';
+    });
+
+    const schemaItemList = {
+        "@context": "https://schema.org/",
+        "@type": "ItemList",
+        "itemListElement": homeCards.map(function(c, idx) {
+            return {
+                "@type": "ListItem",
+                "position": idx + 1,
+                "url": SITE_URL + '/' + c.slug,
+                "name": c.title
+            };
+        })
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + homeUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaOrganization) + '</script>\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaItemList) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<h1 class="t-home-title-main">Лакокрасочные материалы для дома и бизнеса — купить в Москве</h1>\n' +
+        '<div class="t-home-grid">\n' +
+        cardsHtml +
+        '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        '</body>\n</html>';
+}
 
 function renderCategoryPage(category, products) {
     const categoryName = CATEGORIES[category] || category;
@@ -1539,6 +1635,12 @@ app.get('/:category', (req, res) => {
         return res.sendFile(path.join(ROOT, 'index.html'));
     }
     res.send(renderCategoryPage(category, products));
+});
+// ------------------------------------------------------------
+// Роут: главная страница
+// ------------------------------------------------------------
+app.get('/', (req, res) => {
+    res.send(renderHomePage());
 });
 
 app.use(express.static(ROOT));
