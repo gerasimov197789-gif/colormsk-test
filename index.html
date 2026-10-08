@@ -3461,12 +3461,13 @@
             else if (CATEGORY_NAMES[e]) updateMetaForCategory(e);
         }
         document.querySelectorAll('.t-nav-link').forEach(e => {
-            e.addEventListener('click', function(e) {
-                if (this.classList.contains('t-nav-external')) return;
-                e.preventDefault();
-                const t = this.dataset.page;
-                t && showPage(t)
-            })
+                    e.addEventListener('click', function(e) {
+            // Отключено: все переходы идут на SSR-страницы
+            // if (this.classList.contains('t-nav-external')) return;
+            // e.preventDefault();
+            // const t = this.dataset.page;
+            // t && showPage(t);
+        });
         }), document.querySelectorAll('.t-home-card').forEach(e => {
             e.addEventListener('click', function(e) {
                 e.preventDefault();
