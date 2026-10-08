@@ -1693,6 +1693,13 @@ app.get('/:category/:slug--:sku', (req, res) => {
     res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
+app.get('/', (req, res) => {
+    res.send(renderHomePage());
+});
+
+// Статика — ПЕРЕД /:category, чтобы /dostavka.html и другие .html отдавались как файлы
+app.use(express.static(ROOT));
+
 app.get('/:category', (req, res) => {
     const category = req.params.category;
     if (!CATEGORIES[category]) return res.sendFile(path.join(ROOT, 'index.html'));
@@ -1700,12 +1707,6 @@ app.get('/:category', (req, res) => {
     if (!products) return res.sendFile(path.join(ROOT, 'index.html'));
     res.send(renderCategoryPage(category, products));
 });
-
-app.get('/', (req, res) => {
-    res.send(renderHomePage());
-});
-
-app.use(express.static(ROOT));
 
 app.use((req, res) => {
     res.sendFile(path.join(ROOT, 'index.html'));
