@@ -618,13 +618,13 @@ function renderStyles() {
         .hit-card-name { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; flex: 1; }
         .hit-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
 
-        .hits-sidebar { display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
-        .hit-card-mini { display: flex; gap: 8px; padding: 8px; background: rgba(255,255,255,.05); border-radius: 8px; text-decoration: none; color: #fff; align-items: center; font-size: 11px; transition: background .2s; }
-        .hit-card-mini:hover { background: rgba(255,255,255,.1); }
-        .hit-card-mini img { width: 32px; height: 32px; object-fit: contain; background: #fff; border-radius: 4px; flex-shrink: 0; }
-        .hit-card-mini-info { flex: 1; min-width: 0; }
-        .hit-card-mini-name { line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 2px; color: rgba(255,255,255,.75); }
-        .hit-card-mini-price { font-weight: 700; color: #ffd166; white-space: nowrap; }
+        .hits-sidebar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 10px 10px; }
+        .hit-card-mini { display: flex; flex-direction: column; background: #fff; border-radius: 10px; padding: 8px; text-decoration: none; color: #1a2a3a; transition: transform .2s; }
+        .hit-card-mini:hover { transform: translateY(-2px); }
+        .hit-card-mini img { width: 100%; height: 70px; object-fit: contain; background: #f8faff; border-radius: 6px; margin-bottom: 6px; }
+        .hit-card-mini-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .hit-card-mini-name { font-size: 11px; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #1a2a3a; }
+        .hit-card-mini-price { font-size: 13px; font-weight: 700; color: #1a2a3a; }
 
         .account-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4700; display: none; align-items: center; justify-content: center; padding: 20px; }
         .account-modal-bg.open { display: flex; }
