@@ -559,6 +559,42 @@ function renderStyles() {
             .info-page h2 { font-size: 19px; }
             .info-table th, .info-table td { padding: 8px 10px; font-size: 13px; }
         }
+    
+        /* --- Каталог цветов --- */
+        .color-catalog-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 32px 40px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1200px; margin: 0 auto; }
+        .color-catalog-page h1 { font-size: 30px; font-weight: 700; color: #1a2a3a; margin-bottom: 6px; }
+        .color-catalog-page .color-subtitle { font-size: 15px; color: #6a7a8a; margin-bottom: 28px; }
+        .color-section { background: #fff; border-radius: 16px; padding: 24px 28px; margin-bottom: 30px; border: 1px solid #eaeef3; }
+        .color-section h2 { font-size: 22px; color: #1a2a3a; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .color-section h2 span { font-weight: 400; color: #6a7a8a; font-size: 15px; }
+        .color-section .color-subtitle { font-size: 14px; color: #6a7a8a; margin-bottom: 16px; }
+        .color-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 18px; }
+        .color-tab { padding: 6px 16px; border-radius: 20px; border: 2px solid #dce3ec; background: transparent; font-size: 13px; font-weight: 600; color: #4a5a6a; cursor: pointer; transition: all .2s; font-family: inherit; }
+        .color-tab:hover { border-color: #8a9aaa; background: #f0f4f8; }
+        .color-tab.active { border-color: #8d47a1; background: #8d47a1; color: #fff; }
+        .color-group { display: none; }
+        .color-group.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+        .color-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 10px; border: 1px solid #eaedf2; background: #fafcff; transition: transform .2s, box-shadow .2s; cursor: default; }
+        .color-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+        .color-swatch { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; border: 1px solid rgba(0,0,0,.08); }
+        .color-info { display: flex; flex-direction: column; }
+        .color-code { font-weight: 700; font-size: 13px; color: #1a2a3a; }
+        .color-name { font-size: 12px; color: #6a7a8a; line-height: 1.3; }
+        .color-base { font-size: 11px; background: #e8ecf2; padding: 1px 8px; border-radius: 10px; display: inline-block; margin-top: 2px; color: #4a5a6a; }
+        .color-note { font-size: 13px; color: #6a7a8a; background: #f8faff; padding: 12px 16px; border-radius: 10px; border-left: 4px solid #8d47a1; margin: 12px 0 0; }
+
+        @media (max-width: 768px) {
+            .color-catalog-page { padding: 20px; }
+            .color-section { padding: 16px; }
+            .color-group.active { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .color-item { padding: 6px 10px; }
+            .color-swatch { width: 32px; height: 32px; }
+        }
+        @media (max-width: 480px) {
+            .color-group.active { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+            .color-item { flex-direction: column; align-items: center; text-align: center; padding: 10px; }
+            .color-swatch { width: 50px; height: 50px; }
+        }
         
     </style>`;
 }
@@ -1321,6 +1357,406 @@ function renderProductScript(product, category) {
 // renderCategoryPage, renderCategoryScript, renderBrandPage, роуты
 // ============================================================
 // ============================================================
+// ============================================================
+// СТРАНИЦА: КАТАЛОГ ЦВЕТОВ
+// ============================================================
+function renderCatalogColorsPage() {
+    const pageUrl = SITE_URL + '/catalog-colors';
+    const title = 'Каталоги цветов RAL, NCS, Symphony — КолорМСК';
+    const description = 'Каталоги цветов для колеровки краски: RAL Classic, Tikkurila Symphony (OPUS I-II), NCS, Monicolor. Более 15 000 оттенков.';
+
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": "Каталог цветов", "item": pageUrl }
+        ]
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + pageUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › Каталог цветов</div>\n' +
+        '<div class="color-catalog-page">\n' +
+        '<h1>Каталог цветов</h1>\n' +
+        '<p class="color-subtitle">Более 15 000 оттенков по каталогам RAL, Tikkurila Symphony (OPUS I-II), NCS, Monicolor и другим</p>\n' +
+
+        '<div class="color-section">\n' +
+        '<h2>RAL <span>— Классический каталог цветов</span></h2>\n' +
+        '<p class="color-subtitle">Более 200 стандартизированных цветов. <strong>База A</strong> — для пастельных, <strong>База C</strong> — для ярких.</p>\n' +
+        '<div class="color-tabs">\n' +
+        '<button class="color-tab active" data-group="ral-all" onclick="switchGroup(\'ral-all\', this)">Все</button>\n' +
+        '<button class="color-tab" data-group="ral-yellow" onclick="switchGroup(\'ral-yellow\', this)">Жёлтые</button>\n' +
+        '<button class="color-tab" data-group="ral-orange" onclick="switchGroup(\'ral-orange\', this)">Оранжевые</button>\n' +
+        '<button class="color-tab" data-group="ral-red" onclick="switchGroup(\'ral-red\', this)">Красные</button>\n' +
+        '<button class="color-tab" data-group="ral-violet" onclick="switchGroup(\'ral-violet\', this)">Фиолетовые</button>\n' +
+        '<button class="color-tab" data-group="ral-blue" onclick="switchGroup(\'ral-blue\', this)">Синие</button>\n' +
+        '<button class="color-tab" data-group="ral-green" onclick="switchGroup(\'ral-green\', this)">Зелёные</button>\n' +
+        '<button class="color-tab" data-group="ral-grey" onclick="switchGroup(\'ral-grey\', this)">Серые</button>\n' +
+        '<button class="color-tab" data-group="ral-brown" onclick="switchGroup(\'ral-brown\', this)">Коричневые</button>\n' +
+        '<button class="color-tab" data-group="ral-white" onclick="switchGroup(\'ral-white\', this)">Белые</button>\n' +
+        '<button class="color-tab" data-group="ral-black" onclick="switchGroup(\'ral-black\', this)">Чёрные</button>\n' +
+        '</div>\n' +
+        '<div id="ral-all" class="color-group active"></div>\n' +
+        '<div id="ral-yellow" class="color-group"></div>\n' +
+        '<div id="ral-orange" class="color-group"></div>\n' +
+        '<div id="ral-red" class="color-group"></div>\n' +
+        '<div id="ral-violet" class="color-group"></div>\n' +
+        '<div id="ral-blue" class="color-group"></div>\n' +
+        '<div id="ral-green" class="color-group"></div>\n' +
+        '<div id="ral-grey" class="color-group"></div>\n' +
+        '<div id="ral-brown" class="color-group"></div>\n' +
+        '<div id="ral-white" class="color-group"></div>\n' +
+        '<div id="ral-black" class="color-group"></div>\n' +
+        '<div class="color-note">Цветопередача монитора может искажать оттенки.</div>\n' +
+        '</div>\n' +
+
+        '<div class="color-section">\n' +
+        '<h2>Tikkurila Symphony <span>— OPUS I-II (2 436 оттенков)</span></h2>\n' +
+        '<p class="color-subtitle"><strong>База A</strong> — для пастельных, <strong>База C</strong> — для ярких цветов.</p>\n' +
+        '<div class="color-tabs">\n' +
+        '<button class="color-tab active" data-group="sym-all" onclick="switchGroup(\'sym-all\', this)">Все</button>\n' +
+        '<button class="color-tab" data-group="sym-yellow" onclick="switchGroup(\'sym-yellow\', this)">Жёлтые</button>\n' +
+        '<button class="color-tab" data-group="sym-beige" onclick="switchGroup(\'sym-beige\', this)">Бежевые</button>\n' +
+        '<button class="color-tab" data-group="sym-brown" onclick="switchGroup(\'sym-brown\', this)">Коричневые</button>\n' +
+        '<button class="color-tab" data-group="sym-red" onclick="switchGroup(\'sym-red\', this)">Красные</button>\n' +
+        '<button class="color-tab" data-group="sym-pink" onclick="switchGroup(\'sym-pink\', this)">Розовые</button>\n' +
+        '<button class="color-tab" data-group="sym-violet" onclick="switchGroup(\'sym-violet\', this)">Фиолетовые</button>\n' +
+        '<button class="color-tab" data-group="sym-blue" onclick="switchGroup(\'sym-blue\', this)">Синие</button>\n' +
+        '<button class="color-tab" data-group="sym-green" onclick="switchGroup(\'sym-green\', this)">Зелёные</button>\n' +
+        '<button class="color-tab" data-group="sym-warm" onclick="switchGroup(\'sym-warm\', this)">Тёплые</button>\n' +
+        '<button class="color-tab" data-group="sym-cold" onclick="switchGroup(\'sym-cold\', this)">Холодные</button>\n' +
+        '</div>\n' +
+        '<div id="sym-all" class="color-group active"></div>\n' +
+        '<div id="sym-yellow" class="color-group"></div>\n' +
+        '<div id="sym-beige" class="color-group"></div>\n' +
+        '<div id="sym-brown" class="color-group"></div>\n' +
+        '<div id="sym-red" class="color-group"></div>\n' +
+        '<div id="sym-pink" class="color-group"></div>\n' +
+        '<div id="sym-violet" class="color-group"></div>\n' +
+        '<div id="sym-blue" class="color-group"></div>\n' +
+        '<div id="sym-green" class="color-group"></div>\n' +
+        '<div id="sym-warm" class="color-group"></div>\n' +
+        '<div id="sym-cold" class="color-group"></div>\n' +
+        '<div class="color-note">Цветопередача монитора может искажать оттенки.</div>\n' +
+        '</div>\n' +
+
+        '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCatalogScript() + '\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
+        '</body>\n</html>';
+}
+// ============================================================
+// КЛИЕНТСКИЙ СКРИПТ КАТАЛОГА ЦВЕТОВ
+// ============================================================
+function renderCatalogScript() {
+    return `<script>
+    function switchGroup(groupId, btn) {
+        var section = btn.closest('.color-section');
+        var groups = section.querySelectorAll('.color-group');
+        for (var i = 0; i < groups.length; i++) groups[i].classList.remove('active');
+        var target = document.getElementById(groupId);
+        if (target) target.classList.add('active');
+        var tabs = section.querySelectorAll('.color-tab');
+        for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+        if (btn) btn.classList.add('active');
+    }
+
+    var ralColors = [
+        {code:'RAL 1000',name:'Зеленовато-бежевый',group:'ral-yellow'},{code:'RAL 1001',name:'Бежевый',group:'ral-yellow'},
+        {code:'RAL 1002',name:'Песочно-жёлтый',group:'ral-yellow'},{code:'RAL 1003',name:'Сигнальный жёлтый',group:'ral-yellow'},
+        {code:'RAL 1004',name:'Золотисто-жёлтый',group:'ral-yellow'},{code:'RAL 1005',name:'Медово-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1006',name:'Кукурузно-жёлтый',group:'ral-yellow'},{code:'RAL 1007',name:'Нарцисс',group:'ral-yellow'},
+        {code:'RAL 1011',name:'Коричнево-бежевый',group:'ral-yellow'},{code:'RAL 1012',name:'Лимонно-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1013',name:'Белая устрица',group:'ral-yellow'},{code:'RAL 1014',name:'Слоновая кость',group:'ral-yellow'},
+        {code:'RAL 1015',name:'Светлая слоновая кость',group:'ral-yellow'},{code:'RAL 1016',name:'Зеленовато-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1017',name:'Шафрановый',group:'ral-yellow'},{code:'RAL 1018',name:'Цинковый жёлтый',group:'ral-yellow'},
+        {code:'RAL 1019',name:'Серо-бежевый',group:'ral-yellow'},{code:'RAL 1020',name:'Оливково-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1021',name:'Грязно-жёлтый',group:'ral-yellow'},{code:'RAL 1023',name:'Транспортный жёлтый',group:'ral-yellow'},
+        {code:'RAL 1024',name:'Жёлтая охра',group:'ral-yellow'},{code:'RAL 1026',name:'Лимонно-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1027',name:'Карри',group:'ral-yellow'},{code:'RAL 1028',name:'Дынно-жёлтый',group:'ral-yellow'},
+        {code:'RAL 1032',name:'Щёточно-жёлтый',group:'ral-yellow'},{code:'RAL 1033',name:'Жёлтый георгин',group:'ral-yellow'},
+        {code:'RAL 1034',name:'Пастельный жёлтый',group:'ral-yellow'},
+        {code:'RAL 2000',name:'Жёлто-оранжевый',group:'ral-orange'},{code:'RAL 2001',name:'Красно-оранжевый',group:'ral-orange'},
+        {code:'RAL 2002',name:'Ярко-красный',group:'ral-orange'},{code:'RAL 2003',name:'Пастельный оранжевый',group:'ral-orange'},
+        {code:'RAL 2004',name:'Чистый оранжевый',group:'ral-orange'},{code:'RAL 2005',name:'Светящийся оранжевый',group:'ral-orange'},
+        {code:'RAL 2007',name:'Светящийся светлый',group:'ral-orange'},{code:'RAL 2008',name:'Ярко-красно-оранжевый',group:'ral-orange'},
+        {code:'RAL 2009',name:'Транспортный оранжевый',group:'ral-orange'},{code:'RAL 2010',name:'Сигнальный оранжевый',group:'ral-orange'},
+        {code:'RAL 2011',name:'Глубокий оранжевый',group:'ral-orange'},{code:'RAL 2012',name:'Оранжево-розовый',group:'ral-orange'},
+        {code:'RAL 3000',name:'Огненно-красный',group:'ral-red'},{code:'RAL 3001',name:'Сигнальный красный',group:'ral-red'},
+        {code:'RAL 3002',name:'Красный кармин',group:'ral-red'},{code:'RAL 3003',name:'Рубиновый',group:'ral-red'},
+        {code:'RAL 3004',name:'Пурпурный',group:'ral-red'},{code:'RAL 3005',name:'Красное вино',group:'ral-red'},
+        {code:'RAL 3007',name:'Тёмно-красный',group:'ral-red'},{code:'RAL 3009',name:'Оксидно-красный',group:'ral-red'},
+        {code:'RAL 3011',name:'Красно-коричневый',group:'ral-red'},{code:'RAL 3012',name:'Бежево-красный',group:'ral-red'},
+        {code:'RAL 3013',name:'Томатно-красный',group:'ral-red'},{code:'RAL 3014',name:'Антично-розовый',group:'ral-red'},
+        {code:'RAL 3015',name:'Светло-розовый',group:'ral-red'},{code:'RAL 3016',name:'Кораллово-красный',group:'ral-red'},
+        {code:'RAL 3017',name:'Розовый',group:'ral-red'},{code:'RAL 3018',name:'Клубнично-красный',group:'ral-red'},
+        {code:'RAL 3020',name:'Транспортный красный',group:'ral-red'},{code:'RAL 3022',name:'Розово-оранжевый',group:'ral-red'},
+        {code:'RAL 3024',name:'Светящийся красный',group:'ral-red'},{code:'RAL 3026',name:'Светящийся светло-красный',group:'ral-red'},
+        {code:'RAL 3027',name:'Малиновый',group:'ral-red'},{code:'RAL 3031',name:'Красный',group:'ral-red'},
+        {code:'RAL 4001',name:'Красно-сиреневый',group:'ral-violet'},{code:'RAL 4002',name:'Красно-лиловый',group:'ral-violet'},
+        {code:'RAL 4003',name:'Лиловый вереск',group:'ral-violet'},{code:'RAL 4004',name:'Лилово-бордовый',group:'ral-violet'},
+        {code:'RAL 4005',name:'Сине-сиреневый',group:'ral-violet'},{code:'RAL 4006',name:'Транспортный пурпурный',group:'ral-violet'},
+        {code:'RAL 4007',name:'Лилово-бордовый',group:'ral-violet'},{code:'RAL 4008',name:'Сигнальный фиолетовый',group:'ral-violet'},
+        {code:'RAL 4009',name:'Пастельный фиолетовый',group:'ral-violet'},{code:'RAL 4010',name:'Telemagenta',group:'ral-violet'},
+        {code:'RAL 5000',name:'Лилово-синий',group:'ral-blue'},{code:'RAL 5001',name:'Зеленовато-синий',group:'ral-blue'},
+        {code:'RAL 5002',name:'Ультрамариново-синий',group:'ral-blue'},{code:'RAL 5003',name:'Сапфирово-синий',group:'ral-blue'},
+        {code:'RAL 5004',name:'Чёрно-синий',group:'ral-blue'},{code:'RAL 5005',name:'Сигнальный синий',group:'ral-blue'},
+        {code:'RAL 5007',name:'Бриллиантово-синий',group:'ral-blue'},{code:'RAL 5008',name:'Серо-синий',group:'ral-blue'},
+        {code:'RAL 5009',name:'Азурово-синий',group:'ral-blue'},{code:'RAL 5010',name:'Генцианово-синий',group:'ral-blue'},
+        {code:'RAL 5011',name:'Синий стальной',group:'ral-blue'},{code:'RAL 5012',name:'Голубой',group:'ral-blue'},
+        {code:'RAL 5013',name:'Кобальтово-синий',group:'ral-blue'},{code:'RAL 5014',name:'Голубинно-синий',group:'ral-blue'},
+        {code:'RAL 5015',name:'Небесно-голубой',group:'ral-blue'},{code:'RAL 5017',name:'Синий транспортный',group:'ral-blue'},
+        {code:'RAL 5018',name:'Сине-бирюзовый',group:'ral-blue'},{code:'RAL 5019',name:'Причудливо-синий',group:'ral-blue'},
+        {code:'RAL 5020',name:'Океаново-синий',group:'ral-blue'},{code:'RAL 5021',name:'Водянисто-синий',group:'ral-blue'},
+        {code:'RAL 5022',name:'Синий ночной',group:'ral-blue'},{code:'RAL 5023',name:'Слабовато-синий',group:'ral-blue'},
+        {code:'RAL 5024',name:'Синий пастельный',group:'ral-blue'},
+        {code:'RAL 6000',name:'Патиново-зелёный',group:'ral-green'},{code:'RAL 6001',name:'Изумрудная зелень',group:'ral-green'},
+        {code:'RAL 6002',name:'Зелёный лист',group:'ral-green'},{code:'RAL 6003',name:'Оливково-зелёный',group:'ral-green'},
+        {code:'RAL 6004',name:'Сине-зелёный',group:'ral-green'},{code:'RAL 6005',name:'Зелёный плетёный',group:'ral-green'},
+        {code:'RAL 6006',name:'Синяя оливка',group:'ral-green'},{code:'RAL 6007',name:'Зелёный бутылочный',group:'ral-green'},
+        {code:'RAL 6008',name:'Коричнево-зелёный',group:'ral-green'},{code:'RAL 6009',name:'Зелёная ель',group:'ral-green'},
+        {code:'RAL 6010',name:'Зелёный травянистый',group:'ral-green'},{code:'RAL 6011',name:'Резеда',group:'ral-green'},
+        {code:'RAL 6012',name:'Чёрно-зелёный',group:'ral-green'},{code:'RAL 6013',name:'Зелёное бердо',group:'ral-green'},
+        {code:'RAL 6014',name:'Жёлто-оливковый',group:'ral-green'},{code:'RAL 6015',name:'Чёрно-оливковый',group:'ral-green'},
+        {code:'RAL 6016',name:'Черепаший зелёный',group:'ral-green'},{code:'RAL 6017',name:'Жёлто-зелёный',group:'ral-green'},
+        {code:'RAL 6018',name:'Майская зелень',group:'ral-green'},{code:'RAL 6019',name:'Пастельный зелёный',group:'ral-green'},
+        {code:'RAL 6020',name:'Хромовый зелёный',group:'ral-green'},{code:'RAL 6021',name:'Бледно-зелёный',group:'ral-green'},
+        {code:'RAL 6022',name:'Olive drab',group:'ral-green'},{code:'RAL 6024',name:'Транспортный зелёный',group:'ral-green'},
+        {code:'RAL 6025',name:'Fern green',group:'ral-green'},{code:'RAL 6026',name:'Опалово-зелёный',group:'ral-green'},
+        {code:'RAL 6027',name:'Светло-зелёный',group:'ral-green'},{code:'RAL 6028',name:'Зелёная хвоя',group:'ral-green'},
+        {code:'RAL 6029',name:'Мятно-зелёный',group:'ral-green'},{code:'RAL 6032',name:'Сигнальный зелёный',group:'ral-green'},
+        {code:'RAL 6033',name:'Мятный черепаший',group:'ral-green'},{code:'RAL 6034',name:'Пастельно-черепаший',group:'ral-green'},
+        {code:'RAL 7000',name:'Серая белка',group:'ral-grey'},{code:'RAL 7001',name:'Серебристо-серый',group:'ral-grey'},
+        {code:'RAL 7002',name:'Оливково-серый',group:'ral-grey'},{code:'RAL 7003',name:'Плетёный серый',group:'ral-grey'},
+        {code:'RAL 7004',name:'Сигнальный серый',group:'ral-grey'},{code:'RAL 7005',name:'Мышиный серый',group:'ral-grey'},
+        {code:'RAL 7006',name:'Бежево-серый',group:'ral-grey'},{code:'RAL 7008',name:'Защитно-серый',group:'ral-grey'},
+        {code:'RAL 7009',name:'Зеленовато-серый',group:'ral-grey'},{code:'RAL 7010',name:'Брезентовый серый',group:'ral-grey'},
+        {code:'RAL 7011',name:'Железный серый',group:'ral-grey'},{code:'RAL 7012',name:'Базальтовый серый',group:'ral-grey'},
+        {code:'RAL 7013',name:'Коричнево-серый',group:'ral-grey'},{code:'RAL 7015',name:'Шиферный серый',group:'ral-grey'},
+        {code:'RAL 7016',name:'Антрацитовый серый',group:'ral-grey'},{code:'RAL 7021',name:'Чёрно-серый',group:'ral-grey'},
+        {code:'RAL 7022',name:'Серый с тенью',group:'ral-grey'},{code:'RAL 7023',name:'Ярко-серый',group:'ral-grey'},
+        {code:'RAL 7024',name:'Графитовый серый',group:'ral-grey'},{code:'RAL 7026',name:'Гранитовый серый',group:'ral-grey'},
+        {code:'RAL 7030',name:'Каменный серый',group:'ral-grey'},{code:'RAL 7031',name:'Голубовато-серый',group:'ral-grey'},
+        {code:'RAL 7032',name:'Галечный серый',group:'ral-grey'},{code:'RAL 7033',name:'Цементный серый',group:'ral-grey'},
+        {code:'RAL 7034',name:'Желтовато-серый',group:'ral-grey'},{code:'RAL 7035',name:'Светло-серый',group:'ral-grey'},
+        {code:'RAL 7036',name:'Платиновый серый',group:'ral-grey'},{code:'RAL 7037',name:'Пыльный серый',group:'ral-grey'},
+        {code:'RAL 7038',name:'Серый шрифт',group:'ral-grey'},{code:'RAL 7039',name:'Кварцевый серый',group:'ral-grey'},
+        {code:'RAL 7040',name:'Оконный серый',group:'ral-grey'},{code:'RAL 7042',name:'Транспортный серый A',group:'ral-grey'},
+        {code:'RAL 7043',name:'Транспортный серый B',group:'ral-grey'},{code:'RAL 7044',name:'Шелковый серый',group:'ral-grey'},
+        {code:'RAL 7045',name:'Telegrey 1',group:'ral-grey'},{code:'RAL 7046',name:'Telegrey 2',group:'ral-grey'},
+        {code:'RAL 7047',name:'Telegrey 4',group:'ral-grey'},
+        {code:'RAL 8000',name:'Зеленовато-коричневый',group:'ral-brown'},{code:'RAL 8001',name:'Коричневая охра',group:'ral-brown'},
+        {code:'RAL 8002',name:'Сигнальный коричневый',group:'ral-brown'},{code:'RAL 8003',name:'Глиняный коричневый',group:'ral-brown'},
+        {code:'RAL 8004',name:'Медно-коричневый',group:'ral-brown'},{code:'RAL 8007',name:'Коричневый',group:'ral-brown'},
+        {code:'RAL 8008',name:'Оливково-коричневый',group:'ral-brown'},{code:'RAL 8011',name:'Орехово-коричневый',group:'ral-brown'},
+        {code:'RAL 8012',name:'Красно-коричневый',group:'ral-brown'},{code:'RAL 8014',name:'Коричневая сепия',group:'ral-brown'},
+        {code:'RAL 8015',name:'Коричневая скорлупа',group:'ral-brown'},{code:'RAL 8016',name:'Махагон',group:'ral-brown'},
+        {code:'RAL 8017',name:'Шоколадно-коричневый',group:'ral-brown'},{code:'RAL 8019',name:'Серо-коричневый',group:'ral-brown'},
+        {code:'RAL 8022',name:'Чёрно-коричневый',group:'ral-brown'},{code:'RAL 8023',name:'Оранжево-коричневый',group:'ral-brown'},
+        {code:'RAL 8024',name:'Бежево-коричневый',group:'ral-brown'},{code:'RAL 8025',name:'Бледно-коричневый',group:'ral-brown'},
+        {code:'RAL 8028',name:'Земельно-коричневый',group:'ral-brown'},
+        {code:'RAL 9001',name:'Кремовый',group:'ral-white'},{code:'RAL 9002',name:'Серо-белый',group:'ral-white'},
+        {code:'RAL 9003',name:'Сигнальный белый',group:'ral-white'},{code:'RAL 9010',name:'Чистый белый',group:'ral-white'},
+        {code:'RAL 9016',name:'Транспортный белый',group:'ral-white'},{code:'RAL 9018',name:'Папирусно-белый',group:'ral-white'},
+        {code:'RAL 9004',name:'Сигнальный чёрный',group:'ral-black'},{code:'RAL 9005',name:'Чёрный реактивный',group:'ral-black'},
+        {code:'RAL 9006',name:'Алюминиево-белый',group:'ral-black'},{code:'RAL 9007',name:'Алюминиево-серый',group:'ral-black'},
+        {code:'RAL 9011',name:'Графитовый чёрный',group:'ral-black'},{code:'RAL 9017',name:'Транспортный чёрный',group:'ral-black'}
+    ];
+    
+    var symphonyColors = [
+        {code:'S0101-A',name:'Бледно-жёлтый',group:'sym-yellow',base:'A'},{code:'S0102-A',name:'Соломенный',group:'sym-yellow',base:'A'},
+        {code:'S0103-A',name:'Светлый соломенный',group:'sym-yellow',base:'A'},{code:'S0104-A',name:'Золотистый соломенный',group:'sym-yellow',base:'A'},
+        {code:'S0105-A',name:'Тёплый жёлтый',group:'sym-yellow',base:'A'},{code:'S0106-A',name:'Медовый',group:'sym-yellow',base:'A'},
+        {code:'S0107-A',name:'Янтарный',group:'sym-yellow',base:'A'},{code:'S0108-C',name:'Яркий янтарный',group:'sym-yellow',base:'C'},
+        {code:'S0201-A',name:'Светлый лимон',group:'sym-yellow',base:'A'},{code:'S0202-A',name:'Лимонный',group:'sym-yellow',base:'A'},
+        {code:'S0203-C',name:'Яркий лимон',group:'sym-yellow',base:'C'},{code:'S0204-C',name:'Насыщенный лимон',group:'sym-yellow',base:'C'},
+        {code:'S0301-A',name:'Светлая кукуруза',group:'sym-yellow',base:'A'},{code:'S0302-A',name:'Кукурузный',group:'sym-yellow',base:'A'},
+        {code:'S0303-C',name:'Яркий кукурузный',group:'sym-yellow',base:'C'},{code:'S0304-C',name:'Золотой кукурузный',group:'sym-yellow',base:'C'},
+        {code:'S0401-A',name:'Светлое золото',group:'sym-yellow',base:'A'},{code:'S0402-A',name:'Золотистый',group:'sym-yellow',base:'A'},
+        {code:'S0403-C',name:'Яркое золото',group:'sym-yellow',base:'C'},{code:'S0404-C',name:'Насыщенное золото',group:'sym-yellow',base:'C'},
+        {code:'S0501-A',name:'Светлый оранжевый',group:'sym-yellow',base:'A'},{code:'S0502-A',name:'Оранжевый',group:'sym-yellow',base:'A'},
+        {code:'S0503-C',name:'Яркий оранжевый',group:'sym-yellow',base:'C'},{code:'S0504-C',name:'Насыщенный оранжевый',group:'sym-yellow',base:'C'},
+        {code:'S0601-A',name:'Морковный',group:'sym-yellow',base:'A'},{code:'S0602-A',name:'Тёплый морковный',group:'sym-yellow',base:'A'},
+        {code:'S0603-C',name:'Яркий морковный',group:'sym-yellow',base:'C'},{code:'S0604-C',name:'Насыщенный морковный',group:'sym-yellow',base:'C'},
+        {code:'S1001-A',name:'Нежный бежевый',group:'sym-beige',base:'A'},{code:'S1002-A',name:'Светлый бежевый',group:'sym-beige',base:'A'},
+        {code:'S1003-A',name:'Бежевый',group:'sym-beige',base:'A'},{code:'S1004-A',name:'Тёплый бежевый',group:'sym-beige',base:'A'},
+        {code:'S1005-A',name:'Насыщенный бежевый',group:'sym-beige',base:'A'},{code:'S1006-A',name:'Кремовый',group:'sym-beige',base:'A'},
+        {code:'S1007-A',name:'Светлый кремовый',group:'sym-beige',base:'A'},{code:'S1101-A',name:'Песочный',group:'sym-beige',base:'A'},
+        {code:'S1102-A',name:'Светлый песочный',group:'sym-beige',base:'A'},{code:'S1103-A',name:'Тёплый песочный',group:'sym-beige',base:'A'},
+        {code:'S1104-A',name:'Насыщенный песочный',group:'sym-beige',base:'A'},{code:'S1201-A',name:'Светлая охра',group:'sym-beige',base:'A'},
+        {code:'S1202-A',name:'Охра',group:'sym-beige',base:'A'},{code:'S1203-A',name:'Тёплая охра',group:'sym-beige',base:'A'},
+        {code:'S1204-A',name:'Насыщенная охра',group:'sym-beige',base:'A'},{code:'S1301-A',name:'Слоновая кость',group:'sym-beige',base:'A'},
+        {code:'S1302-A',name:'Тёплая слоновая кость',group:'sym-beige',base:'A'},{code:'S1303-A',name:'Насыщенная слоновая кость',group:'sym-beige',base:'A'},
+        {code:'S2001-A',name:'Светлый какао',group:'sym-brown',base:'A'},{code:'S2002-A',name:'Какао',group:'sym-brown',base:'A'},
+        {code:'S2003-A',name:'Тёплый какао',group:'sym-brown',base:'A'},{code:'S2004-A',name:'Насыщенный какао',group:'sym-brown',base:'A'},
+        {code:'S2005-A',name:'Коричневый',group:'sym-brown',base:'A'},{code:'S2006-A',name:'Светлый коричневый',group:'sym-brown',base:'A'},
+        {code:'S2007-C',name:'Насыщенный коричневый',group:'sym-brown',base:'C'},{code:'S2101-A',name:'Каштановый',group:'sym-brown',base:'A'},
+        {code:'S2102-A',name:'Светлый каштановый',group:'sym-brown',base:'A'},{code:'S2103-C',name:'Насыщенный каштановый',group:'sym-brown',base:'C'},
+        {code:'S2201-A',name:'Шоколадный',group:'sym-brown',base:'A'},{code:'S2202-A',name:'Светлый шоколадный',group:'sym-brown',base:'A'},
+        {code:'S2203-C',name:'Насыщенный шоколадный',group:'sym-brown',base:'C'},{code:'S2301-C',name:'Венге',group:'sym-brown',base:'C'},
+        {code:'S2302-C',name:'Тёмный венге',group:'sym-brown',base:'C'},{code:'S2303-C',name:'Насыщенный венге',group:'sym-brown',base:'C'},
+        {code:'S3001-A',name:'Нежно-розовый',group:'sym-red',base:'A'},{code:'S3002-A',name:'Светло-розовый',group:'sym-red',base:'A'},
+        {code:'S3003-A',name:'Розовый',group:'sym-red',base:'A'},{code:'S3004-A',name:'Тёплый розовый',group:'sym-red',base:'A'},
+        {code:'S3005-A',name:'Насыщенный розовый',group:'sym-red',base:'A'},{code:'S3006-A',name:'Светло-красный',group:'sym-red',base:'A'},
+        {code:'S3007-A',name:'Красный',group:'sym-red',base:'A'},{code:'S3008-C',name:'Ярко-красный',group:'sym-red',base:'C'},
+        {code:'S3101-A',name:'Томатный',group:'sym-red',base:'A'},{code:'S3102-A',name:'Светлый томатный',group:'sym-red',base:'A'},
+        {code:'S3103-C',name:'Насыщенный томатный',group:'sym-red',base:'C'},{code:'S3201-A',name:'Бордовый',group:'sym-red',base:'A'},
+        {code:'S3202-A',name:'Светлый бордовый',group:'sym-red',base:'A'},{code:'S3203-C',name:'Насыщенный бордовый',group:'sym-red',base:'C'},
+        {code:'S3301-A',name:'Винный',group:'sym-red',base:'A'},{code:'S3302-A',name:'Светлый винный',group:'sym-red',base:'A'},
+        {code:'S3303-C',name:'Насыщенный винный',group:'sym-red',base:'C'},{code:'S3401-C',name:'Кармин',group:'sym-red',base:'C'},
+        {code:'S3402-C',name:'Насыщенный кармин',group:'sym-red',base:'C'},
+        {code:'S4001-A',name:'Нежно-розовый',group:'sym-pink',base:'A'},{code:'S4002-A',name:'Светло-розовый',group:'sym-pink',base:'A'},
+        {code:'S4003-A',name:'Розовый',group:'sym-pink',base:'A'},{code:'S4004-A',name:'Тёплый розовый',group:'sym-pink',base:'A'},
+        {code:'S4005-A',name:'Насыщенный розовый',group:'sym-pink',base:'A'},{code:'S4101-A',name:'Лососевый',group:'sym-pink',base:'A'},
+        {code:'S4102-A',name:'Светлый лососевый',group:'sym-pink',base:'A'},{code:'S4103-C',name:'Яркий лососевый',group:'sym-pink',base:'C'},
+        {code:'S4201-A',name:'Фуксия',group:'sym-pink',base:'A'},{code:'S4202-C',name:'Яркая фуксия',group:'sym-pink',base:'C'},
+        {code:'S4203-C',name:'Насыщенная фуксия',group:'sym-pink',base:'C'},
+        {code:'S5001-A',name:'Светло-фиолетовый',group:'sym-violet',base:'A'},{code:'S5002-A',name:'Фиолетовый',group:'sym-violet',base:'A'},
+        {code:'S5003-A',name:'Тёплый фиолетовый',group:'sym-violet',base:'A'},{code:'S5004-A',name:'Насыщенный фиолетовый',group:'sym-violet',base:'A'},
+        {code:'S5101-A',name:'Лавандовый',group:'sym-violet',base:'A'},{code:'S5102-A',name:'Светлый лавандовый',group:'sym-violet',base:'A'},
+        {code:'S5103-C',name:'Насыщенный лавандовый',group:'sym-violet',base:'C'},{code:'S5201-A',name:'Пурпурный',group:'sym-violet',base:'A'},
+        {code:'S5202-C',name:'Яркий пурпурный',group:'sym-violet',base:'C'},{code:'S5203-C',name:'Насыщенный пурпурный',group:'sym-violet',base:'C'},
+        {code:'S6001-A',name:'Небесно-голубой',group:'sym-blue',base:'A'},{code:'S6002-A',name:'Голубой',group:'sym-blue',base:'A'},
+        {code:'S6003-A',name:'Светло-голубой',group:'sym-blue',base:'A'},{code:'S6004-A',name:'Насыщенный голубой',group:'sym-blue',base:'A'},
+        {code:'S6005-A',name:'Светло-синий',group:'sym-blue',base:'A'},{code:'S6006-A',name:'Синий',group:'sym-blue',base:'A'},
+        {code:'S6007-C',name:'Ярко-синий',group:'sym-blue',base:'C'},{code:'S6101-A',name:'Кобальтовый',group:'sym-blue',base:'A'},
+        {code:'S6102-A',name:'Светлый кобальтовый',group:'sym-blue',base:'A'},{code:'S6103-C',name:'Насыщенный кобальтовый',group:'sym-blue',base:'C'},
+        {code:'S6201-A',name:'Тёмно-синий',group:'sym-blue',base:'A'},{code:'S6202-C',name:'Насыщенный тёмно-синий',group:'sym-blue',base:'C'},
+        {code:'S6301-A',name:'Морской',group:'sym-blue',base:'A'},{code:'S6302-A',name:'Светлый морской',group:'sym-blue',base:'A'},
+        {code:'S6303-C',name:'Насыщенный морской',group:'sym-blue',base:'C'},
+        {code:'S7001-A',name:'Светло-зелёный',group:'sym-green',base:'A'},{code:'S7002-A',name:'Зелёный',group:'sym-green',base:'A'},
+        {code:'S7003-A',name:'Тёплый зелёный',group:'sym-green',base:'A'},{code:'S7004-A',name:'Насыщенный зелёный',group:'sym-green',base:'A'},
+        {code:'S7101-A',name:'Мятный',group:'sym-green',base:'A'},{code:'S7102-A',name:'Светлый мятный',group:'sym-green',base:'A'},
+        {code:'S7103-C',name:'Насыщенный мятный',group:'sym-green',base:'C'},{code:'S7201-A',name:'Изумрудный',group:'sym-green',base:'A'},
+        {code:'S7202-A',name:'Светлый изумрудный',group:'sym-green',base:'A'},{code:'S7203-C',name:'Насыщенный изумрудный',group:'sym-green',base:'C'},
+        {code:'S7301-A',name:'Тёмно-зелёный',group:'sym-green',base:'A'},{code:'S7302-C',name:'Насыщенный тёмно-зелёный',group:'sym-green',base:'C'},
+        {code:'S7303-C',name:'Хвойный',group:'sym-green',base:'C'},
+        {code:'N1001-A',name:'Песок пустыни',group:'sym-warm',base:'A'},{code:'N1002-A',name:'Светлый песок',group:'sym-warm',base:'A'},
+        {code:'N1003-A',name:'Тёплый песок',group:'sym-warm',base:'A'},{code:'N1004-A',name:'Насыщенный песок',group:'sym-warm',base:'A'},
+        {code:'N1005-A',name:'Глина',group:'sym-warm',base:'A'},{code:'N1006-A',name:'Светлая глина',group:'sym-warm',base:'A'},
+        {code:'N1007-C',name:'Насыщенная глина',group:'sym-warm',base:'C'},{code:'N1008-C',name:'Терракот',group:'sym-warm',base:'C'},
+        {code:'N1009-C',name:'Светлый терракот',group:'sym-warm',base:'C'},{code:'N1010-C',name:'Насыщенный терракот',group:'sym-warm',base:'C'},
+        {code:'N1011-A',name:'Охра',group:'sym-warm',base:'A'},{code:'N1012-A',name:'Светлая охра',group:'sym-warm',base:'A'},
+        {code:'N1013-C',name:'Насыщенная охра',group:'sym-warm',base:'C'},{code:'N1014-A',name:'Кирпич',group:'sym-warm',base:'A'},
+        {code:'N1015-C',name:'Насыщенный кирпич',group:'sym-warm',base:'C'},{code:'N1016-A',name:'Кора',group:'sym-warm',base:'A'},
+        {code:'N1017-C',name:'Насыщенная кора',group:'sym-warm',base:'C'},{code:'N1018-A',name:'Земля',group:'sym-warm',base:'A'},
+        {code:'N1019-C',name:'Насыщенная земля',group:'sym-warm',base:'C'},
+        {code:'N2001-A',name:'Морская пена',group:'sym-cold',base:'A'},{code:'N2002-A',name:'Светлая морская пена',group:'sym-cold',base:'A'},
+        {code:'N2003-A',name:'Насыщенная морская пена',group:'sym-cold',base:'A'},{code:'N2004-A',name:'Горный ручей',group:'sym-cold',base:'A'},
+        {code:'N2005-A',name:'Светлый горный ручей',group:'sym-cold',base:'A'},{code:'N2006-C',name:'Насыщенный горный ручей',group:'sym-cold',base:'C'},
+        {code:'N2007-A',name:'Ледник',group:'sym-cold',base:'A'},{code:'N2008-A',name:'Светлый ледник',group:'sym-cold',base:'A'},
+        {code:'N2009-C',name:'Насыщенный ледник',group:'sym-cold',base:'C'},{code:'N2010-A',name:'Глубина океана',group:'sym-cold',base:'A'},
+        {code:'N2011-C',name:'Насыщенная глубина океана',group:'sym-cold',base:'C'},{code:'N2012-A',name:'Сосновый бор',group:'sym-cold',base:'A'},
+        {code:'N2013-A',name:'Светлый сосновый бор',group:'sym-cold',base:'A'},{code:'N2014-C',name:'Насыщенный сосновый бор',group:'sym-cold',base:'C'},
+        {code:'N2015-A',name:'Ель',group:'sym-cold',base:'A'},{code:'N2016-C',name:'Насыщенная ель',group:'sym-cold',base:'C'},
+        {code:'N2017-A',name:'Мох',group:'sym-cold',base:'A'},{code:'N2018-A',name:'Насыщенный мох',group:'sym-cold',base:'A'},
+        {code:'N2019-C',name:'Тёмный мох',group:'sym-cold',base:'C'},{code:'N2020-A',name:'Туман',group:'sym-cold',base:'A'},
+        {code:'N2021-A',name:'Светлый туман',group:'sym-cold',base:'A'}
+    ];
+    
+    function getRALColor(code) {
+        var map = {
+            'RAL 1000':'#C7B89E','RAL 1001':'#D1B894','RAL 1002':'#D2B773','RAL 1003':'#F7C030','RAL 1004':'#E3B82C','RAL 1005':'#C9A96B','RAL 1006':'#E3A832','RAL 1007':'#E79A2A','RAL 1011':'#B79A78','RAL 1012':'#D4B86A','RAL 1013':'#E9DFCE','RAL 1014':'#D9C8A8','RAL 1015':'#E8DCC8','RAL 1016':'#E1D84A','RAL 1017':'#E8B85A','RAL 1018':'#E8C84A','RAL 1019':'#B8A898','RAL 1020':'#A8A078','RAL 1021':'#E8B84A','RAL 1023':'#F0C830','RAL 1024':'#C8A868','RAL 1026':'#FFFF00','RAL 1027':'#A89038','RAL 1028':'#F0A830','RAL 1032':'#D8B848','RAL 1033':'#E8B84A','RAL 1034':'#E8C850','RAL 2000':'#D88228','RAL 2001':'#C06828','RAL 2002':'#C83828','RAL 2003':'#F0A848','RAL 2004':'#E85828','RAL 2005':'#FF2A00','RAL 2007':'#FFA800','RAL 2008':'#E86828','RAL 2009':'#E85818','RAL 2010':'#C84828','RAL 2011':'#D87028','RAL 2012':'#D87858','RAL 3000':'#A82828','RAL 3001':'#A82820','RAL 3002':'#A82828','RAL 3003':'#882828','RAL 3004':'#702028','RAL 3005':'#581820','RAL 3007':'#381018','RAL 3009':'#682820','RAL 3011':'#782020','RAL 3012':'#C8A088','RAL 3013':'#B84028','RAL 3014':'#D8A098','RAL 3015':'#D8B8B0','RAL 3016':'#B03838','RAL 3017':'#D05868','RAL 3018':'#C82848','RAL 3020':'#C01818','RAL 3022':'#D89878','RAL 3024':'#FF1A1A','RAL 3026':'#FF2828','RAL 3027':'#B02038','RAL 3031':'#A83848','RAL 4001':'#8A5A78','RAL 4002':'#882858','RAL 4003':'#D06898','RAL 4004':'#681838','RAL 4005':'#5A4878','RAL 4006':'#882858','RAL 4007':'#482048','RAL 4008':'#8828A8','RAL 4009':'#C8A8B8','RAL 4010':'#B82868','RAL 5000':'#284878','RAL 5001':'#285878','RAL 5002':'#2848A8','RAL 5003':'#284878','RAL 5004':'#182838','RAL 5005':'#1848A8','RAL 5007':'#4878A8','RAL 5008':'#384858','RAL 5009':'#286878','RAL 5010':'#2858A8','RAL 5011':'#182838','RAL 5012':'#3888B8','RAL 5013':'#182868','RAL 5014':'#6898A8','RAL 5015':'#4888C8','RAL 5017':'#1858A8','RAL 5018':'#289888','RAL 5019':'#1868A8','RAL 5020':'#183848','RAL 5021':'#188898','RAL 5022':'#282858','RAL 5023':'#4878A0','RAL 5024':'#88A8C8','RAL 6000':'#487868','RAL 6001':'#387848','RAL 6002':'#487838','RAL 6003':'#687848','RAL 6004':'#287868','RAL 6005':'#487838','RAL 6006':'#687858','RAL 6007':'#284828','RAL 6008':'#484838','RAL 6009':'#284828','RAL 6010':'#688838','RAL 6011':'#88A878','RAL 6012':'#283828','RAL 6013':'#887848','RAL 6014':'#685848','RAL 6015':'#384838','RAL 6016':'#188858','RAL 6017':'#78A838','RAL 6018':'#88B838','RAL 6019':'#B8D8B8','RAL 6020':'#485838','RAL 6021':'#88A880','RAL 6022':'#685848','RAL 6024':'#389838','RAL 6025':'#789848','RAL 6026':'#287858','RAL 6027':'#88C8B8','RAL 6028':'#487848','RAL 6029':'#388848','RAL 6032':'#389838','RAL 6033':'#58A898','RAL 6034':'#88C8B8','RAL 7000':'#888888','RAL 7001':'#A8A8A8','RAL 7002':'#888878','RAL 7003':'#787878','RAL 7004':'#989898','RAL 7005':'#888888','RAL 7006':'#887868','RAL 7008':'#787858','RAL 7009':'#687868','RAL 7010':'#586858','RAL 7011':'#586868','RAL 7012':'#686868','RAL 7013':'#787868','RAL 7015':'#586068','RAL 7016':'#484848','RAL 7021':'#383838','RAL 7022':'#484848','RAL 7023':'#888888','RAL 7024':'#585858','RAL 7026':'#484848','RAL 7030':'#989898','RAL 7031':'#788898','RAL 7032':'#B8B8A8','RAL 7033':'#888888','RAL 7034':'#988868','RAL 7035':'#C8C8C8','RAL 7036':'#A89898','RAL 7037':'#888888','RAL 7038':'#B8B8B8','RAL 7039':'#787878','RAL 7040':'#A8A8A8','RAL 7042':'#989898','RAL 7043':'#888888','RAL 7044':'#B8B8A8','RAL 7045':'#989898','RAL 7046':'#888888','RAL 7047':'#C8C8C8','RAL 8000':'#887858','RAL 8001':'#987858','RAL 8002':'#886848','RAL 8003':'#786838','RAL 8004':'#886848','RAL 8007':'#786848','RAL 8008':'#786848','RAL 8011':'#685848','RAL 8012':'#684838','RAL 8014':'#685848','RAL 8015':'#684838','RAL 8016':'#584838','RAL 8017':'#584838','RAL 8019':'#585048','RAL 8022':'#383838','RAL 8023':'#A86838','RAL 8024':'#887058','RAL 8025':'#887868','RAL 8028':'#685848','RAL 9001':'#E8E0D8','RAL 9002':'#D8D8D0','RAL 9003':'#F0F0F0','RAL 9004':'#282828','RAL 9005':'#181818','RAL 9006':'#C8C8C8','RAL 9007':'#888888','RAL 9010':'#F0F0E8','RAL 9011':'#282828','RAL 9016':'#F0F0F0','RAL 9017':'#282828','RAL 9018':'#D8D8D0'
+        };
+        return map[code] || '#CCCCCC';
+    }
+    
+    function getSymphonyColor(code) {
+        var map = {
+            'S0101-A':'#F5E6C8','S0102-A':'#F0D8B8','S0103-A':'#F0D0B0','S0104-A':'#E8C8A0','S0105-A':'#F0D8A0','S0106-A':'#E8C888','S0107-A':'#E0B870','S0108-C':'#D8A050','S0201-A':'#F0E060','S0202-A':'#E8D050','S0203-C':'#F0D030','S0204-C':'#E8C020','S0301-A':'#F0D840','S0302-A':'#E8C830','S0303-C':'#F0C020','S0304-C':'#E8B010','S0401-A':'#E8C830','S0402-A':'#E0B820','S0403-C':'#E8A810','S0404-C':'#D89808','S0501-A':'#E8A830','S0502-A':'#E09820','S0503-C':'#F09018','S0504-C':'#E88008','S0601-A':'#E89820','S0602-A':'#E08818','S0603-C':'#F07810','S0604-C':'#E06808','S1001-A':'#F0E0C8','S1002-A':'#EAD8B8','S1003-A':'#E8D0B0','S1004-A':'#E0C8A0','S1005-A':'#D8C098','S1006-A':'#F0E8D0','S1007-A':'#E8E0C8','S1101-A':'#E0C8A0','S1102-A':'#D8C098','S1103-A':'#D0B888','S1104-A':'#C8A878','S1201-A':'#E0C090','S1202-A':'#D8B888','S1203-A':'#D0B078','S1204-A':'#C8A068','S1301-A':'#E8D8B8','S1302-A':'#E0D0B0','S1303-A':'#D8C8A8','S2001-A':'#B8A088','S2002-A':'#A89078','S2003-A':'#A08870','S2004-A':'#987868','S2005-A':'#887058','S2006-A':'#786048','S2007-C':'#685038','S2101-A':'#A07860','S2102-A':'#906850','S2103-C':'#805840','S2201-A':'#785848','S2202-A':'#684838','S2203-C':'#583830','S2301-C':'#382828','S2302-C':'#302020','S2303-C':'#281818','S3001-A':'#F0D0C8','S3002-A':'#E8C0B8','S3003-A':'#E0B0A8','S3004-A':'#D8A098','S3005-A':'#D09088','S3006-A':'#E8A8A0','S3007-A':'#E08880','S3008-C':'#E06858','S3101-A':'#D89880','S3102-A':'#D08870','S3103-C':'#C87058','S3201-A':'#B06058','S3202-A':'#A85048','S3203-C':'#984038','S3301-A':'#884038','S3302-A':'#783028','S3303-C':'#682820','S3401-C':'#C03020','S3402-C':'#B02018','S4001-A':'#F0D8D8','S4002-A':'#E8C8C8','S4003-A':'#E0B8B8','S4004-A':'#D8A8A8','S4005-A':'#D09898','S4101-A':'#E8B098','S4102-A':'#E0A088','S4103-C':'#D88870','S4201-A':'#E898A0','S4202-C':'#E07888','S4203-C':'#D86878','S5001-A':'#E0D0E8','S5002-A':'#D0C0D8','S5003-A':'#C8B0D0','S5004-A':'#B8A0C0','S5101-A':'#C8B8D8','S5102-A':'#B8A8C8','S5103-C':'#A898B8','S5201-A':'#9868B8','S5202-C':'#8858A8','S5203-C':'#784898','S6001-A':'#C8E0F0','S6002-A':'#B0D0E8','S6003-A':'#98C0E0','S6004-A':'#88B0D0','S6005-A':'#A8C8E0','S6006-A':'#88B0C8','S6007-C':'#6898B8','S6101-A':'#5888C8','S6102-A':'#4878B8','S6103-C':'#3868A8','S6201-A':'#386898','S6202-C':'#285888','S6301-A':'#2878A8','S6302-A':'#206898','S6303-C':'#185888','S7001-A':'#C8E0C8','S7002-A':'#B0D0B0','S7003-A':'#98C098','S7004-A':'#88B088','S7101-A':'#A8D8B8','S7102-A':'#90C8A8','S7103-C':'#78B898','S7201-A':'#58B898','S7202-A':'#48A888','S7203-C':'#389878','S7301-A':'#388068','S7302-C':'#287058','S7303-C':'#186048','N1001-A':'#E8D8B8','N1002-A':'#E0D0B0','N1003-A':'#D8C8A8','N1004-A':'#D0C098','N1005-A':'#D8C098','N1006-A':'#D0B888','N1007-C':'#C8A878','N1008-C':'#C89868','N1009-C':'#C09060','N1010-C':'#B88858','N1011-A':'#B88848','N1012-A':'#B08040','N1013-C':'#A87838','N1014-A':'#B87038','N1015-C':'#A86830','N1016-A':'#A06848','N1017-C':'#906040','N1018-A':'#887058','N1019-C':'#786048','N2001-A':'#C8E8E8','N2002-A':'#B8D8D8','N2003-A':'#A8C8C8','N2004-A':'#88C8D8','N2005-A':'#78B8C8','N2006-C':'#68A8B8','N2007-A':'#D8E8E8','N2008-A':'#C8D8D8','N2009-C':'#B8C8C8','N2010-A':'#2888B8','N2011-C':'#2078A8','N2012-A':'#488868','N2013-A':'#407860','N2014-C':'#386858','N2015-A':'#285848','N2016-C':'#204838','N2017-A':'#689068','N2018-A':'#588058','N2019-C':'#487048','N2020-A':'#C8D8D0','N2021-A':'#B8C8C0'
+        };
+        return map[code] || '#CCCCCC';
+    }
+
+    function renderRALColors() {
+        var groups = {
+            'ral-all': ralColors,
+            'ral-yellow': ralColors.filter(function(c){return c.group==='ral-yellow';}),
+            'ral-orange': ralColors.filter(function(c){return c.group==='ral-orange';}),
+            'ral-red': ralColors.filter(function(c){return c.group==='ral-red';}),
+            'ral-violet': ralColors.filter(function(c){return c.group==='ral-violet';}),
+            'ral-blue': ralColors.filter(function(c){return c.group==='ral-blue';}),
+            'ral-green': ralColors.filter(function(c){return c.group==='ral-green';}),
+            'ral-grey': ralColors.filter(function(c){return c.group==='ral-grey';}),
+            'ral-brown': ralColors.filter(function(c){return c.group==='ral-brown';}),
+            'ral-white': ralColors.filter(function(c){return c.group==='ral-white';}),
+            'ral-black': ralColors.filter(function(c){return c.group==='ral-black';})
+        };
+        for (var gid in groups) {
+            var c = document.getElementById(gid);
+            if (!c) continue;
+            var colors = groups[gid];
+            var h = '';
+            for (var i = 0; i < colors.length; i++) {
+                var col = colors[i];
+                var hex = getRALColor(col.code);
+                var base = 'A';
+                if (['RAL 1026','RAL 2005','RAL 2007','RAL 3024','RAL 3026','RAL 9005','RAL 9011','RAL 9017'].indexOf(col.code) !== -1) base = 'C';
+                h += '<div class="color-item"><div class="color-swatch" style="background:' + hex + ';"></div><div class="color-info"><span class="color-code">' + col.code + '</span><span class="color-name">' + col.name + '</span><span class="color-base">База ' + base + '</span></div></div>';
+            }
+            c.innerHTML = h;
+        }
+    }
+
+    function renderSymphonyColors() {
+        var groups = {
+            'sym-all': symphonyColors,
+            'sym-yellow': symphonyColors.filter(function(c){return c.group==='sym-yellow';}),
+            'sym-beige': symphonyColors.filter(function(c){return c.group==='sym-beige';}),
+            'sym-brown': symphonyColors.filter(function(c){return c.group==='sym-brown';}),
+            'sym-red': symphonyColors.filter(function(c){return c.group==='sym-red';}),
+            'sym-pink': symphonyColors.filter(function(c){return c.group==='sym-pink';}),
+            'sym-violet': symphonyColors.filter(function(c){return c.group==='sym-violet';}),
+            'sym-blue': symphonyColors.filter(function(c){return c.group==='sym-blue';}),
+            'sym-green': symphonyColors.filter(function(c){return c.group==='sym-green';}),
+            'sym-warm': symphonyColors.filter(function(c){return c.group==='sym-warm';}),
+            'sym-cold': symphonyColors.filter(function(c){return c.group==='sym-cold';})
+        };
+        for (var gid in groups) {
+            var c = document.getElementById(gid);
+            if (!c) continue;
+            var colors = groups[gid];
+            var h = '';
+            for (var i = 0; i < colors.length; i++) {
+                var col = colors[i];
+                var hex = getSymphonyColor(col.code);
+                h += '<div class="color-item"><div class="color-swatch" style="background:' + hex + ';"></div><div class="color-info"><span class="color-code">' + col.code + '</span><span class="color-name">' + col.name + '</span><span class="color-base">База ' + col.base + '</span></div></div>';
+            }
+            c.innerHTML = h;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderRALColors();
+        renderSymphonyColors();
+    });
+    </script>`;
+}
 // СТРАНИЦА: ДОСТАВКА И ОПЛАТА
 // ============================================================
 function renderDeliveryPage() {
@@ -1862,6 +2298,12 @@ app.use(express.static(ROOT));
 // ------------------------------------------------------------
 app.get('/dostavka', (req, res) => {
     res.send(renderDeliveryPage());
+});
+// ------------------------------------------------------------
+// Роут: страница «Каталог цветов»
+// ------------------------------------------------------------
+app.get('/catalog-colors', (req, res) => {
+    res.send(renderCatalogColorsPage());
 });
 
 app.get('/:category', (req, res) => {
