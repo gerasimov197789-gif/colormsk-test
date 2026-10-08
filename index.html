@@ -3468,13 +3468,13 @@
             // const t = this.dataset.page;
             // t && showPage(t);
         });
-        }), // Отключено: клики по карточкам категорий идут на SSR-страницы
-// document.querySelectorAll('.t-home-card').forEach(e => {
-//     e.addEventListener('click', function(e) {
-//         e.preventDefault();
-//         const t = (this.getAttribute('href') || '').replace(/^.*\/([^\/]+)$/, '$1');
-//         t && document.getElementById('page-' + t) && showPage(t);
-//     });
+        }),document.querySelectorAll('.t-home-card').forEach(e => {
+    e.addEventListener('click', function(e) {
+        e.preventDefault();
+        const t = (this.getAttribute('href') || '').replace(/^.*\/([^\/]+)$/, '$1');
+        t && document.getElementById('page-' + t) && showPage(t);
+    });
+});
 // });
         let currentModalProduct = null,
             currentModalCategory = null,
