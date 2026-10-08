@@ -1433,7 +1433,7 @@ function renderDeliveryPage() {
         '</body>\n</html>';
 }
 
-dostavka.html(category, products) {
+function renderCategoryPage(category, products) {
     const categoryName = CATEGORIES[category] || category;
     const categoryUrl = SITE_URL + '/' + category;
     const title = categoryName + ' — купить в Москве | КолорМСК';
