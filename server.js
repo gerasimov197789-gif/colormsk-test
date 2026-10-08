@@ -221,7 +221,7 @@ function renderSidebarRight() {
         <div class="t-sidebar-card">
             <h3>Доставка и оплата</h3>
             <p>По Москве и МО — <strong>800 ₽</strong>. Бесплатно от <strong>15 000 ₽</strong>. В регионы — ТК.</p>
-            <a href="/dostavka.html" class="t-sidebar-card-btn">Подробнее о доставке</a>
+            <a href="/dostavka" class="t-sidebar-card-btn">Подробнее о доставке</a>
         </div>
         <div class="t-sidebar-card">
             <h3>Каталоги цветов</h3>
@@ -514,6 +514,52 @@ function renderStyles() {
             .cat-grid, .t-home-grid { grid-template-columns: 1fr; }
             .cart-fab-wrap { bottom: 12px; right: 12px; }
         }
+        /* --- Информационные страницы (Доставка, Инфо, Каталог цветов) --- */
+        .info-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; margin: 0 auto; }
+        .info-page h1 { font-size: 30px; font-weight: 700; color: #1a2a3a; margin-bottom: 8px; }
+        .info-page .info-intro { font-size: 15px; color: #6a7a8a; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #f0f2f5; }
+        .info-page h2 { font-size: 22px; font-weight: 700; color: #1a2a3a; margin: 28px 0 14px; padding-left: 14px; position: relative; }
+        .info-page h2::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px; background: #2c7a3e; border-radius: 2px; }
+        .info-page p { font-size: 15px; color: #4a5a6a; margin: 10px 0; line-height: 1.7; }
+        .info-page ul, .info-page ol { margin: 12px 0 12px 22px; font-size: 15px; color: #4a5a6a; }
+        .info-page li { margin: 8px 0; line-height: 1.6; }
+        .info-page strong { color: #1a2a3a; font-weight: 700; }
+        .info-page a { color: #2c6b9e; text-decoration: none; }
+        .info-page a:hover { text-decoration: underline; }
+
+        .info-card { background: #f8faff; border-radius: 12px; padding: 20px 24px; margin: 14px 0; border-left: 4px solid #2c6b9e; }
+        .info-card h3 { font-size: 17px; font-weight: 700; color: #1a2a3a; margin-bottom: 8px; }
+        .info-card p { font-size: 14px; color: #4a5a6a; margin: 6px 0; }
+
+        .info-highlight { background: #eaf4ec; border-radius: 12px; padding: 16px 20px; margin: 14px 0; border-left: 4px solid #2c7a3e; font-size: 14px; color: #1a2a3a; line-height: 1.7; }
+        .info-note { background: #fff8e8; border-radius: 12px; padding: 16px 20px; margin: 14px 0; border-left: 4px solid #d4880f; font-size: 14px; color: #1a2a3a; line-height: 1.7; }
+
+        .info-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+        .info-table th { background: #1a2a3a; color: #fff; padding: 12px 14px; text-align: left; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .4px; }
+        .info-table td { padding: 12px 14px; border-bottom: 1px solid #eef1f5; color: #4a5a6a; background: #fff; }
+        .info-table tr:last-child td { border-bottom: none; }
+        .info-table tr:hover td { background: #fafbfc; }
+        .info-table .info-price { font-weight: 700; color: #1a2a3a; white-space: nowrap; }
+
+        .info-faq { background: #f8faff; border-radius: 16px; padding: 24px 28px; margin: 30px 0 20px; border: 1px solid #eaeef3; }
+        .info-faq details { border: 1px solid #eef1f5; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; background: #fff; }
+        .info-faq details summary { font-weight: 600; cursor: pointer; color: #1a2a3a; font-size: 15px; list-style: none; position: relative; padding-right: 24px; }
+        .info-faq details summary::after { content: '+'; position: absolute; right: 0; top: 0; font-size: 20px; color: #2c6b9e; font-weight: 400; line-height: 1; }
+        .info-faq details[open] summary::after { content: '−'; }
+        .info-faq details p { margin-top: 12px; font-size: 14px; color: #4a5a6a; line-height: 1.7; }
+
+        .info-contact { background: linear-gradient(135deg, #f0f8ff, #e8f4f8); border-radius: 14px; padding: 24px 28px; margin: 30px 0; border: 1px solid #d0e4ed; text-align: center; }
+        .info-contact h3 { font-size: 20px; font-weight: 700; color: #1a2a3a; margin-bottom: 8px; }
+        .info-contact p { font-size: 15px; color: #4a5a6a; margin-bottom: 6px; }
+        .info-contact a { color: #2c6b9e; text-decoration: none; font-weight: 600; font-size: 16px; }
+
+        @media (max-width: 700px) {
+            .info-page { padding: 20px; }
+            .info-page h1 { font-size: 22px; }
+            .info-page h2 { font-size: 19px; }
+            .info-table th, .info-table td { padding: 8px 10px; font-size: 13px; }
+        }
+        
     </style>`;
 }
 // ============================================================
@@ -1274,8 +1320,120 @@ function renderProductScript(product, category) {
 // ============================================================
 // renderCategoryPage, renderCategoryScript, renderBrandPage, роуты
 // ============================================================
+// ============================================================
+// СТРАНИЦА: ДОСТАВКА И ОПЛАТА
+// ============================================================
+function renderDeliveryPage() {
+    const pageUrl = SITE_URL + '/dostavka';
+    const title = 'Доставка и оплата — КолорМСК';
+    const description = 'Доставка лакокрасочных материалов по Москве, МО и регионам РФ. Оплата наличными при получении.';
 
-function renderCategoryPage(category, products) {
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": "Доставка и оплата", "item": pageUrl }
+        ]
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + pageUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › Доставка и оплата</div>\n' +
+        '<div class="info-page">\n' +
+        '<h1>Доставка и оплата</h1>\n' +
+        '<p class="info-intro">Условия доставки лакокрасочных материалов по Москве, Московской области и регионам РФ</p>\n' +
+
+        '<h2>Доставка по Москве и МО</h2>\n' +
+        '<p>Доставляем заказы <strong>курьером</strong>. Стоимость зависит от суммы заказа и расстояния от МКАД.</p>\n' +
+        '<table class="info-table">\n' +
+        '<thead><tr><th>Зона доставки</th><th>Сумма заказа</th><th>Стоимость доставки</th></tr></thead>\n' +
+        '<tbody>\n' +
+        '<tr><td rowspan="2"><strong>Москва и до 50 км от МКАД</strong></td><td>от 15 000 ₽</td><td class="info-price">Бесплатно</td></tr>\n' +
+        '<tr><td>менее 15 000 ₽</td><td class="info-price">800 ₽</td></tr>\n' +
+        '<tr><td rowspan="2"><strong>Свыше 50 км от МКАД</strong></td><td>от 15 000 ₽</td><td class="info-price">15 ₽ × (км − 50)</td></tr>\n' +
+        '<tr><td>менее 15 000 ₽</td><td class="info-price">800 ₽ + 15 ₽ × (км − 50)</td></tr>\n' +
+        '</tbody></table>\n' +
+
+        '<div class="info-highlight"><strong>Пример 1: адрес в 20 км от МКАД, заказ 5 000 ₽</strong><br>' +
+        'Зона «до 50 км», заказ менее 15 000 ₽ → доставка <strong>800 ₽</strong>.<br>' +
+        'Итого к оплате: 5 000 + 800 = <strong>5 800 ₽</strong>.</div>\n' +
+
+        '<div class="info-highlight"><strong>Пример 2: адрес в 20 км от МКАД, заказ 20 000 ₽</strong><br>' +
+        'Зона «до 50 км», заказ от 15 000 ₽ → доставка <strong>бесплатно</strong>.<br>' +
+        'Итого к оплате: <strong>20 000 ₽</strong>.</div>\n' +
+
+        '<div class="info-highlight"><strong>Пример 3: адрес в 80 км от МКАД, заказ 5 000 ₽</strong><br>' +
+        'Зона «свыше 50 км»: 800 ₽ + 15 ₽ × (80 − 50) = 800 + 450 = <strong>1 250 ₽</strong>.<br>' +
+        'Итого к оплате: 5 000 + 1 250 = <strong>6 250 ₽</strong>.</div>\n' +
+
+        '<div class="info-highlight"><strong>Пример 4: адрес в 80 км от МКАД, заказ 20 000 ₽</strong><br>' +
+        'Зона «свыше 50 км», заказ от 15 000 ₽: доставка 15 ₽ × (80 − 50) = <strong>450 ₽</strong>.<br>' +
+        'Итого к оплате: 20 000 + 450 = <strong>20 450 ₽</strong>.</div>\n' +
+
+        '<h2>Доставка в регионы РФ</h2>\n' +
+        '<p>Отправляем заказы в любой регион России через <strong>транспортные компании</strong>:</p>\n' +
+        '<ul><li>СДЭК</li><li>Деловые Линии</li><li>ПЭК</li><li>Другие ТК по вашему выбору</li></ul>\n' +
+        '<div class="info-note"><strong>Важно:</strong><br>' +
+        'Стоимость доставки в регионы <strong>рассчитывается транспортной компанией</strong> и оплачивается заказчиком отдельно. Мы упаковываем товар, передаём его ТК и сообщаем вам трек-номер для отслеживания.</div>\n' +
+
+        '<h2>Оплата</h2>\n' +
+        '<div class="info-card"><h3>Наличными при получении</h3>' +
+        '<p>Оплата наличными курьеру при получении заказа. Курьер передаёт товар только после оплаты.</p></div>\n' +
+        '<div class="info-card"><h3>Безналичный расчёт для юр. лиц</h3>' +
+        '<p>Для организаций и ИП возможна оплата по счёту. Свяжитесь с нами для выставления счёта.</p></div>\n' +
+
+        '<h2>Как оформить заказ</h2>\n' +
+        '<ol><li>Добавьте товары в <strong>корзину</strong> на сайте.</li>' +
+        '<li>Перейдите в <strong>оформление заказа</strong>.</li>' +
+        '<li>Заполните контактные данные и адрес доставки.</li>' +
+        '<li>Подтвердите заказ. Мы свяжемся с вами для уточнения деталей.</li></ol>\n' +
+
+        '<h2>Частые вопросы</h2>\n' +
+        '<div class="info-faq">\n' +
+        '<details><summary>Сколько идёт доставка по Москве?</summary><p>Обычно <strong>1–2 рабочих дня</strong>. Точную дату согласуем при подтверждении заказа.</p></details>\n' +
+        '<details><summary>Можно ли изменить адрес после оформления?</summary><p>Да, если заказ ещё не передан курьеру. Позвоните нам по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или напишите на email.</p></details>\n' +
+        '<details><summary>Как отследить заказ в регионы?</summary><p>После отправки мы сообщим вам <strong>трек-номер</strong> транспортной компании. Отследить можно на сайте ТК.</p></details>\n' +
+        '<details><summary>Что делать, если товар повреждён при доставке?</summary><p>Осмотрите товар при получении курьера. Если есть повреждения — <strong>не оплачивайте</strong> и свяжитесь с нами. Заменим товар или вернём деньги.</p></details>\n' +
+        '<details><summary>Работаете ли вы с юридическими лицами?</summary><p>Да, работаем с организациями и ИП. Возможна оплата по счёту, отсрочка платежа по договорённости.</p></details>\n' +
+        '</div>\n' +
+
+        '<div class="info-contact">\n' +
+        '<h3>Остались вопросы?</h3>\n' +
+        '<p>Свяжитесь с нами — поможем рассчитать доставку</p>\n' +
+        '<p><a href="tel:+79036692534">+7 (903) 669-25-34</a></p>\n' +
+        '<p><a href="mailto:info@colormsk.ru">info@colormsk.ru</a></p>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
+        '</body>\n</html>';
+}
+
+dostavka.html(category, products) {
     const categoryName = CATEGORIES[category] || category;
     const categoryUrl = SITE_URL + '/' + category;
     const title = categoryName + ' — купить в Москве | КолорМСК';
@@ -1699,6 +1857,12 @@ app.get('/', (req, res) => {
 
 // Статика — ПЕРЕД /:category, чтобы /dostavka.html и другие .html отдавались как файлы
 app.use(express.static(ROOT));
+// ------------------------------------------------------------
+// Роут: страница «Доставка и оплата»
+// ------------------------------------------------------------
+app.get('/dostavka', (req, res) => {
+    res.send(renderDeliveryPage());
+});
 
 app.get('/:category', (req, res) => {
     const category = req.params.category;
