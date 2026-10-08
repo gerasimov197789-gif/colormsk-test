@@ -75,6 +75,10 @@ function findCheapestOption(product) {
     return { opt: cheapest, sizeIdx: sizeIdx };
 }
 
+// ============================================================
+// ОБЩИЕ КОМПОНЕНТЫ
+// ============================================================
+
 function renderCartFab() {
     return `<div class="cart-fab-wrap">
         <button class="cart-fab" id="cart-fab" type="button" aria-label="Открыть корзину">
@@ -106,6 +110,417 @@ function renderCartModal() {
         </div>
     </div>`;
 }
+
+function renderAccountModal() {
+    return `<div class="account-modal-bg" id="account-modal-bg">
+        <div class="account-modal">
+            <div class="account-modal-head">
+                <h2 id="account-modal-title">Вход</h2>
+                <button class="account-modal-close" id="account-modal-close" type="button" aria-label="Закрыть">×</button>
+            </div>
+            <div class="account-modal-body">
+                <div class="account-tabs">
+                    <button type="button" class="account-tab active" data-tab="login">Вход</button>
+                    <button type="button" class="account-tab" data-tab="register">Регистрация</button>
+                </div>
+                <form class="account-form" id="account-form-login">
+                    <label class="account-label">Email
+                        <input type="email" class="account-input" placeholder="ivan@example.com">
+                    </label>
+                    <label class="account-label">Пароль
+                        <input type="password" class="account-input" placeholder="••••••">
+                    </label>
+                    <button type="submit" class="account-submit">Войти</button>
+                </form>
+                <form class="account-form" id="account-form-register" style="display:none;">
+                    <label class="account-label">Имя
+                        <input type="text" class="account-input" placeholder="Иван Иванов">
+                    </label>
+                    <label class="account-label">Email
+                        <input type="email" class="account-input" placeholder="ivan@example.com">
+                    </label>
+                    <label class="account-label">Телефон
+                        <input type="tel" class="account-input" placeholder="+7 (999) 123-45-67">
+                    </label>
+                    <label class="account-label">Пароль (минимум 6 символов)
+                        <input type="password" class="account-input" placeholder="••••••">
+                    </label>
+                    <label class="account-label">Повторите пароль
+                        <input type="password" class="account-input" placeholder="••••••">
+                    </label>
+                    <button type="submit" class="account-submit">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderHitsBlock() {
+    return `<div class="hits-block" id="hits-block" style="display:none;">
+        <h2 class="hits-title">Хиты продаж</h2>
+        <div class="hits-grid" id="hits-grid"></div>
+    </div>`;
+}
+// ============================================================
+// === ЧАСТЬ 2 из 5 ===
+// ============================================================
+// Шапка, сайдбары, футер, стили, счётчики
+// ============================================================
+
+function renderHeader() {
+    return `<header class="t-header">
+        <div class="t-logo">
+            <img class="t-logo-img" src="/images/logo.png" alt="КолорМСК">
+            <div>
+                <a href="/">КолорМСК</a>
+                <div class="t-slogan">Лакокрасочные материалы</div>
+            </div>
+        </div>
+        <div class="t-search-wrapper">
+            <input type="text" class="t-search-input" id="t-search-input" placeholder="Поиск товаров..." autocomplete="off">
+            <div class="t-search-results" id="t-search-results"></div>
+        </div>
+        <div class="t-contacts">
+            <a href="mailto:info@colormsk.ru">info@colormsk.ru</a>
+            <a href="tel:+79036692534">+7 (903) 669-25-34</a>
+        </div>
+    </header>`;
+}
+
+function renderSidebar(activeCat) {
+    let items = '';
+    for (const [slug, name] of Object.entries(CATEGORIES)) {
+        const active = slug === activeCat ? ' active' : '';
+        items += `<a href="/${slug}" class="t-nav-link${active}">${name}</a>`;
+    }
+    return `<aside class="t-sidebar">
+        <nav class="t-sidebar-nav">
+            <a href="/" class="t-nav-link">Главная</a>
+            ${items}
+            <div class="t-nav-divider"></div>
+            <div class="t-nav-section-title">Бренды</div>
+            <a href="/brands/symphony" class="t-nav-link t-nav-external">SYMPHONY</a>
+            <a href="/brands/decotech" class="t-nav-link t-nav-external">DecoTech</a>
+            <a href="/brands/artigiano" class="t-nav-link t-nav-external">ARTIGIANO</a>
+            <div class="t-nav-divider"></div>
+            <div class="t-nav-section-title">Хиты продаж</div>
+            <div class="hits-sidebar" id="hits-sidebar-grid"></div>
+        </nav>
+    </aside>`;
+}
+
+function renderSidebarRight() {
+    return `<aside class="t-sidebar-right">
+        <div class="t-sidebar-card">
+            <h3>Личный кабинет</h3>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="login" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Войти</button>
+                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="register" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Регистрация</button>
+            </div>
+        </div>
+        <div class="t-sidebar-card">
+            <h3>Доставка и оплата</h3>
+            <p>По Москве и МО — <strong>800 ₽</strong>. Бесплатно от <strong>15 000 ₽</strong>. В регионы — ТК.</p>
+            <a href="/dostavka.html" class="t-sidebar-card-btn">Подробнее о доставке</a>
+        </div>
+        <div class="t-sidebar-card">
+            <h3>Каталоги цветов</h3>
+            <p>Более 15 000 оттенков по RAL, NCS, Monicolor.</p>
+            <a href="/catalog-colors.html" class="t-sidebar-card-btn">Перейти в каталог</a>
+        </div>
+        <div class="t-sidebar-card">
+            <h3>Полезная информация</h3>
+            <p>Основные сведения о ЛКМ, технологии окраски.</p>
+            <a href="/info.html" class="t-sidebar-card-btn">Читать подробнее</a>
+        </div>
+    </aside>`;
+}
+
+function renderFooter() {
+    return `<footer class="t-seo-footer">
+        <div style="max-width:1200px;margin:0 auto;">
+            <h3>Лакокрасочные материалы в Москве — ColorMSK / Колор МСК</h3>
+            <p>Магазин лакокрасочных материалов «Колор МСК» предлагает <strong>купить краску, эмаль, лак, грунтовку, антисептик</strong> и декоративные штукатурки в Москве с доставкой. Работаем с розничными и оптовыми покупателями. <strong>Промышленные лакокрасочные материалы — поставщик Москва</strong> — от ведущих производителей: <a href="/symphony.html">SYMPHONY (Симфония)</a>, <a href="/decotech.html">DecoTech (Декотек)</a>.</p>
+            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt.html">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka.html">Доставка и оплата</a> — по Москве, МО и РФ.</p>
+        </div>
+    </footer>`;
+}
+
+function renderAnalytics() {
+    return `<!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FLXC5MCL6Q"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FLXC5MCL6Q');
+    </script>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+       ym(111929960, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/111929960" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->`;
+}
+
+function renderStyles() {
+    return `<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-image: url('/images/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-color: #f5f5f5; color: #1a2a3a; min-height: 100vh; }
+
+        .t-header { background: rgba(26,42,58,.85); padding: 10px 30px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .t-header .t-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; margin-right: auto; }
+        .t-header .t-logo .t-logo-img { height: 40px; width: auto; border-radius: 4px; }
+        .t-header .t-logo a { font-size: 26px; font-weight: 700; color: #fff; text-decoration: none; display: block; line-height: 1.1; }
+        .t-header .t-logo .t-slogan { font-size: 11px; color: rgba(255,255,255,.6); }
+        .t-header .t-contacts { display: flex; align-items: center; gap: 18px; }
+        .t-header .t-contacts a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; }
+        .t-header .t-contacts a:hover { color: #ffd166; }
+
+        .t-search-wrapper { position: relative; width: 252px; min-width: 180px; margin: 0 2px 0 0; flex-shrink: 0; }
+        .t-search-input { width: 100%; padding: 10px 16px; border: 2px solid rgba(255,255,255,.25); border-radius: 10px; background: rgba(255,255,255,.12); color: #fff; font-size: 13px; font-family: inherit; outline: 0; }
+        .t-search-input::placeholder { color: rgba(255,255,255,.5); }
+        .t-search-input:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.18); }
+
+        .t-layout { display: flex; max-width: 100%; min-height: 100vh; width: 100%; align-items: stretch; }
+        .t-sidebar { width: 280px; min-width: 280px; background: rgba(26,42,58,.85); padding: 20px 0 0; position: sticky; top: 0; align-self: stretch; min-height: 100vh; overflow-y: auto; z-index: 100; backdrop-filter: blur(10px); }
+        .t-sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
+        .t-nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 10px; color: rgba(255,255,255,.65); text-decoration: none; font-size: 13px; font-weight: 500; transition: all .2s; }
+        .t-nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+        .t-nav-link.active { background: rgba(255,209,102,.15); color: #ffd166; }
+        .t-nav-divider { height: 1px; background: rgba(255,255,255,.08); margin: 12px 14px 8px; }
+        .t-nav-section-title { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1.2px; padding: 0 14px 8px; }
+        .t-nav-external { color: #ffd166 !important; font-weight: 600 !important; }
+
+        .t-main-wrap { flex: 1; display: flex; min-width: 0; width: 100%; }
+        .t-main { flex: 1; padding: 20px 24px 30px; min-width: 0; }
+
+        .t-sidebar-right { width: 280px; min-width: 280px; background: rgba(26,42,58,.85); padding: 20px 16px 0; position: sticky; top: 0; align-self: stretch; min-height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(10px); }
+        .t-sidebar-card { background: rgba(255,255,255,.05); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.06); }
+        .t-sidebar-card h3 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .t-sidebar-card p { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.4; margin-bottom: 8px; }
+        .t-sidebar-card-btn { display: block; background: rgba(255,209,102,.15); color: #ffd166; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11px; text-align: center; transition: background .2s; }
+        .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
+
+        .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
+        .breadcrumbs { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.55); }
+        .breadcrumbs a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
+        .breadcrumbs a:hover { color: #ffd166; opacity: 1; }
+
+        .product-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; margin: 0 auto; }
+        .product-grid { display: grid; grid-template-columns: 340px 1fr; gap: 30px; margin-bottom: 20px; }
+        .product-photo-block { text-align: center; }
+        .product-photo { width: 100%; max-width: 340px; border-radius: 12px; background: #f8faff; border: 1px solid #eef1f5; }
+
+        .product-info-block { min-width: 0; }
+        .brand { font-size: 14px; color: #6a7a8a; margin-bottom: 4px; }
+        .product-title { font-size: 26px; font-weight: 700; color: #1a2a3a; line-height: 1.25; margin-bottom: 8px; }
+        .sku-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .sku { font-size: 13px; color: #9aaabb; }
+        .btn-share { padding: 6px 14px; background: #f1f5f9; color: #4a5a6a; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
+        .btn-share:hover { background: #e2e8f0; color: #1a2a3a; }
+
+        .stock { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+        .stock.in-stock { color: #3d7a4a; background: rgba(61,122,74,.12); }
+        .stock.on-order { color: #d4880f; background: rgba(212,136,15,.12); }
+
+        .selectors { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .select-group { display: flex; flex-direction: column; gap: 4px; }
+        .select-group label { font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
+        .select-group select { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; cursor: pointer; font-family: inherit; outline: none; transition: border-color .2s; }
+        .select-group select:focus { border-color: #1a2a3a; }
+
+        .price-row { display: flex; align-items: center; gap: 20px; margin: 20px 0; }
+        .price { font-size: 34px; font-weight: 700; color: #1a2a3a; line-height: 1; }
+        .price .currency { font-size: 20px; font-weight: 400; color: #6a7a8a; margin-left: 4px; }
+
+        .btn-cart { padding: 14px 32px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .btn-cart:hover { background: #2c3e50; }
+        .btn-cart:active { transform: scale(.97); }
+
+        .product-desc { line-height: 1.65; margin: 20px 0; color: #2c3e50; font-size: 14px; }
+        .product-desc strong { color: #1a2a3a; }
+
+        .tech { background: #f8faff; border-radius: 10px; padding: 16px 20px; margin: 16px 0; line-height: 1.7; font-size: 14px; color: #3d5166; border: 1px solid #eef1f5; }
+        .tech > strong { color: #1a2a3a; display: block; margin-bottom: 8px; }
+        .specs-list { margin-top: 8px; }
+        .specs-list div { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #eaeef3; }
+        .specs-list div:last-child { border-bottom: none; }
+        .specs-list .label { font-weight: 600; color: #1a2a3a; }
+        .specs-list .value { color: #4a5a6a; text-align: right; }
+
+        .btn-back { display: inline-block; margin-top: 20px; padding: 10px 22px; background: transparent; color: #6a7a8a; text-decoration: none; border: 1px solid #dce3ec; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all .2s; }
+        .btn-back:hover { background: #f8faff; color: #1a2a3a; border-color: #1a2a3a; }
+
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+        .cat-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+        .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .cat-card-img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; background: #f8faff; border: 1px solid #eef1f5; margin-bottom: 10px; }
+        .cat-card-brand { font-size: 10px; color: #6a7a8a; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .5px; }
+        .cat-card-name { font-size: 13px; font-weight: 600; color: #1a2a3a; line-height: 1.3; margin-bottom: 4px; text-decoration: none; }
+        .cat-card-name:hover { color: #ff8f2e; }
+        .cat-card-sku { font-size: 11px; color: #9aaabb; margin-bottom: 8px; }
+        .cat-card-selectors { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .cat-card-selectors select { padding: 6px 10px; border: 1px solid #dce3ec; border-radius: 6px; font-size: 12px; background: #fff; color: #1a2a3a; cursor: pointer; font-family: inherit; outline: none; }
+        .cat-card-desc { font-size: 12px; color: #6a7a8a; line-height: 1.5; margin-bottom: 12px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .cat-card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid #eef1f5; }
+        .cat-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
+        .cat-card-price .currency { font-size: 12px; font-weight: 400; color: #6a7a8a; margin-left: 2px; }
+        .cat-card-buy { padding: 8px 16px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .cat-card-buy:hover { background: #2c3e50; }
+
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(26,42,58,.95); color: #fff; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 5000; box-shadow: 0 8px 30px rgba(0,0,0,.3); pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .t-seo-footer { background: rgba(26,42,58,.95); color: rgba(255,255,255,.7); padding: 30px; margin-top: 30px; font-size: 12px; line-height: 1.6; }
+        .t-seo-footer h3 { color: #fff; font-size: 16px; margin-bottom: 10px; }
+        .t-seo-footer a { color: #ffd166; text-decoration: none; }
+        .t-seo-footer a:hover { text-decoration: underline; }
+
+        .cart-fab-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 4000; }
+        .cart-fab { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #1a2a3a; color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.35); cursor: pointer; font-size: 14px; font-weight: 600; transition: transform .2s, box-shadow .2s; border: none; font-family: inherit; position: relative; }
+        .cart-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.45); }
+        .cart-fab svg { width: 20px; height: 20px; }
+        .cart-fab-count { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #ff5c5c; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        .cart-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4500; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .cart-modal-bg.open { display: flex; }
+        .cart-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+        .cart-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
+        .cart-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
+        .cart-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
+        .cart-modal-close:hover { color: #1a2a3a; }
+        .cart-modal-body { padding: 12px 24px; overflow-y: auto; flex: 1; }
+        .cart-empty { text-align: center; padding: 40px 20px; color: #9aaabb; font-size: 14px; }
+        .cart-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f4f6f9; align-items: center; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; background: #f8faff; border: 1px solid #eef1f5; flex-shrink: 0; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-size: 13px; font-weight: 600; color: #1a2a3a; line-height: 1.3; margin-bottom: 2px; }
+        .cart-item-name a { color: #1a2a3a; text-decoration: none; }
+        .cart-item-name a:hover { color: #ff8f2e; }
+        .cart-item-meta { font-size: 11px; color: #9aaabb; }
+        .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .cart-item-price { font-size: 14px; font-weight: 700; color: #1a2a3a; white-space: nowrap; }
+        .cart-item-qty { display: flex; align-items: center; gap: 6px; }
+        .cart-item-qty button { width: 26px; height: 26px; border: 1px solid #dce3ec; background: #f8faff; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 700; color: #1a2a3a; padding: 0; line-height: 1; font-family: inherit; }
+        .cart-item-qty button:hover { background: #e2e8f0; }
+        .cart-item-qty span { min-width: 24px; text-align: center; font-size: 13px; font-weight: 600; }
+        .cart-item-remove { background: none; border: none; font-size: 11px; color: #d9534f; cursor: pointer; padding: 0; text-decoration: underline; font-family: inherit; }
+        .cart-modal-foot { padding: 16px 24px; border-top: 1px solid #eef1f5; background: #fafbfc; }
+        .cart-total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-size: 14px; color: #6a7a8a; }
+        .cart-total strong { font-size: 22px; font-weight: 700; color: #1a2a3a; }
+        .cart-actions { display: flex; gap: 10px; }
+        .cart-actions button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; border: none; }
+        .cart-btn-clear { background: #fff; color: #d9534f; border: 1px solid #f0d0d0; }
+        .cart-btn-clear:hover { background: #fff5f5; }
+        .cart-btn-checkout { background: #1a2a3a; color: #fff; }
+        .cart-btn-checkout:hover { background: #2c3e50; }
+
+        .share-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4600; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .share-modal-bg.open { display: flex; }
+        .share-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+        .share-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
+        .share-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
+        .share-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
+        .share-modal-close:hover { color: #1a2a3a; }
+        .share-modal-body { padding: 20px 24px 24px; }
+        .share-url-row { display: flex; gap: 8px; margin-bottom: 16px; }
+        .share-url-input { flex: 1; padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; background: #f8faff; color: #4a5a6a; }
+        .share-url-input:focus { border-color: #1a2a3a; }
+        .share-copy-btn { padding: 10px 20px; background: #1a2a3a; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; }
+        .share-copy-btn:hover { background: #2c3e50; }
+        .share-copy-btn.copied { background: #3d7a4a; }
+        .share-socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .share-social { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 12px; text-decoration: none; color: #1a2a3a; font-size: 11px; font-weight: 600; transition: transform .2s; border: 1px solid #eef1f5; }
+        .share-social:hover { transform: translateY(-2px); }
+        .share-social svg { width: 28px; height: 28px; }
+        .share-social.tg { background: rgba(41,171,226,.1); color: #29abe2; }
+        .share-social.wa { background: rgba(37,211,102,.1); color: #25d366; }
+        .share-social.vk { background: rgba(0,119,255,.1); color: #0077ff; }
+        .share-social.ok { background: rgba(237,129,46,.1); color: #ed812e; }
+        .share-social.em { background: rgba(107,114,128,.1); color: #4b5563; }
+
+        .hits-block { margin-top: 30px; }
+        .hits-title { font-size: 20px; font-weight: 700; color: #1a2a3a; margin-bottom: 16px; padding-left: 4px; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
+        .hits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .hit-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 14px; text-decoration: none; color: #1a2a3a; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+        .hit-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .hit-card-img { width: 100%; height: 140px; object-fit: contain; border-radius: 10px; background: #f8faff; border: 1px solid #eef1f5; margin-bottom: 10px; }
+        .hit-card-brand { font-size: 11px; color: #6a7a8a; margin-bottom: 2px; }
+        .hit-card-name { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; flex: 1; }
+        .hit-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
+
+        .hits-sidebar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 10px 10px; }
+        .hit-card-mini { display: flex; flex-direction: column; background: #fff; border-radius: 10px; padding: 8px; text-decoration: none; color: #1a2a3a; transition: transform .2s; }
+        .hit-card-mini:hover { transform: translateY(-2px); }
+        .hit-card-mini img { width: 100%; height: 70px; object-fit: contain; background: #f8faff; border-radius: 6px; margin-bottom: 6px; }
+        .hit-card-mini-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .hit-card-mini-name { font-size: 11px; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #1a2a3a; }
+        .hit-card-mini-price { font-size: 13px; font-weight: 700; color: #1a2a3a; }
+
+        .account-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4700; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .account-modal-bg.open { display: flex; }
+        .account-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 460px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
+        .account-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
+        .account-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
+        .account-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
+        .account-modal-close:hover { color: #1a2a3a; }
+        .account-modal-body { padding: 20px 24px 24px; overflow-y: auto; }
+        .account-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f1f5f9; padding: 4px; border-radius: 10px; }
+        .account-tab { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: #6a7a8a; cursor: pointer; font-family: inherit; transition: all .2s; }
+        .account-tab.active { background: #fff; color: #1a2a3a; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+        .account-form { display: flex; flex-direction: column; gap: 14px; }
+        .account-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
+        .account-input { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; font-family: inherit; outline: none; transition: border-color .2s; }
+        .account-input:focus { border-color: #1a2a3a; }
+        .account-submit { padding: 12px 24px; background: #1a2a3a; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; margin-top: 6px; }
+        .account-submit:hover { background: #2c3e50; }
+
+        .t-home-title-main { font-size: 28px; font-weight: 700; color: #1a2a3a; margin-bottom: 24px; text-align: center; text-shadow: 0 2px 8px rgba(255,255,255,.8); }
+        .t-home-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .t-home-card { background: rgba(255,255,255,.97); border-radius: 16px; padding: 20px; text-align: center; text-decoration: none; color: #1a2a3a; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); display: block; }
+        .t-home-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+        .t-home-image { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; display: block; }
+        .t-home-title { font-size: 18px; font-weight: 600; color: #1a2a3a; margin-bottom: 4px; display: block; }
+        .t-home-desc { font-size: 13px; color: #6a7a8a; display: block; }
+
+        @media (max-width: 1300px) { .cat-grid, .t-home-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1100px) {
+            .t-sidebar-right { display: none; }
+            .hits-grid { grid-template-columns: repeat(2, 1fr); }
+            .cat-grid, .t-home-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 800px) {
+            .t-sidebar { display: none; }
+            .t-header { padding: 10px 15px; flex-wrap: wrap; }
+            .t-search-wrapper { width: 100%; order: 3; margin-top: 8px; }
+            .product-grid { grid-template-columns: 1fr; }
+            .product-title { font-size: 20px; }
+            .price { font-size: 26px; }
+        }
+        @media (max-width: 600px) {
+            .hits-grid { grid-template-columns: 1fr; }
+            .cat-grid, .t-home-grid { grid-template-columns: 1fr; }
+            .cart-fab-wrap { bottom: 12px; right: 12px; }
+        }
+    </style>`;
+}
+// ============================================================
+// === ЧАСТЬ 3 из 5 ===
+// ============================================================
+// Скрипты клиентские: корзина, хиты, поиск, личный кабинет
+// ============================================================
 
 function renderCartScript() {
     return `<script>
@@ -292,424 +707,104 @@ function renderHitsScript() {
     </script>`;
 }
 
-function renderHitsBlock() {
-    return `<div class="hits-block" id="hits-block" style="display:none;">
-        <h2 class="hits-title">Хиты продаж</h2>
-        <div class="hits-grid" id="hits-grid"></div>
-    </div>`;
-}
-// ============================================================
-// === ЧАСТЬ 2 из 5 ===
-// ============================================================
-// Компоненты: шапка, сайдбары, футер + renderStyles
-// ============================================================
+function renderSearchScript() {
+    return `<script>
+    (function() {
+        var input = document.getElementById('t-search-input');
+        if (!input) return;
+        var results = document.getElementById('t-search-results');
+        if (!results) return;
+        results.style.cssText = 'position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.25);max-height:480px;overflow-y:auto;z-index:2000;display:none;';
 
-function renderHeader() {
-    return `<header class="t-header">
-        <div class="t-logo">
-            <img class="t-logo-img" src="/images/logo.png" alt="КолорМСК">
-            <div>
-                <a href="/">КолорМСК</a>
-                <div class="t-slogan">Лакокрасочные материалы</div>
-            </div>
-        </div>
-        <div class="t-search-wrapper">
-            <input type="text" class="t-search-input" id="t-search-input" placeholder="Поиск товаров..." autocomplete="off">
-            <div class="t-search-results" id="t-search-results"></div>
-        </div>
-        <div class="t-contacts">
-            <a href="mailto:info@colormsk.ru">info@colormsk.ru</a>
-            <a href="tel:+79036692534">+7 (903) 669-25-34</a>
-        </div>
-    </header>`;
-}
+        var searchIndex = null;
+        var searchLoading = false;
+        var SEARCH_MIN = 2;
+        var SEARCH_MAX = 20;
 
-function renderSidebar(activeCat) {
-    let items = '';
-    for (const [slug, name] of Object.entries(CATEGORIES)) {
-        const active = slug === activeCat ? ' active' : '';
-        items += `<a href="/${slug}" class="t-nav-link${active}">${name}</a>`;
-    }
-    return `<aside class="t-sidebar">
-        <nav class="t-sidebar-nav">
-            <a href="/" class="t-nav-link">Главная</a>
-            ${items}
-            <div class="t-nav-divider"></div>
-            <div class="t-nav-section-title">Бренды</div>
-            <a href="/brands/symphony" class="t-nav-link t-nav-external">SYMPHONY</a>
-            <a href="/brands/decotech" class="t-nav-link t-nav-external">DecoTech</a>
-            <a href="/brands/artigiano" class="t-nav-link t-nav-external">ARTIGIANO</a>
-            <div class="t-nav-divider"></div>
-            <div class="t-nav-section-title">Хиты продаж</div>
-            <div class="hits-sidebar" id="hits-sidebar-grid"></div>
-        </nav>
-    </aside>`;
-}
-
-function renderSidebarRight() {
-    return `<aside class="t-sidebar-right">
-                <div class="t-sidebar-card">
-            <h3>Личный кабинет</h3>
-            <input type="email" class="t-account-input" placeholder="Email" autocomplete="email">
-            <input type="password" class="t-account-input" placeholder="Пароль" autocomplete="current-password">
-            <div style="display:flex;gap:8px;margin-top:8px;">
-                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="login" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Войти</button>
-                <button type="button" class="t-sidebar-card-btn t-account-open" data-mode="register" style="flex:1;border:none;cursor:pointer;font-family:inherit;">Регистрация</button>
-            </div>
-        </div>
-        <div class="t-sidebar-card">
-            <h3>Доставка и оплата</h3>
-            <p>По Москве и МО — <strong>800 ₽</strong>. Бесплатно от <strong>15 000 ₽</strong>. В регионы — ТК.</p>
-            <a href="/dostavka.html" class="t-sidebar-card-btn">Подробнее о доставке</a>
-        </div>
-        <div class="t-sidebar-card">
-            <h3>Каталоги цветов</h3>
-            <p>Более 15 000 оттенков по RAL, NCS, Monicolor.</p>
-            <a href="/catalog-colors.html" class="t-sidebar-card-btn">Перейти в каталог</a>
-        </div>
-        <div class="t-sidebar-card">
-            <h3>Полезная информация</h3>
-            <p>Основные сведения о ЛКМ, технологии окраски.</p>
-            <a href="/info.html" class="t-sidebar-card-btn">Читать подробнее</a>
-        </div>
-            </aside>
-        <div class="account-modal-bg" id="account-modal-bg">
-            <div class="account-modal">
-                <div class="account-modal-head">
-                    <h2 id="account-modal-title">Вход</h2>
-                    <button class="account-modal-close" id="account-modal-close" type="button" aria-label="Закрыть">×</button>
-                </div>
-                <div class="account-modal-body">
-                    <div class="account-tabs">
-                        <button type="button" class="account-tab active" data-tab="login">Вход</button>
-                        <button type="button" class="account-tab" data-tab="register">Регистрация</button>
-                    </div>
-                    <form class="account-form" id="account-form-login">
-                        <label class="account-label">Email
-                            <input type="email" class="account-input" placeholder="ivan@example.com">
-                        </label>
-                        <label class="account-label">Пароль
-                            <input type="password" class="account-input" placeholder="••••••">
-                        </label>
-                        <button type="submit" class="account-submit">Войти</button>
-                    </form>
-                    <form class="account-form" id="account-form-register" style="display:none;">
-                        <label class="account-label">Имя
-                            <input type="text" class="account-input" placeholder="Иван Иванов">
-                        </label>
-                        <label class="account-label">Email
-                            <input type="email" class="account-input" placeholder="ivan@example.com">
-                        </label>
-                        <label class="account-label">Телефон
-                            <input type="tel" class="account-input" placeholder="+7 (999) 123-45-67">
-                        </label>
-                        <label class="account-label">Пароль (минимум 6 символов)
-                            <input type="password" class="account-input" placeholder="••••••">
-                        </label>
-                        <label class="account-label">Повторите пароль
-                            <input type="password" class="account-input" placeholder="••••••">
-                        </label>
-                        <button type="submit" class="account-submit">Зарегистрироваться</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-}
-
-function renderFooter() {
-    return `<footer class="t-seo-footer">
-        <div style="max-width:1200px;margin:0 auto;">
-            <h3>Лакокрасочные материалы в Москве — ColorMSK / Колор МСК</h3>
-            <p>Магазин лакокрасочных материалов «Колор МСК» предлагает <strong>купить краску, эмаль, лак, грунтовку, антисептик</strong> и декоративные штукатурки в Москве с доставкой. Работаем с розничными и оптовыми покупателями. <strong>Промышленные лакокрасочные материалы — поставщик Москва</strong> — от ведущих производителей: <a href="/symphony.html">SYMPHONY (Симфония)</a>, <a href="/decotech.html">DecoTech (Декотек)</a>.</p>
-            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt.html">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka.html">Доставка и оплата</a> — по Москве, МО и РФ.</p>
-        </div>
-    </footer>`;
-}
-// ------------------------------------------------------------
-// Счётчики аналитики (Google Analytics + Яндекс.Метрика)
-// ------------------------------------------------------------
-function renderAnalytics() {
-    return `<!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FLXC5MCL6Q"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-FLXC5MCL6Q');
-    </script>
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-       m[i].l=1*new Date();
-       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-       ym(111929960, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true,
-            webvisor:true
-       });
-    </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/111929960" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    <!-- /Yandex.Metrika counter -->`;
-}
-
-function renderStyles() {
-    return `<style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-image: url('/images/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-color: #f5f5f5; color: #1a2a3a; min-height: 100vh; }
-
-        .t-header { background: rgba(26,42,58,.85); padding: 10px 30px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
-        .t-header .t-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; margin-right: auto; }
-        .t-header .t-logo .t-logo-img { height: 40px; width: auto; border-radius: 4px; }
-        .t-header .t-logo a { font-size: 26px; font-weight: 700; color: #fff; text-decoration: none; display: block; line-height: 1.1; }
-        .t-header .t-logo .t-slogan { font-size: 11px; color: rgba(255,255,255,.6); }
-        .t-header .t-contacts { display: flex; align-items: center; gap: 18px; }
-        .t-header .t-contacts a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 13px; }
-        .t-header .t-contacts a:hover { color: #ffd166; }
-
-        .t-search-wrapper { position: relative; width: 252px; min-width: 180px; margin: 0 2px 0 0; flex-shrink: 0; }
-        .t-search-input { width: 100%; padding: 10px 16px; border: 2px solid rgba(255,255,255,.25); border-radius: 10px; background: rgba(255,255,255,.12); color: #fff; font-size: 13px; font-family: inherit; outline: 0; }
-        .t-search-input::placeholder { color: rgba(255,255,255,.5); }
-        .t-search-input:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.18); }
-
-        .t-layout { display: flex; max-width: 100%; min-height: 100vh; width: 100%; align-items: stretch; }
-        .t-sidebar { width: 280px; min-width: 280px; background: rgba(26,42,58,.85); padding: 20px 0 0; position: sticky; top: 0; align-self: stretch; min-height: 100vh; overflow-y: auto; z-index: 100; backdrop-filter: blur(10px); }
-        .t-sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
-        .t-nav-link { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 10px; color: rgba(255,255,255,.65); text-decoration: none; font-size: 13px; font-weight: 500; transition: all .2s; }
-        .t-nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
-        .t-nav-link.active { background: rgba(255,209,102,.15); color: #ffd166; }
-        .t-nav-divider { height: 1px; background: rgba(255,255,255,.08); margin: 12px 14px 8px; }
-        .t-nav-section-title { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1.2px; padding: 0 14px 8px; }
-        .t-nav-external { color: #ffd166 !important; font-weight: 600 !important; }
-
-        .t-main-wrap { flex: 1; display: flex; min-width: 0; width: 100%; }
-        .t-main { flex: 1; padding: 20px 24px 30px; min-width: 0; }
-
-        .t-sidebar-right { width: 280px; min-width: 280px; background: rgba(26,42,58,.85); padding: 20px 16px 0; position: sticky; top: 0; align-self: stretch; min-height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(10px); }
-        .t-sidebar-card { background: rgba(255,255,255,.05); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.06); }
-        .t-sidebar-card h3 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .t-sidebar-card p { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.4; margin-bottom: 8px; }
-        .t-sidebar-card-btn { display: block; background: rgba(255,209,102,.15); color: #ffd166; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11px; text-align: center; transition: background .2s; }
-        .t-sidebar-card-btn:hover { background: rgba(255,209,102,.25); }
-        
-        .t-account-input { width: 100%; padding: 8px 10px; border: 1px solid rgba(255,255,255,.15); border-radius: 8px; background: rgba(255,255,255,.08); color: #fff; font-size: 12px; font-family: inherit; outline: none; margin-bottom: 6px; transition: border-color .2s, background .2s; }
-        .t-account-input::placeholder { color: rgba(255,255,255,.45); }
-        .t-account-input:focus { border-color: rgba(255,209,102,.5); background: rgba(255,255,255,.12); }
-
-        .page-title { font-size: 26px; font-weight: 700; color: #1a2a3a; margin-bottom: 20px; text-align: center; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
-        .breadcrumbs { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0,0,0,.55); }
-        .breadcrumbs a { color: #fff; text-decoration: none; font-weight: 600; opacity: .9; }
-        .breadcrumbs a:hover { color: #ffd166; opacity: 1; }
-
-        .product-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; margin: 0 auto; }
-        .product-grid { display: grid; grid-template-columns: 340px 1fr; gap: 30px; margin-bottom: 20px; }
-        .product-photo-block { text-align: center; }
-        .product-photo { width: 100%; max-width: 340px; border-radius: 12px; background: #f8faff; border: 1px solid #eef1f5; }
-
-        .product-info-block { min-width: 0; }
-        .brand { font-size: 14px; color: #6a7a8a; margin-bottom: 4px; }
-        .product-title { font-size: 26px; font-weight: 700; color: #1a2a3a; line-height: 1.25; margin-bottom: 8px; }
-        .sku-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .sku { font-size: 13px; color: #9aaabb; }
-        .btn-share { padding: 6px 14px; background: #f1f5f9; color: #4a5a6a; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; transition: all .2s; }
-        .btn-share:hover { background: #e2e8f0; color: #1a2a3a; }
-
-        .stock { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
-        .stock.in-stock { color: #3d7a4a; background: rgba(61,122,74,.12); }
-        .stock.on-order { color: #d4880f; background: rgba(212,136,15,.12); }
-
-        .selectors { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .select-group { display: flex; flex-direction: column; gap: 4px; }
-        .select-group label { font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
-        .select-group select { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; cursor: pointer; font-family: inherit; outline: none; transition: border-color .2s; }
-        .select-group select:focus { border-color: #1a2a3a; }
-
-        .price-row { display: flex; align-items: center; gap: 20px; margin: 20px 0; }
-        .price { font-size: 34px; font-weight: 700; color: #1a2a3a; line-height: 1; }
-        .price .currency { font-size: 20px; font-weight: 400; color: #6a7a8a; margin-left: 4px; }
-
-        .btn-cart { padding: 14px 32px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
-        .btn-cart:hover { background: #2c3e50; }
-        .btn-cart:active { transform: scale(.97); }
-
-        .product-desc { line-height: 1.65; margin: 20px 0; color: #2c3e50; font-size: 14px; }
-        .product-desc strong { color: #1a2a3a; }
-
-        .tech { background: #f8faff; border-radius: 10px; padding: 16px 20px; margin: 16px 0; line-height: 1.7; font-size: 14px; color: #3d5166; border: 1px solid #eef1f5; }
-        .tech > strong { color: #1a2a3a; display: block; margin-bottom: 8px; }
-        .specs-list { margin-top: 8px; }
-        .specs-list div { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #eaeef3; }
-        .specs-list div:last-child { border-bottom: none; }
-        .specs-list .label { font-weight: 600; color: #1a2a3a; }
-        .specs-list .value { color: #4a5a6a; text-align: right; }
-
-        .btn-back { display: inline-block; margin-top: 20px; padding: 10px 22px; background: transparent; color: #6a7a8a; text-decoration: none; border: 1px solid #dce3ec; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all .2s; }
-        .btn-back:hover { background: #f8faff; color: #1a2a3a; border-color: #1a2a3a; }
-
-        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
-        .cat-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
-        .cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-        .cat-card-img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; background: #f8faff; border: 1px solid #eef1f5; margin-bottom: 10px; }
-        .cat-card-brand { font-size: 10px; color: #6a7a8a; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .5px; }
-        .cat-card-name { font-size: 13px; font-weight: 600; color: #1a2a3a; line-height: 1.3; margin-bottom: 4px; text-decoration: none; }
-        .cat-card-name:hover { color: #ff8f2e; }
-        .cat-card-sku { font-size: 11px; color: #9aaabb; margin-bottom: 8px; }
-        .cat-card-selectors { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-        .cat-card-selectors select { padding: 6px 10px; border: 1px solid #dce3ec; border-radius: 6px; font-size: 12px; background: #fff; color: #1a2a3a; cursor: pointer; font-family: inherit; outline: none; }
-        .cat-card-desc { font-size: 12px; color: #6a7a8a; line-height: 1.5; margin-bottom: 12px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .cat-card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px solid #eef1f5; }
-        .cat-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
-        .cat-card-price .currency { font-size: 12px; font-weight: 400; color: #6a7a8a; margin-left: 2px; }
-        .cat-card-buy { padding: 8px 16px; background: #1a2a3a; color: #fff; border: 1px solid #1a2a3a; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; }
-        .cat-card-buy:hover { background: #2c3e50; }
-
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(26,42,58,.95); color: #fff; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; opacity: 0; transition: all .3s; z-index: 5000; box-shadow: 0 8px 30px rgba(0,0,0,.3); pointer-events: none; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        .t-seo-footer { background: rgba(26,42,58,.95); color: rgba(255,255,255,.7); padding: 30px; margin-top: 30px; font-size: 12px; line-height: 1.6; }
-        .t-seo-footer h3 { color: #fff; font-size: 16px; margin-bottom: 10px; }
-        .t-seo-footer a { color: #ffd166; text-decoration: none; }
-        .t-seo-footer a:hover { text-decoration: underline; }
-
-        .cart-fab-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 4000; }
-        .cart-fab { display: flex; align-items: center; gap: 10px; padding: 14px 22px; background: #1a2a3a; color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.35); cursor: pointer; font-size: 14px; font-weight: 600; transition: transform .2s, box-shadow .2s; border: none; font-family: inherit; position: relative; }
-        .cart-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.45); }
-        .cart-fab svg { width: 20px; height: 20px; }
-        .cart-fab-count { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #ff5c5c; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-
-        .cart-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4500; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .cart-modal-bg.open { display: flex; }
-        .cart-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
-        .cart-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
-        .cart-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
-        .cart-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
-        .cart-modal-close:hover { color: #1a2a3a; }
-        .cart-modal-body { padding: 12px 24px; overflow-y: auto; flex: 1; }
-        .cart-empty { text-align: center; padding: 40px 20px; color: #9aaabb; font-size: 14px; }
-        .cart-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f4f6f9; align-items: center; }
-        .cart-item:last-child { border-bottom: none; }
-        .cart-item-img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; background: #f8faff; border: 1px solid #eef1f5; flex-shrink: 0; }
-        .cart-item-info { flex: 1; min-width: 0; }
-        .cart-item-name { font-size: 13px; font-weight: 600; color: #1a2a3a; line-height: 1.3; margin-bottom: 2px; }
-        .cart-item-name a { color: #1a2a3a; text-decoration: none; }
-        .cart-item-name a:hover { color: #ff8f2e; }
-        .cart-item-meta { font-size: 11px; color: #9aaabb; }
-        .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-        .cart-item-price { font-size: 14px; font-weight: 700; color: #1a2a3a; white-space: nowrap; }
-        .cart-item-qty { display: flex; align-items: center; gap: 6px; }
-        .cart-item-qty button { width: 26px; height: 26px; border: 1px solid #dce3ec; background: #f8faff; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 700; color: #1a2a3a; padding: 0; line-height: 1; font-family: inherit; }
-        .cart-item-qty button:hover { background: #e2e8f0; }
-        .cart-item-qty span { min-width: 24px; text-align: center; font-size: 13px; font-weight: 600; }
-        .cart-item-remove { background: none; border: none; font-size: 11px; color: #d9534f; cursor: pointer; padding: 0; text-decoration: underline; font-family: inherit; }
-        .cart-modal-foot { padding: 16px 24px; border-top: 1px solid #eef1f5; background: #fafbfc; }
-        .cart-total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-size: 14px; color: #6a7a8a; }
-        .cart-total strong { font-size: 22px; font-weight: 700; color: #1a2a3a; }
-        .cart-actions { display: flex; gap: 10px; }
-        .cart-actions button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; border: none; }
-        .cart-btn-clear { background: #fff; color: #d9534f; border: 1px solid #f0d0d0; }
-        .cart-btn-clear:hover { background: #fff5f5; }
-        .cart-btn-checkout { background: #1a2a3a; color: #fff; }
-        .cart-btn-checkout:hover { background: #2c3e50; }
-
-        .share-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4600; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .share-modal-bg.open { display: flex; }
-        .share-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
-        .share-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
-        .share-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
-        .share-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
-        .share-modal-close:hover { color: #1a2a3a; }
-        .share-modal-body { padding: 20px 24px 24px; }
-        .share-url-row { display: flex; gap: 8px; margin-bottom: 16px; }
-        .share-url-input { flex: 1; padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; background: #f8faff; color: #4a5a6a; }
-        .share-url-input:focus { border-color: #1a2a3a; }
-        .share-copy-btn { padding: 10px 20px; background: #1a2a3a; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; }
-        .share-copy-btn:hover { background: #2c3e50; }
-        .share-copy-btn.copied { background: #3d7a4a; }
-        .share-socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .share-social { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 12px; text-decoration: none; color: #1a2a3a; font-size: 11px; font-weight: 600; transition: transform .2s; border: 1px solid #eef1f5; }
-        .share-social:hover { transform: translateY(-2px); }
-        .share-social svg { width: 28px; height: 28px; }
-        .share-social.tg { background: rgba(41,171,226,.1); color: #29abe2; }
-        .share-social.wa { background: rgba(37,211,102,.1); color: #25d366; }
-        .share-social.vk { background: rgba(0,119,255,.1); color: #0077ff; }
-        .share-social.ok { background: rgba(237,129,46,.1); color: #ed812e; }
-        .share-social.em { background: rgba(107,114,128,.1); color: #4b5563; }
-
-        .hits-block { margin-top: 30px; }
-        .hits-title { font-size: 20px; font-weight: 700; color: #1a2a3a; margin-bottom: 16px; padding-left: 4px; text-shadow: 0 1px 4px rgba(255,255,255,.7); }
-        .hits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .hit-card { background: rgba(255,255,255,.97); border-radius: 14px; padding: 14px; text-decoration: none; color: #1a2a3a; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
-        .hit-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-        .hit-card-img { width: 100%; height: 140px; object-fit: contain; border-radius: 10px; background: #f8faff; border: 1px solid #eef1f5; margin-bottom: 10px; }
-        .hit-card-brand { font-size: 11px; color: #6a7a8a; margin-bottom: 2px; }
-        .hit-card-name { font-size: 13px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; flex: 1; }
-        .hit-card-price { font-size: 16px; font-weight: 700; color: #1a2a3a; }
-
-        .hits-sidebar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 0 10px 10px; }
-        .hit-card-mini { display: flex; flex-direction: column; background: #fff; border-radius: 10px; padding: 8px; text-decoration: none; color: #1a2a3a; transition: transform .2s; }
-        .hit-card-mini:hover { transform: translateY(-2px); }
-        .hit-card-mini img { width: 100%; height: 70px; object-fit: contain; background: #f8faff; border-radius: 6px; margin-bottom: 6px; }
-        .hit-card-mini-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-        .hit-card-mini-name { font-size: 11px; font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #1a2a3a; }
-        .hit-card-mini-price { font-size: 13px; font-weight: 700; color: #1a2a3a; }
-        
-        /* --- Главная страница: сетка карточек категорий --- */
-        .t-home-title-main { font-size: 28px; font-weight: 700; color: #1a2a3a; margin-bottom: 24px; text-align: center; text-shadow: 0 2px 8px rgba(255,255,255,.8); }
-        .t-home-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .t-home-card { background: rgba(255,255,255,.97); border-radius: 16px; padding: 20px; text-align: center; text-decoration: none; color: #1a2a3a; transition: transform .2s, box-shadow .2s; box-shadow: 0 2px 10px rgba(0,0,0,.05); display: block; }
-        .t-home-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-        .t-home-image { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; display: block; }
-        .t-home-title { font-size: 18px; font-weight: 600; color: #1a2a3a; margin-bottom: 4px; display: block; }
-        .t-home-desc { font-size: 13px; color: #6a7a8a; display: block; }
-        @media (max-width: 1300px) { .t-home-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 1100px) { .t-home-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px)  { .t-home-grid { grid-template-columns: 1fr; } }
-
-        .account-modal-bg { position: fixed; top: 0; right: 0; bottom: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.55); z-index: 4700; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .account-modal-bg.open { display: flex; }
-        .account-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 460px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
-        .account-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
-        .account-modal-head h2 { font-size: 18px; font-weight: 700; color: #1a2a3a; }
-        .account-modal-close { background: none; border: none; font-size: 24px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
-        .account-modal-close:hover { color: #1a2a3a; }
-        .account-modal-body { padding: 20px 24px 24px; overflow-y: auto; }
-        .account-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f1f5f9; padding: 4px; border-radius: 10px; }
-        .account-tab { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: #6a7a8a; cursor: pointer; font-family: inherit; transition: all .2s; }
-        .account-tab.active { background: #fff; color: #1a2a3a; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-        .account-form { display: flex; flex-direction: column; gap: 14px; }
-        .account-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
-        .account-input { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; font-family: inherit; outline: none; transition: border-color .2s; }
-        .account-input:focus { border-color: #1a2a3a; }
-        .account-submit { padding: 12px 24px; background: #1a2a3a; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; margin-top: 6px; }
-        .account-submit:hover { background: #2c3e50; }
-
-        @media (max-width: 1300px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 1100px) {
-            .t-sidebar-right { display: none; }
-            .hits-grid { grid-template-columns: repeat(2, 1fr); }
-            .cat-grid { grid-template-columns: repeat(2, 1fr); }
+        function translitLocal(str) {
+            var map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                var ch = str[i];
+                result += map[ch] || (ch.match(/[a-zA-Z0-9]/) ? ch : '-');
+            }
+            return result.replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
         }
-        @media (max-width: 800px) {
-            .t-sidebar { display: none; }
-            .t-header { padding: 10px 15px; flex-wrap: wrap; }
-            .t-search-wrapper { width: 100%; order: 3; margin-top: 8px; }
-            .product-grid { grid-template-columns: 1fr; }
-            .product-title { font-size: 20px; }
-            .price { font-size: 26px; }
+
+        async function buildIndex() {
+            if (searchIndex) return searchIndex;
+            if (searchLoading) { while (searchLoading) await new Promise(function(r){setTimeout(r,100);}); return searchIndex; }
+            searchLoading = true;
+            var products = [];
+            var cats = ['antiseptiki','kraski-interiernye','kraski-fasadnye','laki','gruntovki','dekorativnye-shtukaturki','alkidnye-kraski','rastvoriteli'];
+            for (var c = 0; c < cats.length; c++) {
+                try {
+                    var res = await fetch('/products/' + cats[c] + '.json');
+                    if (!res.ok) continue;
+                    var data = await res.json();
+                    data.forEach(function(p) {
+                        if (!p.sizes || !p.sizes[0] || !p.sizes[0].options) return;
+                        var opt = p.sizes[0].options[0];
+                        products.push({
+                            cat: cats[c],
+                            name: p.name || '',
+                            brand: p.brand || '',
+                            sku: opt.sku || '',
+                            price: opt.price || 0,
+                            photo: p.photo || '',
+                            text: ((p.brand || '') + ' ' + (p.name || '') + ' ' + (p.desc || '')).toLowerCase()
+                        });
+                    });
+                } catch (e) {}
+            }
+            searchIndex = products;
+            searchLoading = false;
+            return products;
         }
-        @media (max-width: 600px) {
-            .hits-grid { grid-template-columns: 1fr; }
-            .cat-grid { grid-template-columns: 1fr; }
-            .cart-fab-wrap { bottom: 12px; right: 12px; }
-        }
-    </style>`;
+
+        var timer = null;
+        input.addEventListener('input', function() {
+            clearTimeout(timer);
+            var val = this.value.trim();
+            timer = setTimeout(async function() {
+                if (val.length < SEARCH_MIN) { results.style.display = 'none'; results.innerHTML = ''; return; }
+                results.style.display = 'block';
+                results.innerHTML = '<div style="padding:12px;color:#6a7a8a;">Поиск...</div>';
+                var index = await buildIndex();
+                var q = val.toLowerCase();
+                var matches = index.filter(function(p) {
+                    return p.name.toLowerCase().indexOf(q) !== -1 || p.brand.toLowerCase().indexOf(q) !== -1 || p.sku.toLowerCase().indexOf(q) !== -1 || p.text.indexOf(q) !== -1;
+                }).slice(0, SEARCH_MAX);
+                if (matches.length === 0) {
+                    results.innerHTML = '<div style="padding:12px;color:#6a7a8a;">Ничего не найдено</div>';
+                    return;
+                }
+                var html = '<div style="padding:8px 12px;font-size:11px;color:#9aaabb;background:#fafbfc;border-bottom:1px solid #f0f4f8;">Найдено: ' + matches.length + '</div>';
+                matches.forEach(function(p) {
+                    var url = '/' + p.cat + '/' + translitLocal(p.name) + '--' + p.sku;
+                    html += '<a href="' + url + '" style="display:flex;gap:12px;padding:12px 16px;text-decoration:none;color:#1a2a3a;border-bottom:1px solid #f4f6f9;align-items:center;">' +
+                        '<img src="/' + (p.photo || 'images/logo.png') + '" style="width:52px;height:52px;object-fit:contain;border-radius:8px;background:#f8faff;border:1px solid #eef1f5;">' +
+                        '<div style="flex:1;min-width:0;">' +
+                        '<div style="font-size:13px;font-weight:600;">' + p.brand + ' ' + p.name + '</div>' +
+                        '<div style="font-size:11px;color:#9aaabb;">Арт. ' + p.sku + '</div>' +
+                        '</div>' +
+                        '<div style="font-size:14px;font-weight:700;">' + p.price.toLocaleString('ru-RU') + ' ₽</div>' +
+                        '</a>';
+                });
+                results.innerHTML = html;
+            }, 250);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.parentElement.contains(e.target)) results.style.display = 'none';
+        });
+    })();
+    </script>`;
 }
 // ============================================================
-// === ЧАСТЬ 3 из 5 ===
+// === ЧАСТЬ 4 из 5 ===
 // ============================================================
-// renderShareModal + renderProductPage + renderProductScript
+// renderShareModal, renderProductPage, renderProductScript
 // ============================================================
 
 function renderShareModal() {
@@ -751,13 +846,86 @@ function renderShareModal() {
     </div>`;
 }
 
+function renderHomePage() {
+    const homeUrl = SITE_URL + '/';
+    const title = 'Лакокрасочные материалы для дома и бизнеса — купить в Москве | КолорМСК';
+    const description = 'Магазин лакокрасочных материалов в Москве. Купить краску, эмаль, лак, грунтовку с доставкой. Оптом и в розницу. SYMPHONY (Симфония), DecoTech (Декотек). ColorMSK / Колор МСК.';
+
+    const schemaOrganization = {
+        "@context": "https://schema.org/",
+        "@type": "Organization",
+        "name": "КолорМСК",
+        "url": SITE_URL,
+        "logo": SITE_URL + "/images/logo.png",
+        "description": description
+    };
+
+    const homeCards = [
+        { slug: 'antiseptiki', title: 'Антисептики', desc: 'Защита древесины', img: 'cat-antiseptiki.jpg' },
+        { slug: 'kraski-interiernye', title: 'Краски интерьерные', desc: 'Для стен и потолков', img: 'cat-kraski-interiernye.jpg' },
+        { slug: 'kraski-fasadnye', title: 'Краски фасадные', desc: 'Для наружных работ', img: 'cat-kraski-fasadnye.jpg' },
+        { slug: 'laki', title: 'Лаки', desc: 'Защита и блеск', img: 'cat-laki.jpg' },
+        { slug: 'gruntovki', title: 'Грунтовки и Шпатлевки', desc: 'Подготовка поверхности', img: 'cat-gruntovki.jpg' },
+        { slug: 'dekorativnye-shtukaturki', title: 'Декоративные штукатурки', desc: 'Для создания фактур', img: 'cat-dekorativnye.jpg' },
+        { slug: 'alkidnye-kraski', title: 'Эмали', desc: 'Для металла и дерева', img: 'cat-emali.jpg' },
+        { slug: 'rastvoriteli', title: 'Растворители', desc: 'Для красок и лаков', img: 'cat-rastvoriteli.jpg' }
+    ];
+
+    let cardsHtml = '';
+    homeCards.forEach(function(c) {
+        cardsHtml += '<a class="t-home-card" href="/' + c.slug + '">' +
+            '<img class="t-home-image" src="/images/' + c.img + '" alt="' + escapeHtml(c.title) + '" loading="lazy" onerror="this.src=\'/images/logo.png\'">' +
+            '<span class="t-home-title">' + escapeHtml(c.title) + '</span>' +
+            '<span class="t-home-desc">' + escapeHtml(c.desc) + '</span>' +
+        '</a>';
+    });
+
+    const schemaItemList = {
+        "@context": "https://schema.org/",
+        "@type": "ItemList",
+        "itemListElement": homeCards.map(function(c, idx) {
+            return { "@type": "ListItem", "position": idx + 1, "url": SITE_URL + '/' + c.slug, "name": c.title };
+        })
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + homeUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaOrganization) + '</script>\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaItemList) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<h1 class="t-home-title-main">Лакокрасочные материалы для дома и бизнеса — купить в Москве</h1>\n' +
+        '<div class="t-home-grid">\n' + cardsHtml + '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
+        '</body>\n</html>';
+}
+
 function renderProductPage(category, product, firstOption) {
     const categoryName = CATEGORIES[category] || category;
     const productUrl = SITE_URL + '/' + category + '/' + translit(product.name) + '--' + firstOption.sku;
-
     const title = product.brand + ' ' + product.name + ' — купить в Москве | КолорМСК';
     const description = 'Купить ' + product.brand + ' ' + product.name + ' по цене от ' + formatPrice(firstOption.price) + ' ₽. ' + categoryName + ' с доставкой по Москве и РФ. Артикул: ' + firstOption.sku + '.';
-
     const photoUrl = SITE_URL + '/' + (product.photo || 'images/logo.png');
 
     const cheapest = findCheapestOption(product);
@@ -886,11 +1054,13 @@ function renderProductPage(category, product, firstOption) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
         renderShareModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderProductScript(product, category) + '\n' +
         renderCartScript() + '\n' +
         renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
         '</body>\n</html>';
 }
 
@@ -1100,99 +1270,14 @@ function renderProductScript(product, category) {
     </script>`;
 }
 // ============================================================
-// === ЧАСТЬ 4 из 5 ===
+// === ЧАСТЬ 5 из 5 ===
 // ============================================================
-// renderCategoryPage + renderCategoryScript + renderBrandPage
+// renderCategoryPage, renderCategoryScript, renderBrandPage, роуты
 // ============================================================
-// ============================================================
-// ГЛАВНАЯ СТРАНИЦА (SSR)
-// ============================================================
-function renderHomePage() {
-    const homeUrl = SITE_URL + '/';
-    const title = 'Лакокрасочные материалы для дома и бизнеса — купить в Москве | КолорМСК';
-    const description = 'Магазин лакокрасочных материалов в Москве. Купить краску, эмаль, лак, грунтовку с доставкой. Оптом и в розницу. SYMPHONY (Симфония), DecoTech (Декотек). ColorMSK / Колор МСК.';
-
-    // Schema.org Organization
-    const schemaOrganization = {
-        "@context": "https://schema.org/",
-        "@type": "Organization",
-        "name": "КолорМСК",
-        "url": SITE_URL,
-        "logo": SITE_URL + "/images/logo.png",
-        "description": description
-    };
-
-    // Schema.org ItemList — категории
-    const homeCards = [
-        { slug: 'antiseptiki', title: 'Антисептики', desc: 'Защита древесины', img: 'cat-antiseptiki.jpg' },
-        { slug: 'kraski-interiernye', title: 'Краски интерьерные', desc: 'Для стен и потолков', img: 'cat-kraski-interiernye.jpg' },
-        { slug: 'kraski-fasadnye', title: 'Краски фасадные', desc: 'Для наружных работ', img: 'cat-kraski-fasadnye.jpg' },
-        { slug: 'laki', title: 'Лаки', desc: 'Защита и блеск', img: 'cat-laki.jpg' },
-        { slug: 'gruntovki', title: 'Грунтовки и Шпатлевки', desc: 'Подготовка поверхности', img: 'cat-gruntovki.jpg' },
-        { slug: 'dekorativnye-shtukaturki', title: 'Декоративные штукатурки', desc: 'Для создания фактур', img: 'cat-dekorativnye.jpg' },
-        { slug: 'alkidnye-kraski', title: 'Эмали', desc: 'Для металла и дерева', img: 'cat-emali.jpg' },
-        { slug: 'rastvoriteli', title: 'Растворители', desc: 'Для красок и лаков', img: 'cat-rastvoriteli.jpg' }
-    ];
-
-    let cardsHtml = '';
-    homeCards.forEach(function(c) {
-        cardsHtml += '<a class="t-home-card" href="/' + c.slug + '">' +
-            '<img class="t-home-image" src="/images/' + c.img + '" alt="' + escapeHtml(c.title) + '" loading="lazy" onerror="this.src=\'/images/logo.png\'">' +
-            '<span class="t-home-title">' + escapeHtml(c.title) + '</span>' +
-            '<span class="t-home-desc">' + escapeHtml(c.desc) + '</span>' +
-        '</a>';
-    });
-
-    const schemaItemList = {
-        "@context": "https://schema.org/",
-        "@type": "ItemList",
-        "itemListElement": homeCards.map(function(c, idx) {
-            return {
-                "@type": "ListItem",
-                "position": idx + 1,
-                "url": SITE_URL + '/' + c.slug,
-                "name": c.title
-            };
-        })
-    };
-
-    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
-        '<meta charset="UTF-8">\n' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-        '<title>' + escapeHtml(title) + '</title>\n' +
-        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
-        '<link rel="canonical" href="' + homeUrl + '">\n' +
-        renderAnalytics() + '\n' +
-        '<script type="application/ld+json">' + JSON.stringify(schemaOrganization) + '</script>\n' +
-        '<script type="application/ld+json">' + JSON.stringify(schemaItemList) + '</script>\n' +
-        renderStyles() + '\n' +
-        '</head>\n<body>\n' +
-        renderHeader() + '\n' +
-        '<div class="t-layout">\n' +
-        renderSidebar('') + '\n' +
-        '<div class="t-main-wrap">\n' +
-        '<main class="t-main">\n' +
-        '<h1 class="t-home-title-main">Лакокрасочные материалы для дома и бизнеса — купить в Москве</h1>\n' +
-        '<div class="t-home-grid">\n' +
-        cardsHtml +
-        '</div>\n' +
-        renderHitsBlock() + '\n' +
-        renderFooter() + '\n' +
-        '</main>\n' +
-        renderSidebarRight() + '\n' +
-        '</div>\n</div>\n' +
-        renderCartFab() + '\n' +
-        renderCartModal() + '\n' +
-        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
-        renderCartScript() + '\n' +
-        renderHitsScript() + '\n' +
-        '</body>\n</html>';
-}
 
 function renderCategoryPage(category, products) {
     const categoryName = CATEGORIES[category] || category;
     const categoryUrl = SITE_URL + '/' + category;
-
     const title = categoryName + ' — купить в Москве | КолорМСК';
     const description = 'Купить ' + categoryName.toLowerCase() + ' в Москве с доставкой. Каталог ' + categoryName.toLowerCase() + ' по низким ценам. Оптом и в розницу.';
 
@@ -1225,12 +1310,10 @@ function renderCategoryPage(category, products) {
     let cardsHtml = '';
     products.forEach(function(product) {
         if (!product.sizes || product.sizes.length === 0) return;
-
         const cheapest = findCheapestOption(product);
         const cheapestOpt = cheapest.opt;
         const cheapestSizeIdx = cheapest.sizeIdx;
         if (!cheapestOpt) return;
-
         const productUrl = '/' + category + '/' + translit(product.name) + '--' + cheapestOpt.sku;
         const photoUrl = '/' + (product.photo || 'images/logo.png');
 
@@ -1297,10 +1380,12 @@ function renderCategoryPage(category, products) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCategoryScript(category) + '\n' +
         renderCartScript() + '\n' +
         renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
         '</body>\n</html>';
 }
 
@@ -1383,7 +1468,6 @@ function renderCategoryScript(category) {
                 var sku = buyBtn.dataset.sku;
                 if (!sku) return;
                 var price = parseInt(buyBtn.dataset.price) || 0;
-
                 var brandEl = card.querySelector('.cat-card-brand');
                 var cart = window.CMSK_CART.getCart();
                 var newItem = {
@@ -1418,7 +1502,6 @@ function renderCategoryScript(category) {
 
 function renderBrandPage(brandSlug, brandName, products) {
     const brandUrl = SITE_URL + '/brands/' + brandSlug;
-
     const title = brandName + ' — купить продукцию бренда в Москве | КолорМСК';
     const description = 'Купить продукцию ' + brandName + ' в Москве с доставкой. Каталог товаров бренда ' + brandName + ' по низким ценам. Оптом и в розницу.';
 
@@ -1461,12 +1544,10 @@ function renderBrandPage(brandSlug, brandName, products) {
         const category = item.category;
         const product = item.product;
         if (!product.sizes || product.sizes.length === 0) return;
-
         const cheapest = findCheapestOption(product);
         const cheapestOpt = cheapest.opt;
         const cheapestSizeIdx = cheapest.sizeIdx;
         if (!cheapestOpt) return;
-
         const productUrl = '/' + category + '/' + translit(product.name) + '--' + cheapestOpt.sku;
         const photoUrl = '/' + (product.photo || 'images/logo.png');
 
@@ -1534,16 +1615,17 @@ function renderBrandPage(brandSlug, brandName, products) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCategoryScript('__brand__') + '\n' +
         renderCartScript() + '\n' +
         renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
         '</body>\n</html>';
 }
+
 // ============================================================
-// === ЧАСТЬ 5 из 5 ===
-// ============================================================
-// Роуты + app.listen
+// Роуты
 // ============================================================
 
 function loadCategory(category) {
@@ -1576,28 +1658,18 @@ function collectBrandProducts(brandConfig) {
 app.get('/brands/:brand', (req, res) => {
     const brandSlug = req.params.brand;
     const brandConfig = BRANDS[brandSlug];
-    if (!brandConfig) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
+    if (!brandConfig) return res.sendFile(path.join(ROOT, 'index.html'));
     const products = collectBrandProducts(brandConfig);
-    if (!products.length) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
+    if (!products.length) return res.sendFile(path.join(ROOT, 'index.html'));
     res.send(renderBrandPage(brandSlug, brandConfig.name, products));
 });
 
 app.get('/:category/:slug--:sku', (req, res) => {
     const category = req.params.category;
     const sku = req.params.sku;
-
-    if (!CATEGORIES[category]) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
-
+    if (!CATEGORIES[category]) return res.sendFile(path.join(ROOT, 'index.html'));
     const products = loadCategory(category);
-    if (!products) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
+    if (!products) return res.sendFile(path.join(ROOT, 'index.html'));
 
     let foundProduct = null, foundOption = null;
     for (let i = 0; i < products.length; i++) {
@@ -1617,28 +1689,18 @@ app.get('/:category/:slug--:sku', (req, res) => {
         }
         if (foundOption) break;
     }
-
-    if (!foundProduct) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
-
+    if (!foundProduct) return res.sendFile(path.join(ROOT, 'index.html'));
     res.send(renderProductPage(category, foundProduct, foundOption));
 });
 
 app.get('/:category', (req, res) => {
     const category = req.params.category;
-    if (!CATEGORIES[category]) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
+    if (!CATEGORIES[category]) return res.sendFile(path.join(ROOT, 'index.html'));
     const products = loadCategory(category);
-    if (!products) {
-        return res.sendFile(path.join(ROOT, 'index.html'));
-    }
+    if (!products) return res.sendFile(path.join(ROOT, 'index.html'));
     res.send(renderCategoryPage(category, products));
 });
-// ------------------------------------------------------------
-// Роут: главная страница
-// ------------------------------------------------------------
+
 app.get('/', (req, res) => {
     res.send(renderHomePage());
 });
