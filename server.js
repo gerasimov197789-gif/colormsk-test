@@ -111,6 +111,85 @@ function renderCartModal() {
     </div>`;
 }
 
+function renderCheckoutModal() {
+    return `<div class="checkout-modal-bg" id="checkout-modal-bg">
+        <div class="checkout-modal">
+            <div class="checkout-modal-head">
+                <h2>Оформление заказа</h2>
+                <button class="checkout-modal-close" id="checkout-modal-close" type="button" aria-label="Закрыть">×</button>
+            </div>
+            <div class="checkout-modal-body">
+                <form id="checkout-form" autocomplete="on">
+                    <div class="checkout-row">
+                        <label>Имя <span class="req">*</span></label>
+                        <input type="text" id="co-name" required placeholder="Иван Иванов" autocomplete="name">
+                    </div>
+                    <div class="checkout-row">
+                        <label>Телефон <span class="req">*</span></label>
+                        <input type="tel" id="co-phone" required placeholder="+7 (___) ___-__-__" autocomplete="tel">
+                    </div>
+                    <div class="checkout-row">
+                        <label>Email</label>
+                        <input type="email" id="co-email" placeholder="ivan@example.com" autocomplete="email">
+                    </div>
+                    <div class="checkout-row">
+                        <label>Способ получения</label>
+                        <div class="checkout-radios">
+                            <label class="checkout-radio checked">
+                                <input type="radio" name="co-delivery" value="delivery" checked>
+                                <span>Доставка курьером</span>
+                            </label>
+                            <label class="checkout-radio">
+                                <input type="radio" name="co-delivery" value="pickup">
+                                <span>Самовывоз</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="checkout-address-block">
+                        <div class="checkout-row">
+                            <label>Город</label>
+                            <input type="text" id="co-city" placeholder="Москва" autocomplete="address-level2">
+                        </div>
+                        <div class="checkout-row">
+                            <label>Адрес доставки</label>
+                            <input type="text" id="co-address" placeholder="Улица, дом, квартира/офис" autocomplete="street-address">
+                        </div>
+                        <div class="checkout-row">
+                            <label>Этаж / подъезд / код домофона</label>
+                            <input type="text" id="co-floor" placeholder="Например: 5 этаж, 2 подъезд, код 1234">
+                        </div>
+                    </div>
+                    <div class="checkout-row">
+                        <label>Способ оплаты</label>
+                        <div class="checkout-radios">
+                            <label class="checkout-radio checked">
+                                <input type="radio" name="co-payment" value="cash" checked>
+                                <span>Наличными при получении</span>
+                            </label>
+                            <label class="checkout-radio disabled">
+                                <input type="radio" name="co-payment" value="card" disabled>
+                                <span>Безналичный расчёт (скоро)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="checkout-row">
+                        <label>Комментарий к заказу</label>
+                        <textarea id="co-comment" placeholder="Пожелания, удобное время доставки..."></textarea>
+                    </div>
+                </form>
+                <div class="checkout-total">
+                    <span>Итого к оплате:</span>
+                    <strong id="checkout-total-sum">0 ₽</strong>
+                </div>
+            </div>
+            <div class="checkout-modal-foot">
+                <button type="button" class="checkout-btn-cancel" id="checkout-cancel">Отмена</button>
+                <button type="submit" form="checkout-form" class="checkout-btn-submit" id="checkout-submit">Отправить заказ</button>
+            </div>
+        </div>
+    </div>`;
+}
+
 function renderAccountModal() {
     return `<div class="account-modal-bg" id="account-modal-bg">
         <div class="account-modal">
@@ -645,9 +724,6 @@ function renderStyles() {
         .info-page .t-steps li { counter-increment: step; position: relative; padding: 14px 20px 14px 60px; margin-bottom: 12px; background: #f8faff; border-radius: 12px; border: 1px solid #eaeef3; font-size: 14px; color: #4a5a6a; line-height: 1.6; }
         .info-page .t-steps li::before { content: counter(step); position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: #2c6b9e; color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; }
         .info-page .t-steps li strong { color: #1a2a3a; display: block; margin-bottom: 4px; }
-        @media (max-width: 700px) {
-            .info-page .t-opt-grid { grid-template-columns: 1fr; }
-        }
 
         /* --- Модальное окно товара (для страницы /info) --- */
         .info-product-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,42,58,.65); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -678,6 +754,40 @@ function renderStyles() {
         .info-product-modal-btn.page:hover { background: #f0f4f8; }
         .info-product-modal-loading { text-align: center; padding: 60px; color: #6a7a8a; font-size: 14px; }
         .info-toast { position: fixed; bottom: 30px; right: 30px; background: #1a6a2a; color: #fff; padding: 14px 24px; font-size: 14px; font-weight: 500; border-radius: 10px; z-index: 9999999; box-shadow: 0 8px 24px rgba(0,0,0,.2); transition: opacity .3s; }
+
+        /* --- Модальное окно оформления заказа --- */
+        .checkout-modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.6); z-index: 5000; display: none; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+        .checkout-modal-bg.open { display: flex; }
+        .checkout-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; margin: 40px 0; box-shadow: 0 24px 64px rgba(0,0,0,.35); display: flex; flex-direction: column; max-height: calc(100vh - 80px); }
+        .checkout-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #eef1f5; }
+        .checkout-modal-head h2 { font-size: 20px; font-weight: 700; color: #1a2a3a; }
+        .checkout-modal-close { background: none; border: none; font-size: 26px; color: #9aaabb; cursor: pointer; padding: 0 6px; line-height: 1; }
+        .checkout-modal-close:hover { color: #1a2a3a; }
+        .checkout-modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+        .checkout-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+        .checkout-row label { font-size: 12px; font-weight: 600; color: #6a7a8a; text-transform: uppercase; letter-spacing: .5px; }
+        .checkout-row label .req { color: #d9534f; }
+        .checkout-row input, .checkout-row textarea, .checkout-row select { padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; font-size: 14px; background: #fff; color: #1a2a3a; font-family: inherit; outline: none; transition: border-color .2s; width: 100%; }
+        .checkout-row input:focus, .checkout-row textarea:focus, .checkout-row select:focus { border-color: #1a2a3a; }
+        .checkout-row textarea { resize: vertical; min-height: 70px; }
+        .checkout-radios { display: flex; gap: 12px; flex-wrap: wrap; }
+        .checkout-radio { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 2px solid #dce3ec; border-radius: 10px; cursor: pointer; transition: all .2s; font-size: 14px; color: #1a2a3a; flex: 1; min-width: 160px; }
+        .checkout-radio:hover { border-color: #8a9aaa; background: #f8faff; }
+        .checkout-radio input { width: auto; margin: 0; accent-color: #1a2a3a; }
+        .checkout-radio.checked { border-color: #1a2a3a; background: #f0f4f8; }
+        .checkout-radio.disabled { opacity: .5; cursor: not-allowed; }
+        .checkout-radio.disabled:hover { border-color: #dce3ec; background: #fff; }
+        .checkout-total { background: #f8faff; border-radius: 12px; padding: 14px 18px; margin: 16px 0 0; display: flex; justify-content: space-between; align-items: baseline; border: 1px solid #eaeef3; }
+        .checkout-total span { font-size: 14px; color: #6a7a8a; }
+        .checkout-total strong { font-size: 22px; font-weight: 700; color: #1a2a3a; }
+        .checkout-modal-foot { padding: 16px 24px; border-top: 1px solid #eef1f5; background: #fafbfc; display: flex; gap: 10px; }
+        .checkout-modal-foot button { flex: 1; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .2s; border: none; }
+        .checkout-btn-cancel { background: #fff; color: #6a7a8a; border: 2px solid #dce3ec; }
+        .checkout-btn-cancel:hover { background: #f0f4f8; }
+        .checkout-btn-submit { background: #1a2a3a; color: #fff; }
+        .checkout-btn-submit:hover { background: #2c3e50; }
+        .checkout-btn-submit:disabled { background: #9aaabb; cursor: default; }
+
         @media (max-width: 700px) {
             .info-page { padding: 20px; }
             .info-page h1 { font-size: 22px; }
@@ -686,6 +796,10 @@ function renderStyles() {
             .info-product-modal-content { padding: 20px; }
             .info-product-modal-grid { flex-direction: column; }
             .info-product-modal-image { flex: none; width: 100%; height: 200px; }
+            .info-page .t-opt-grid { grid-template-columns: 1fr; }
+            .checkout-modal { margin: 20px 0; }
+            .checkout-modal-body { padding: 16px; }
+            .checkout-modal-head, .checkout-modal-foot { padding: 14px 16px; }
         }
     </style>`;
 }
@@ -694,16 +808,18 @@ function renderStyles() {
 // ============================================================
 // === ЧАСТЬ 3 из 5 ===
 // ============================================================
-// Скрипты клиентские: корзина, хиты, поиск
+// Скрипты клиентские: корзина (+ оформление заказа), хиты, поиск
 // ============================================================
 
 function renderCartScript() {
     return `<script>
     (function() {
         var CART_KEY = 'colormsk_cart';
+        var ORDERS_KEY = 'colormsk_orders';
         function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; } }
         function saveCart(cart) { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
         function cartTotalQty(cart) { var t = 0; cart.forEach(function(it) { t += parseInt(it.qty) || 1; }); return t; }
+        function cartTotalSum(cart) { var s = 0; cart.forEach(function(it) { s += (parseInt(it.price) || 0) * (parseInt(it.qty) || 1); }); return s; }
         function fmt(n) { return String(n || 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' '); }
         function buildProductUrl(item) {
             if (!item.cat) return null;
@@ -721,6 +837,13 @@ function renderCartScript() {
         var cartTotalSum = document.getElementById('cart-total-sum');
         var cartBtnClear = document.getElementById('cart-btn-clear');
         var cartBtnCheckout = document.getElementById('cart-btn-checkout');
+
+        var coModalBg = document.getElementById('checkout-modal-bg');
+        var coModalClose = document.getElementById('checkout-modal-close');
+        var coCancel = document.getElementById('checkout-cancel');
+        var coForm = document.getElementById('checkout-form');
+        var coTotalSum = document.getElementById('checkout-total-sum');
+        var coAddressBlock = document.getElementById('checkout-address-block');
 
         function updateFabCount() {
             var cart = getCart();
@@ -783,19 +906,112 @@ function renderCartScript() {
             });
         }
 
+        function showToast(msg) {
+            var t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a2a3a;color:#fff;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .3s;';
+            document.body.appendChild(t);
+            setTimeout(function() { t.style.opacity = '0'; setTimeout(function(){ t.remove(); }, 300); }, 3000);
+        }
+
+        // --- Оформление заказа ---
+        function openCheckout() {
+            var cart = getCart();
+            if (cart.length === 0) return;
+            if (coTotalSum) coTotalSum.textContent = fmt(cartTotalSum(cart)) + ' ₽';
+            if (coModalBg) coModalBg.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCheckout() {
+            if (coModalBg) coModalBg.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
         if (cartFab) cartFab.addEventListener('click', function() { renderCart(); cartModalBg.classList.add('open'); });
         if (cartModalClose) cartModalClose.addEventListener('click', function() { cartModalBg.classList.remove('open'); });
         if (cartModalBg) cartModalBg.addEventListener('click', function(e) { if (e.target === cartModalBg) cartModalBg.classList.remove('open'); });
         if (cartBtnClear) cartBtnClear.addEventListener('click', function() { saveCart([]); updateFabCount(); renderCart(); });
-                if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() {
-            var t = document.createElement('div');
-            t.textContent = 'Оформление заказа — скоро. Позвоните: +7 (903) 669-25-34';
-            t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a2a3a;color:#fff;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 8px 24px rgba(0,0,0,.3);';
-            document.body.appendChild(t);
-            setTimeout(function() { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){ t.remove(); }, 300); }, 2500);
+        if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() {
+            cartModalBg.classList.remove('open');
+            openCheckout();
         });
 
-        window.CMSK_CART = { getCart: getCart, saveCart: saveCart, updateFabCount: updateFabCount, renderCart: renderCart, cartTotalQty: cartTotalQty, fmt: fmt, buildProductUrl: buildProductUrl };
+        if (coModalClose) coModalClose.addEventListener('click', closeCheckout);
+        if (coCancel) coCancel.addEventListener('click', closeCheckout);
+        if (coModalBg) coModalBg.addEventListener('click', function(e) { if (e.target === coModalBg) closeCheckout(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeCheckout(); });
+
+        // Radio-переключатели
+        document.querySelectorAll('.checkout-radio input[type="radio"]').forEach(function(inp) {
+            inp.addEventListener('change', function() {
+                var name = inp.getAttribute('name');
+                document.querySelectorAll('.checkout-radio input[name="' + name + '"]').forEach(function(other) {
+                    var parent = other.closest('.checkout-radio');
+                    if (parent) { if (other.checked) parent.classList.add('checked'); else parent.classList.remove('checked'); }
+                });
+            });
+        });
+
+        // Способ получения — доставка / самовывоз
+        document.querySelectorAll('input[name="co-delivery"]').forEach(function(inp) {
+            inp.addEventListener('change', function() {
+                if (!coAddressBlock) return;
+                if (inp.value === 'pickup') { coAddressBlock.style.display = 'none'; }
+                else { coAddressBlock.style.display = 'block'; }
+            });
+        });
+
+        // Отправка заказа
+        if (coForm) {
+            coForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var cart = getCart();
+                if (cart.length === 0) { showToast('Корзина пуста'); return; }
+                var name = (document.getElementById('co-name').value || '').trim();
+                var phone = (document.getElementById('co-phone').value || '').trim();
+                if (!name || !phone) { showToast('Заполните имя и телефон'); return; }
+
+                var deliveryEl = document.querySelector('input[name="co-delivery"]:checked');
+                var delivery = deliveryEl ? deliveryEl.value : 'delivery';
+                var paymentEl = document.querySelector('input[name="co-payment"]:checked');
+                var payment = paymentEl ? paymentEl.value : 'cash';
+
+                var order = {
+                    id: 'CMSK-' + Date.now(),
+                    date: new Date().toISOString(),
+                    customer: {
+                        name: name,
+                        phone: phone,
+                        email: (document.getElementById('co-email').value || '').trim()
+                    },
+                    delivery: delivery,
+                    address: delivery === 'delivery' ? {
+                        city: (document.getElementById('co-city').value || '').trim(),
+                        address: (document.getElementById('co-address').value || '').trim(),
+                        floor: (document.getElementById('co-floor').value || '').trim()
+                    } : null,
+                    payment: payment,
+                    comment: (document.getElementById('co-comment').value || '').trim(),
+                    items: cart,
+                    total: cartTotalSum(cart)
+                };
+
+                try {
+                    var orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+                    orders.push(order);
+                    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+                } catch (err) {}
+
+                saveCart([]);
+                updateFabCount();
+                renderCart();
+                closeCheckout();
+                coForm.reset();
+                showToast('Заказ ' + order.id + ' принят! Мы свяжемся с вами.');
+            });
+        }
+
+        window.CMSK_CART = { getCart: getCart, saveCart: saveCart, updateFabCount: updateFabCount, renderCart: renderCart, cartTotalQty: cartTotalQty, cartTotalSum: cartTotalSum, fmt: fmt, buildProductUrl: buildProductUrl };
         updateFabCount();
 
         // --- Модальное окно личного кабинета ---
@@ -1096,6 +1312,7 @@ function renderHomePage() {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCartScript() + '\n' +
@@ -1237,6 +1454,7 @@ function renderProductPage(category, product, firstOption) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         renderShareModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
@@ -1567,6 +1785,7 @@ function renderCatalogColorsPage() {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCatalogScript() + '\n' +
@@ -1969,6 +2188,7 @@ function renderDeliveryPage() {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCartScript() + '\n' +
@@ -2303,6 +2523,7 @@ function renderInfoPage() {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCartScript() + '\n' +
@@ -2452,6 +2673,7 @@ function renderOptPage() {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCartScript() + '\n' +
@@ -2745,6 +2967,7 @@ function renderCategoryPage(category, products) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCategoryScript(category) + '\n' +
@@ -2980,6 +3203,7 @@ function renderBrandPage(brandSlug, brandName, products) {
         '</div>\n</div>\n' +
         renderCartFab() + '\n' +
         renderCartModal() + '\n' +
+        renderCheckoutModal() + '\n' +
         renderAccountModal() + '\n' +
         '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
         renderCategoryScript('__brand__') + '\n' +
