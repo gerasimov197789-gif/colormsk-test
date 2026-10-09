@@ -918,7 +918,11 @@ function renderCartScript() {
         function openCheckout() {
             var cart = getCart();
             if (cart.length === 0) return;
-            if (coTotalSum) coTotalSum.textContent = fmt(cartTotalSum(cart)) + ' ₽';
+                        if (coTotalSum) {
+                var __s = 0;
+                cart.forEach(function(it) { __s += (parseInt(it.price) || 0) * (parseInt(it.qty) || 1); });
+                coTotalSum.textContent = fmt(__s) + ' ₽';
+            }
             if (coModalBg) coModalBg.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
