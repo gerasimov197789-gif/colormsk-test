@@ -226,7 +226,7 @@ function renderSidebarRight() {
         <div class="t-sidebar-card">
             <h3>Каталоги цветов</h3>
             <p>Более 15 000 оттенков по RAL, NCS, Monicolor.</p>
-            <a href="/catalog-colors.html" class="t-sidebar-card-btn">Перейти в каталог</a>
+            <a href="/catalog-colors" class="t-sidebar-card-btn">Перейти в каталог</a>
         </div>
         <div class="t-sidebar-card">
             <h3>Полезная информация</h3>
