@@ -1,8 +1,9 @@
-﻿User-Agent: *
-Allow: /
-
+User-agent: *
+Disallow: /cart
+Disallow: /checkout
 Disallow: /account
 Disallow: /account.html
 Disallow: /admin
+Disallow: /search
 
 Sitemap: https://colormsk.ru/sitemap.xml
