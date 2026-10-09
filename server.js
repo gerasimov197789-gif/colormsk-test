@@ -235,6 +235,11 @@ function renderSidebarRight() {
             <p>Основные сведения о ЛКМ, технологии окраски.</p>
             <a href="/info" class="t-sidebar-card-btn">Читать подробнее</a>
         </div>
+        <div class="t-sidebar-card">
+            <h3>Оптовые поставки</h3>
+            <p>Для строительных организаций и магазинов.</p>
+            <a href="/opt" class="t-sidebar-card-btn">Условия опта</a>
+        </div>
     </aside>`;
 }
 
@@ -242,8 +247,8 @@ function renderFooter() {
     return `<footer class="t-seo-footer">
         <div style="max-width:1200px;margin:0 auto;">
             <h3>Лакокрасочные материалы в Москве — ColorMSK / Колор МСК</h3>
-            <p>Магазин лакокрасочных материалов «Колор МСК» предлагает <strong>купить краску, эмаль, лак, грунтовку, антисептик</strong> и декоративные штукатурки в Москве с доставкой. Работаем с розничными и оптовыми покупателями. <strong>Промышленные лакокрасочные материалы — поставщик Москва</strong> — от ведущих производителей: <a href="/symphony.html">SYMPHONY (Симфония)</a>, <a href="/decotech.html">DecoTech (Декотек)</a>.</p>
-            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt.html">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka">Доставка и оплата</a> — по Москве, МО и РФ.</p>
+            <p>Магазин лакокрасочных материалов «Колор МСК» предлагает <strong>купить краску, эмаль, лак, грунтовку, антисептик</strong> и декоративные штукатурки в Москве с доставкой. Работаем с розничными и оптовыми покупателями. <strong>Промышленные лакокрасочные материалы — поставщик Москва</strong> — от ведущих производителей: <a href="/brands/symphony">SYMPHONY (Симфония)</a>, <a href="/brands/decotech">DecoTech (Декотек)</a>.</p>
+            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka">Доставка и оплата</a> — по Москве, МО и РФ.</p>
         </div>
     </footer>`;
 }
@@ -517,7 +522,7 @@ function renderStyles() {
             .cart-fab-wrap { bottom: 12px; right: 12px; }
         }
 
-        /* --- Информационные страницы (Доставка, Инфо, Каталог цветов) --- */
+        /* --- Информационные страницы (Доставка, Инфо, Каталог цветов, Опт) --- */
         .info-page { background: rgba(255,255,255,.97); border-radius: 14px; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,.06); max-width: 1000px; margin: 0 auto; }
         .info-page h1 { font-size: 30px; font-weight: 700; color: #1a2a3a; margin-bottom: 8px; }
         .info-page .info-intro { font-size: 15px; color: #6a7a8a; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid #f0f2f5; }
@@ -629,6 +634,20 @@ function renderStyles() {
         .info-page .info-faq-item:last-child { border-bottom: none; }
         .info-page .info-faq-q { font-size: 15px; font-weight: 600; color: #1a2a3a; display: block; margin-bottom: 6px; }
         .info-page .info-faq-a { font-size: 14px; color: #4a5a6a; margin: 0; line-height: 1.7; }
+
+        /* --- Оптовые поставки: карточки и шаги --- */
+        .info-page .t-opt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin: 16px 0; }
+        .info-page .t-opt-card { background: #f8faff; border-radius: 12px; padding: 18px 20px; border-left: 4px solid #2c6b9e; }
+        .info-page .t-opt-card h3 { font-size: 16px; font-weight: 700; color: #1a2a3a; margin: 0 0 6px; padding: 0; }
+        .info-page .t-opt-card h3::before { display: none; }
+        .info-page .t-opt-card p { font-size: 14px; color: #4a5a6a; margin: 0; line-height: 1.5; }
+        .info-page .t-steps { counter-reset: step; list-style: none; margin: 16px 0; padding: 0; }
+        .info-page .t-steps li { counter-increment: step; position: relative; padding: 14px 20px 14px 60px; margin-bottom: 12px; background: #f8faff; border-radius: 12px; border: 1px solid #eaeef3; font-size: 14px; color: #4a5a6a; line-height: 1.6; }
+        .info-page .t-steps li::before { content: counter(step); position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: #2c6b9e; color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+        .info-page .t-steps li strong { color: #1a2a3a; display: block; margin-bottom: 4px; }
+        @media (max-width: 700px) {
+            .info-page .t-opt-grid { grid-template-columns: 1fr; }
+        }
 
         /* --- Модальное окно товара (для страницы /info) --- */
         .info-product-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26,42,58,.65); z-index: 999999; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -1433,7 +1452,7 @@ function renderProductScript(product, category) {
 // === ЧАСТЬ 5 из 5 ===
 // ============================================================
 // renderCatalogColorsPage, renderCatalogScript, renderDeliveryPage,
-// renderInfoPage, renderInfoProductModalScript,
+// renderInfoPage, renderOptPage, renderInfoProductModalScript,
 // renderCategoryPage, renderCategoryScript, renderBrandPage, роуты
 // ============================================================
 
@@ -2288,6 +2307,154 @@ function renderInfoPage() {
 }
 
 // ============================================================
+// СТРАНИЦА: ОПТОВЫЕ ПОСТАВКИ
+// ============================================================
+function renderOptPage() {
+    const pageUrl = SITE_URL + '/opt';
+    const title = 'Оптовые поставки ЛКМ — КолорМСК';
+    const description = 'Оптовые поставки лакокрасочных материалов в Москве. Минимальная партия от 100 000 ₽. Скидки обсуждаются индивидуально. Доставка по РФ.';
+
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": "Оптовые поставки", "item": pageUrl }
+        ]
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + pageUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › Оптовые поставки</div>\n' +
+        '<div class="info-page">\n' +
+
+        '<h1>Оптовые поставки ЛКМ</h1>\n' +
+        '<p class="info-intro">Оптовые поставки лакокрасочных материалов для строительных организаций, ремонтных бригад и розничных магазинов. Работаем с юридическими лицами и ИП.</p>\n' +
+
+        '<h2>Кому подходит опт</h2>\n' +
+        '<div class="t-opt-grid">\n' +
+        '<div class="t-opt-card">\n' +
+        '<h3>Строительным организациям</h3>\n' +
+        '<p>Для объектов любого масштаба: жилых, коммерческих, промышленных.</p>\n' +
+        '</div>\n' +
+        '<div class="t-opt-card">\n' +
+        '<h3>Ремонтным бригадам</h3>\n' +
+        '<p>Регулярные закупки материалов для отделочных работ.</p>\n' +
+        '</div>\n' +
+        '<div class="t-opt-card">\n' +
+        '<h3>Розничным магазинам</h3>\n' +
+        '<p>Пополнение ассортимента для перепродажи.</p>\n' +
+        '</div>\n' +
+        '<div class="t-opt-card">\n' +
+        '<h3>Подрядчикам</h3>\n' +
+        '<p>Комплексные поставки на тендеры и крупные проекты.</p>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<h2>Условия опта</h2>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Минимальная партия:</strong> от <strong>100 000 ₽</strong>.\n' +
+        '</div>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Скидки:</strong> обсуждаются <strong>индивидуально</strong> по вашему запросу. Учитываем объём, регулярность закупок и условия сотрудничества.\n' +
+        '</div>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Отсрочка платежа:</strong> обсуждается индивидуально для постоянных клиентов.\n' +
+        '</div>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Персональный менеджер:</strong> закрепляется за каждым оптовым клиентом.\n' +
+        '</div>\n' +
+
+        '<h2>Как получить прайс и оформить заказ</h2>\n' +
+        '<ol class="t-steps">\n' +
+        '<li>\n' +
+        '<strong>Свяжитесь с нами</strong>\n' +
+        'Позвоните по телефону +7 (903) 669-25-34 или напишите на info@colormsk.ru.\n' +
+        '</li>\n' +
+        '<li>\n' +
+        '<strong>Согласуйте условия</strong>\n' +
+        'Обсудим объём, скидку и сроки. Вышлем актуальный прайс-лист.\n' +
+        '</li>\n' +
+        '<li>\n' +
+        '<strong>Оформите заявку</strong>\n' +
+        'Пришлите список товаров и реквизиты для выставления счёта.\n' +
+        '</li>\n' +
+        '<li>\n' +
+        '<strong>Получите товар</strong>\n' +
+        'Отгружаем со склада в Москве. Доставка ТК в любой регион РФ.\n' +
+        '</li>\n' +
+        '</ol>\n' +
+
+        '<h2>Преимущества работы с нами</h2>\n' +
+        '<ul>\n' +
+        '<li><strong>Прямой поставщик.</strong> Работаем без посредников, что даёт лучшие цены.</li>\n' +
+        '<li><strong>Склад в Москве.</strong> Быстрая отгрузка — не нужно ждать поставки.</li>\n' +
+        '<li><strong>Доставка по РФ.</strong> Отправляем транспортными компаниями (СДЭК, Деловые Линии, ПЭК).</li>\n' +
+        '<li><strong>Полный пакет документов.</strong> Счёт, УПД, товарные накладные, сертификаты.</li>\n' +
+        '<li><strong>Гибкие условия.</strong> Подберём оптимальные условия под ваш объём закупок.</li>\n' +
+        '</ul>\n' +
+
+        '<h2>Частые вопросы</h2>\n' +
+        '<div class="info-faq">\n' +
+        '<details>\n' +
+        '<summary>Какая минимальная партия для опта?</summary>\n' +
+        '<p>Минимальная сумма оптового заказа — <strong>100 000 ₽</strong>. Если сумма меньше — можно оформить обычный розничный заказ.</p>\n' +
+        '</details>\n' +
+        '<details>\n' +
+        '<summary>Какие скидки вы предоставляете?</summary>\n' +
+        '<p>Скидки <strong>рассчитываются индивидуально</strong> в зависимости от объёма, регулярности закупок и других условий. Свяжитесь с нами для расчёта.</p>\n' +
+        '</details>\n' +
+        '<details>\n' +
+        '<summary>Работаете ли вы с отсрочкой платежа?</summary>\n' +
+        '<p>Да, для постоянных клиентов возможна отсрочка. Условия обсуждаются индивидуально.</p>\n' +
+        '</details>\n' +
+        '<details>\n' +
+        '<summary>Можно ли получить сертификаты на товары?</summary>\n' +
+        '<p>Да, предоставляем все необходимые сертификаты и документы на продукцию.</p>\n' +
+        '</details>\n' +
+        '<details>\n' +
+        '<summary>Как быстро отгружаете заказ?</summary>\n' +
+        '<p>Отгрузка со склада в Москве — <strong>в течение 1–2 рабочих дней</strong> после оплаты. Точные сроки согласуем при оформлении.</p>\n' +
+        '</details>\n' +
+        '</div>\n' +
+
+        '<div class="info-contact">\n' +
+        '<h3>Обсудить оптовые поставки</h3>\n' +
+        '<p>Свяжитесь с нами — рассчитаем скидку и условия</p>\n' +
+        '<p><a href="tel:+79036692534">+7 (903) 669-25-34</a></p>\n' +
+        '<p><a href="mailto:info@colormsk.ru">info@colormsk.ru</a></p>\n' +
+        '</div>\n' +
+
+        '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
+        '</body>\n</html>';
+}
+
+// ============================================================
 // КЛИЕНТСКИЙ СКРИПТ: Модальное окно товара (для страницы /info)
 // ============================================================
 function renderInfoProductModalScript() {
@@ -2911,6 +3078,13 @@ app.get('/catalog-colors', (req, res) => {
 // ------------------------------------------------------------
 app.get('/info', (req, res) => {
     res.send(renderInfoPage());
+});
+
+// ------------------------------------------------------------
+// Роут: страница «Оптовые поставки»
+// ------------------------------------------------------------
+app.get('/opt', (req, res) => {
+    res.send(renderOptPage());
 });
 
 app.get('/:category', (req, res) => {
