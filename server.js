@@ -787,7 +787,13 @@ function renderCartScript() {
         if (cartModalClose) cartModalClose.addEventListener('click', function() { cartModalBg.classList.remove('open'); });
         if (cartModalBg) cartModalBg.addEventListener('click', function(e) { if (e.target === cartModalBg) cartModalBg.classList.remove('open'); });
         if (cartBtnClear) cartBtnClear.addEventListener('click', function() { saveCart([]); updateFabCount(); renderCart(); });
-        if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() { alert('Оформление заказа — следующий этап разработки.'); });
+                if (cartBtnCheckout) cartBtnCheckout.addEventListener('click', function() {
+            var t = document.createElement('div');
+            t.textContent = 'Оформление заказа — скоро. Позвоните: +7 (903) 669-25-34';
+            t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a2a3a;color:#fff;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 8px 24px rgba(0,0,0,.3);';
+            document.body.appendChild(t);
+            setTimeout(function() { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){ t.remove(); }, 300); }, 2500);
+        });
 
         window.CMSK_CART = { getCart: getCart, saveCart: saveCart, updateFabCount: updateFabCount, renderCart: renderCart, cartTotalQty: cartTotalQty, fmt: fmt, buildProductUrl: buildProductUrl };
         updateFabCount();
