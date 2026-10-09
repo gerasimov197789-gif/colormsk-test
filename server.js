@@ -161,6 +161,7 @@ function renderHitsBlock() {
         <div class="hits-grid" id="hits-grid"></div>
     </div>`;
 }
+
 // ============================================================
 // === ЧАСТЬ 2 из 5 ===
 // ============================================================
@@ -231,7 +232,7 @@ function renderSidebarRight() {
         <div class="t-sidebar-card">
             <h3>Полезная информация</h3>
             <p>Основные сведения о ЛКМ, технологии окраски.</p>
-            <a href="/info.html" class="t-sidebar-card-btn">Читать подробнее</a>
+            <a href="/info" class="t-sidebar-card-btn">Читать подробнее</a>
         </div>
     </aside>`;
 }
@@ -241,7 +242,7 @@ function renderFooter() {
         <div style="max-width:1200px;margin:0 auto;">
             <h3>Лакокрасочные материалы в Москве — ColorMSK / Колор МСК</h3>
             <p>Магазин лакокрасочных материалов «Колор МСК» предлагает <strong>купить краску, эмаль, лак, грунтовку, антисептик</strong> и декоративные штукатурки в Москве с доставкой. Работаем с розничными и оптовыми покупателями. <strong>Промышленные лакокрасочные материалы — поставщик Москва</strong> — от ведущих производителей: <a href="/symphony.html">SYMPHONY (Симфония)</a>, <a href="/decotech.html">DecoTech (Декотек)</a>.</p>
-            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt.html">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka.html">Доставка и оплата</a> — по Москве, МО и РФ.</p>
+            <p><strong>Купить лакокрасочные материалы оптом в Москве</strong> можно по телефону <a href="tel:+79036692534">+7 (903) 669-25-34</a> или на сайте colormsk.ru. <a href="/opt.html">Оптовые поставки ЛКМ</a> — для строительных организаций. <a href="/dostavka">Доставка и оплата</a> — по Москве, МО и РФ.</p>
         </div>
     </footer>`;
 }
@@ -596,8 +597,46 @@ function renderStyles() {
             .color-swatch { width: 50px; height: 50px; }
         }
         
+        /* --- Дополнения для страницы "Полезная информация" --- */
+        .info-page .info-contents { background: #f8faff; border-radius: 12px; padding: 20px 24px; margin-bottom: 30px; border: 1px solid #eaeef3; }
+        .info-page .info-contents h3 { font-size: 18px; font-weight: 700; color: #1a2a3a; margin-bottom: 12px; padding-left: 0; }
+        .info-page .info-contents h3::before { display: none; }
+        .info-page .info-contents ul { list-style: none; padding: 0; margin: 0; }
+        .info-page .info-contents li { padding: 6px 0; border-bottom: 1px solid #f0f2f5; }
+        .info-page .info-contents li:last-child { border-bottom: none; }
+        .info-page .info-contents a { color: #2c6b9e; text-decoration: none; font-size: 14px; }
+        .info-page .info-contents a:hover { color: #1a2a3a; text-decoration: underline; }
+        .info-page .info-article { margin-bottom: 36px; padding-bottom: 30px; border-bottom: 2px solid #f0f2f5; }
+        .info-page .info-article:last-child { border-bottom: none; }
+        .info-page .info-article h3 { font-size: 19px; font-weight: 600; color: #2c3e50; margin: 20px 0 10px; padding-left: 0; }
+        .info-page .info-article h3::before { display: none; }
+        .info-page .info-article h4 { font-size: 16px; font-weight: 600; color: #2c3e50; margin: 14px 0 8px; }
+        .info-page .info-scheme { display: flex; flex-wrap: wrap; gap: 12px; background: #f8faff; border-radius: 12px; padding: 16px; margin: 12px 0; align-items: center; justify-content: center; border-left: 4px solid #2c7a3e; }
+        .info-page .info-scheme-item { text-align: center; padding: 8px 12px; font-size: 14px; }
+        .info-page .info-scheme-item strong { display: block; font-size: 16px; color: #1a2a3a; margin-bottom: 2px; }
+        .info-page .t-product-link { color: #2c6b9e; font-weight: 600; text-decoration: none; border-bottom: 1px dashed #2c6b9e; transition: all .2s; cursor: pointer; }
+        .info-page .t-product-link:hover { color: #1a4a6e; border-bottom-style: solid; }
+        .info-page .info-shop-link { display: flex; align-items: flex-start; gap: 16px; background: linear-gradient(135deg,#f0f8ff,#e8f4f8); border-radius: 12px; padding: 16px 20px; margin: 20px 0 10px; border: 1px solid #d0e4ed; }
+        .info-page .info-shop-icon { font-size: 32px; flex-shrink: 0; }
+        .info-page .info-shop-link strong { font-size: 15px; color: #1a2a3a; display: block; margin-bottom: 2px; }
+        .info-page .info-shop-link p { font-size: 13px; color: #4a5a6a; margin: 2px 0 10px; }
+        .info-page .info-shop-btn { display: inline-block; background: #2c6b9e; color: #fff; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; }
+        .info-page .info-shop-btn:hover { background: #1a4a6e; }
+        .info-page .info-related { background: #f8faff; border-radius: 16px; padding: 20px 24px; margin: 30px 0 20px; border: 1px solid #eaeef3; }
+        .info-page .info-related h3 { font-size: 18px; font-weight: 700; color: #1a2a3a; margin-bottom: 12px; padding-left: 0; }
+        .info-page .info-related h3::before { display: none; }
+        .info-page .info-related-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .info-page .info-related-link { background: #fff; padding: 6px 14px; border-radius: 20px; font-size: 14px; color: #2c6b9e; text-decoration: none; border: 1px solid #dce3ec; transition: all .2s; }
+        .info-page .info-related-link:hover { background: #2c6b9e; color: #fff; border-color: #2c6b9e; }
+        .info-page .info-faq-title { font-size: 20px; font-weight: 700; color: #1a2a3a; margin-bottom: 16px; padding-left: 0; }
+        .info-page .info-faq-title::before { display: none; }
+        .info-page .info-faq-item { border-bottom: 1px solid #eaeef3; padding: 14px 0; }
+        .info-page .info-faq-item:last-child { border-bottom: none; }
+        .info-page .info-faq-q { font-size: 15px; font-weight: 600; color: #1a2a3a; display: block; margin-bottom: 6px; }
+        .info-page .info-faq-a { font-size: 14px; color: #4a5a6a; margin: 0; line-height: 1.7; }
     </style>`;
 }
+
 // ============================================================
 // === ЧАСТЬ 3 из 5 ===
 // ============================================================
@@ -883,10 +922,11 @@ function renderSearchScript() {
     })();
     </script>`;
 }
+
 // ============================================================
 // === ЧАСТЬ 4 из 5 ===
 // ============================================================
-// renderShareModal, renderProductPage, renderProductScript
+// renderShareModal, renderHomePage, renderProductPage, renderProductScript
 // ============================================================
 
 function renderShareModal() {
@@ -1351,12 +1391,15 @@ function renderProductScript(product, category) {
     })();
     </script>`;
 }
+
 // ============================================================
 // === ЧАСТЬ 5 из 5 ===
 // ============================================================
-// renderCategoryPage, renderCategoryScript, renderBrandPage, роуты
+// renderCatalogColorsPage, renderCatalogScript, renderDeliveryPage,
+// renderInfoPage, renderCategoryPage, renderCategoryScript,
+// renderBrandPage, роуты
 // ============================================================
-// ============================================================
+
 // ============================================================
 // СТРАНИЦА: КАТАЛОГ ЦВЕТОВ
 // ============================================================
@@ -1470,6 +1513,7 @@ function renderCatalogColorsPage() {
         renderSearchScript() + '\n' +
         '</body>\n</html>';
 }
+
 // ============================================================
 // КЛИЕНТСКИЙ СКРИПТ КАТАЛОГА ЦВЕТОВ
 // ============================================================
@@ -1587,7 +1631,7 @@ function renderCatalogScript() {
         {code:'RAL 9006',name:'Алюминиево-белый',group:'ral-black'},{code:'RAL 9007',name:'Алюминиево-серый',group:'ral-black'},
         {code:'RAL 9011',name:'Графитовый чёрный',group:'ral-black'},{code:'RAL 9017',name:'Транспортный чёрный',group:'ral-black'}
     ];
-    
+
     var symphonyColors = [
         {code:'S0101-A',name:'Бледно-жёлтый',group:'sym-yellow',base:'A'},{code:'S0102-A',name:'Соломенный',group:'sym-yellow',base:'A'},
         {code:'S0103-A',name:'Светлый соломенный',group:'sym-yellow',base:'A'},{code:'S0104-A',name:'Золотистый соломенный',group:'sym-yellow',base:'A'},
@@ -1678,14 +1722,14 @@ function renderCatalogScript() {
         {code:'N2019-C',name:'Тёмный мох',group:'sym-cold',base:'C'},{code:'N2020-A',name:'Туман',group:'sym-cold',base:'A'},
         {code:'N2021-A',name:'Светлый туман',group:'sym-cold',base:'A'}
     ];
-    
+
     function getRALColor(code) {
         var map = {
             'RAL 1000':'#C7B89E','RAL 1001':'#D1B894','RAL 1002':'#D2B773','RAL 1003':'#F7C030','RAL 1004':'#E3B82C','RAL 1005':'#C9A96B','RAL 1006':'#E3A832','RAL 1007':'#E79A2A','RAL 1011':'#B79A78','RAL 1012':'#D4B86A','RAL 1013':'#E9DFCE','RAL 1014':'#D9C8A8','RAL 1015':'#E8DCC8','RAL 1016':'#E1D84A','RAL 1017':'#E8B85A','RAL 1018':'#E8C84A','RAL 1019':'#B8A898','RAL 1020':'#A8A078','RAL 1021':'#E8B84A','RAL 1023':'#F0C830','RAL 1024':'#C8A868','RAL 1026':'#FFFF00','RAL 1027':'#A89038','RAL 1028':'#F0A830','RAL 1032':'#D8B848','RAL 1033':'#E8B84A','RAL 1034':'#E8C850','RAL 2000':'#D88228','RAL 2001':'#C06828','RAL 2002':'#C83828','RAL 2003':'#F0A848','RAL 2004':'#E85828','RAL 2005':'#FF2A00','RAL 2007':'#FFA800','RAL 2008':'#E86828','RAL 2009':'#E85818','RAL 2010':'#C84828','RAL 2011':'#D87028','RAL 2012':'#D87858','RAL 3000':'#A82828','RAL 3001':'#A82820','RAL 3002':'#A82828','RAL 3003':'#882828','RAL 3004':'#702028','RAL 3005':'#581820','RAL 3007':'#381018','RAL 3009':'#682820','RAL 3011':'#782020','RAL 3012':'#C8A088','RAL 3013':'#B84028','RAL 3014':'#D8A098','RAL 3015':'#D8B8B0','RAL 3016':'#B03838','RAL 3017':'#D05868','RAL 3018':'#C82848','RAL 3020':'#C01818','RAL 3022':'#D89878','RAL 3024':'#FF1A1A','RAL 3026':'#FF2828','RAL 3027':'#B02038','RAL 3031':'#A83848','RAL 4001':'#8A5A78','RAL 4002':'#882858','RAL 4003':'#D06898','RAL 4004':'#681838','RAL 4005':'#5A4878','RAL 4006':'#882858','RAL 4007':'#482048','RAL 4008':'#8828A8','RAL 4009':'#C8A8B8','RAL 4010':'#B82868','RAL 5000':'#284878','RAL 5001':'#285878','RAL 5002':'#2848A8','RAL 5003':'#284878','RAL 5004':'#182838','RAL 5005':'#1848A8','RAL 5007':'#4878A8','RAL 5008':'#384858','RAL 5009':'#286878','RAL 5010':'#2858A8','RAL 5011':'#182838','RAL 5012':'#3888B8','RAL 5013':'#182868','RAL 5014':'#6898A8','RAL 5015':'#4888C8','RAL 5017':'#1858A8','RAL 5018':'#289888','RAL 5019':'#1868A8','RAL 5020':'#183848','RAL 5021':'#188898','RAL 5022':'#282858','RAL 5023':'#4878A0','RAL 5024':'#88A8C8','RAL 6000':'#487868','RAL 6001':'#387848','RAL 6002':'#487838','RAL 6003':'#687848','RAL 6004':'#287868','RAL 6005':'#487838','RAL 6006':'#687858','RAL 6007':'#284828','RAL 6008':'#484838','RAL 6009':'#284828','RAL 6010':'#688838','RAL 6011':'#88A878','RAL 6012':'#283828','RAL 6013':'#887848','RAL 6014':'#685848','RAL 6015':'#384838','RAL 6016':'#188858','RAL 6017':'#78A838','RAL 6018':'#88B838','RAL 6019':'#B8D8B8','RAL 6020':'#485838','RAL 6021':'#88A880','RAL 6022':'#685848','RAL 6024':'#389838','RAL 6025':'#789848','RAL 6026':'#287858','RAL 6027':'#88C8B8','RAL 6028':'#487848','RAL 6029':'#388848','RAL 6032':'#389838','RAL 6033':'#58A898','RAL 6034':'#88C8B8','RAL 7000':'#888888','RAL 7001':'#A8A8A8','RAL 7002':'#888878','RAL 7003':'#787878','RAL 7004':'#989898','RAL 7005':'#888888','RAL 7006':'#887868','RAL 7008':'#787858','RAL 7009':'#687868','RAL 7010':'#586858','RAL 7011':'#586868','RAL 7012':'#686868','RAL 7013':'#787868','RAL 7015':'#586068','RAL 7016':'#484848','RAL 7021':'#383838','RAL 7022':'#484848','RAL 7023':'#888888','RAL 7024':'#585858','RAL 7026':'#484848','RAL 7030':'#989898','RAL 7031':'#788898','RAL 7032':'#B8B8A8','RAL 7033':'#888888','RAL 7034':'#988868','RAL 7035':'#C8C8C8','RAL 7036':'#A89898','RAL 7037':'#888888','RAL 7038':'#B8B8B8','RAL 7039':'#787878','RAL 7040':'#A8A8A8','RAL 7042':'#989898','RAL 7043':'#888888','RAL 7044':'#B8B8A8','RAL 7045':'#989898','RAL 7046':'#888888','RAL 7047':'#C8C8C8','RAL 8000':'#887858','RAL 8001':'#987858','RAL 8002':'#886848','RAL 8003':'#786838','RAL 8004':'#886848','RAL 8007':'#786848','RAL 8008':'#786848','RAL 8011':'#685848','RAL 8012':'#684838','RAL 8014':'#685848','RAL 8015':'#684838','RAL 8016':'#584838','RAL 8017':'#584838','RAL 8019':'#585048','RAL 8022':'#383838','RAL 8023':'#A86838','RAL 8024':'#887058','RAL 8025':'#887868','RAL 8028':'#685848','RAL 9001':'#E8E0D8','RAL 9002':'#D8D8D0','RAL 9003':'#F0F0F0','RAL 9004':'#282828','RAL 9005':'#181818','RAL 9006':'#C8C8C8','RAL 9007':'#888888','RAL 9010':'#F0F0E8','RAL 9011':'#282828','RAL 9016':'#F0F0F0','RAL 9017':'#282828','RAL 9018':'#D8D8D0'
         };
         return map[code] || '#CCCCCC';
     }
-    
+
     function getSymphonyColor(code) {
         var map = {
             'S0101-A':'#F5E6C8','S0102-A':'#F0D8B8','S0103-A':'#F0D0B0','S0104-A':'#E8C8A0','S0105-A':'#F0D8A0','S0106-A':'#E8C888','S0107-A':'#E0B870','S0108-C':'#D8A050','S0201-A':'#F0E060','S0202-A':'#E8D050','S0203-C':'#F0D030','S0204-C':'#E8C020','S0301-A':'#F0D840','S0302-A':'#E8C830','S0303-C':'#F0C020','S0304-C':'#E8B010','S0401-A':'#E8C830','S0402-A':'#E0B820','S0403-C':'#E8A810','S0404-C':'#D89808','S0501-A':'#E8A830','S0502-A':'#E09820','S0503-C':'#F09018','S0504-C':'#E88008','S0601-A':'#E89820','S0602-A':'#E08818','S0603-C':'#F07810','S0604-C':'#E06808','S1001-A':'#F0E0C8','S1002-A':'#EAD8B8','S1003-A':'#E8D0B0','S1004-A':'#E0C8A0','S1005-A':'#D8C098','S1006-A':'#F0E8D0','S1007-A':'#E8E0C8','S1101-A':'#E0C8A0','S1102-A':'#D8C098','S1103-A':'#D0B888','S1104-A':'#C8A878','S1201-A':'#E0C090','S1202-A':'#D8B888','S1203-A':'#D0B078','S1204-A':'#C8A068','S1301-A':'#E8D8B8','S1302-A':'#E0D0B0','S1303-A':'#D8C8A8','S2001-A':'#B8A088','S2002-A':'#A89078','S2003-A':'#A08870','S2004-A':'#987868','S2005-A':'#887058','S2006-A':'#786048','S2007-C':'#685038','S2101-A':'#A07860','S2102-A':'#906850','S2103-C':'#805840','S2201-A':'#785848','S2202-A':'#684838','S2203-C':'#583830','S2301-C':'#382828','S2302-C':'#302020','S2303-C':'#281818','S3001-A':'#F0D0C8','S3002-A':'#E8C0B8','S3003-A':'#E0B0A8','S3004-A':'#D8A098','S3005-A':'#D09088','S3006-A':'#E8A8A0','S3007-A':'#E08880','S3008-C':'#E06858','S3101-A':'#D89880','S3102-A':'#D08870','S3103-C':'#C87058','S3201-A':'#B06058','S3202-A':'#A85048','S3203-C':'#984038','S3301-A':'#884038','S3302-A':'#783028','S3303-C':'#682820','S3401-C':'#C03020','S3402-C':'#B02018','S4001-A':'#F0D8D8','S4002-A':'#E8C8C8','S4003-A':'#E0B8B8','S4004-A':'#D8A8A8','S4005-A':'#D09898','S4101-A':'#E8B098','S4102-A':'#E0A088','S4103-C':'#D88870','S4201-A':'#E898A0','S4202-C':'#E07888','S4203-C':'#D86878','S5001-A':'#E0D0E8','S5002-A':'#D0C0D8','S5003-A':'#C8B0D0','S5004-A':'#B8A0C0','S5101-A':'#C8B8D8','S5102-A':'#B8A8C8','S5103-C':'#A898B8','S5201-A':'#9868B8','S5202-C':'#8858A8','S5203-C':'#784898','S6001-A':'#C8E0F0','S6002-A':'#B0D0E8','S6003-A':'#98C0E0','S6004-A':'#88B0D0','S6005-A':'#A8C8E0','S6006-A':'#88B0C8','S6007-C':'#6898B8','S6101-A':'#5888C8','S6102-A':'#4878B8','S6103-C':'#3868A8','S6201-A':'#386898','S6202-C':'#285888','S6301-A':'#2878A8','S6302-A':'#206898','S6303-C':'#185888','S7001-A':'#C8E0C8','S7002-A':'#B0D0B0','S7003-A':'#98C098','S7004-A':'#88B088','S7101-A':'#A8D8B8','S7102-A':'#90C8A8','S7103-C':'#78B898','S7201-A':'#58B898','S7202-A':'#48A888','S7203-C':'#389878','S7301-A':'#388068','S7302-C':'#287058','S7303-C':'#186048','N1001-A':'#E8D8B8','N1002-A':'#E0D0B0','N1003-A':'#D8C8A8','N1004-A':'#D0C098','N1005-A':'#D8C098','N1006-A':'#D0B888','N1007-C':'#C8A878','N1008-C':'#C89868','N1009-C':'#C09060','N1010-C':'#B88858','N1011-A':'#B88848','N1012-A':'#B08040','N1013-C':'#A87838','N1014-A':'#B87038','N1015-C':'#A86830','N1016-A':'#A06848','N1017-C':'#906040','N1018-A':'#887058','N1019-C':'#786048','N2001-A':'#C8E8E8','N2002-A':'#B8D8D8','N2003-A':'#A8C8C8','N2004-A':'#88C8D8','N2005-A':'#78B8C8','N2006-C':'#68A8B8','N2007-A':'#D8E8E8','N2008-A':'#C8D8D8','N2009-C':'#B8C8C8','N2010-A':'#2888B8','N2011-C':'#2078A8','N2012-A':'#488868','N2013-A':'#407860','N2014-C':'#386858','N2015-A':'#285848','N2016-C':'#204838','N2017-A':'#689068','N2018-A':'#588058','N2019-C':'#487048','N2020-A':'#C8D8D0','N2021-A':'#B8C8C0'
@@ -1757,6 +1801,8 @@ function renderCatalogScript() {
     });
     </script>`;
 }
+
+// ============================================================
 // СТРАНИЦА: ДОСТАВКА И ОПЛАТА
 // ============================================================
 function renderDeliveryPage() {
@@ -1869,6 +1915,343 @@ function renderDeliveryPage() {
         '</body>\n</html>';
 }
 
+// ============================================================
+// СТРАНИЦА: ПОЛЕЗНАЯ ИНФОРМАЦИЯ
+// ============================================================
+function renderInfoPage() {
+    const pageUrl = SITE_URL + '/info';
+    const title = 'Полезная информация о ЛКМ — КолорМСК';
+    const description = 'Руководство по лакокрасочным материалам: выбор краски, подготовка поверхностей, технология нанесения, дефекты покрытий.';
+
+    const schemaBreadcrumbs = {
+        "@context": "https://schema.org/",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Главная", "item": SITE_URL + "/" },
+            { "@type": "ListItem", "position": 2, "name": "Полезная информация", "item": pageUrl }
+        ]
+    };
+
+    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>' + escapeHtml(title) + '</title>\n' +
+        '<meta name="description" content="' + escapeHtml(description) + '">\n' +
+        '<link rel="canonical" href="' + pageUrl + '">\n' +
+        renderAnalytics() + '\n' +
+        '<script type="application/ld+json">' + JSON.stringify(schemaBreadcrumbs) + '</script>\n' +
+        renderStyles() + '\n' +
+        '</head>\n<body>\n' +
+        renderHeader() + '\n' +
+        '<div class="t-layout">\n' +
+        renderSidebar('') + '\n' +
+        '<div class="t-main-wrap">\n' +
+        '<main class="t-main">\n' +
+        '<div class="breadcrumbs"><a href="/">Главная</a> › Полезная информация</div>\n' +
+        '<div class="info-page">\n' +
+
+        '<h1>Полезная информация</h1>\n' +
+        '<p class="info-intro">Руководство по лакокрасочным материалам: от выбора краски до технологии нанесения</p>\n' +
+
+        '<div class="info-contents">\n' +
+        '<h3>Содержание</h3>\n' +
+        '<ul>\n' +
+        '<li><a href="#section1">1. Основные сведения о лакокрасочных материалах</a></li>\n' +
+        '<li><a href="#section2">2. Окраска интерьера</a></li>\n' +
+        '<li><a href="#section4">3. Лакировка деревянных поверхностей</a></li>\n' +
+        '<li><a href="#section5">4. Защита и окраска деревянных фасадов</a></li>\n' +
+        '<li><a href="#section6">5. Защита и окраска каменных фасадов</a></li>\n' +
+        '<li><a href="#section7">6. Защита от коррозии металла</a></li>\n' +
+        '<li><a href="#section8">7. Малярный инструмент</a></li>\n' +
+        '<li><a href="#section9">8. Дефекты лакокрасочных покрытий</a></li>\n' +
+        '</ul>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section1">\n' +
+        '<h2>1. Основные сведения о лакокрасочных материалах</h2>\n' +
+        '<h3>Из чего состоит краска?</h3>\n' +
+        '<p>Окраска — традиционный метод отделки поверхностей. Общее назначение лакокрасочных покрытий — защита поверхности от внешних воздействий при одновременном придании ей определённого вида, цвета и фактуры.</p>\n' +
+        '<p><strong>Лакокрасочные покрытия</strong> образуются в результате пленкообразования (отверждения) <strong>лакокрасочных материалов</strong>, нанесённых на поверхность.</p>\n' +
+        '<p><strong>ЛКМ</strong> — это многокомпонентные составы, которые при нанесении тонким слоем формируют покрытия с заданным комплексом свойств.</p>\n' +
+        '<div class="info-scheme">\n' +
+        '<div class="info-scheme-item"><strong>30%</strong>Пленкообразующее</div>\n' +
+        '<div class="info-scheme-item"><strong>25%</strong>Пигменты и наполнители</div>\n' +
+        '<div class="info-scheme-item"><strong>5%</strong>Добавки</div>\n' +
+        '<div class="info-scheme-item"><strong>40%</strong>Растворитель</div>\n' +
+        '</div>\n' +
+        '<h4>Пленкообразующее вещество</h4>\n' +
+        '<p>Вещество, которое после нанесения образует сплошную плёнку с хорошей адгезией, способную выполнять защитные и декоративные функции.</p>\n' +
+        '<h4>Водно-дисперсионные краски</h4>\n' +
+        '<p>Отверждаются за счёт физического испарения воды. Состоят из дисперсной фазы и дисперсионной среды.</p>\n' +
+        '<h4>Краски на растворителях</h4>\n' +
+        '<p>Алкидные краски — раствор алкидной смолы в органическом растворителе.</p>\n' +
+        '<h4>Пигменты и наполнители</h4>\n' +
+        '<p>Пигменты придают цвет и укрывистость. Наполнители улучшают вязкость, прочность, влаго- и термостойкость.</p>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Отличие растворителя от разбавителя:</strong><br>\n' +
+        '<strong>Растворитель</strong> — растворяет связующее и понижает вязкость.<br>\n' +
+        '<strong>Разбавитель</strong> — не растворяет связующее, но понижает вязкость.\n' +
+        '</div>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Выбрать качественные ЛКМ</strong>\n' +
+        '<p>Перейдите в каталог и найдите идеальный материал.</p>\n' +
+        '<a href="/" class="info-shop-btn">Смотреть каталог →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section2">\n' +
+        '<h2>2. Окраска интерьера</h2>\n' +
+        '<p>Основная цель применения ЛКМ для интерьеров — создать уютную и здоровую обстановку.</p>\n' +
+        '<h3>Подготовка основания</h3>\n' +
+        '<p>Поверхность должна быть чистой, сухой, без жира и отслаивающейся краски. Выровнять шпатлёвкой, отшлифовать, удалить пыль, загрунтовать и только потом красить.</p>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Советы по шпатлеванию:</strong><br>\n' +
+        '• Очистите поверхность от грязи и пыли<br>\n' +
+        '• Температура 10–20 °С, влажность 30–60%<br>\n' +
+        '• После высыхания отшлифуйте<br>\n' +
+        '• Удалите пыль и загрунтуйте\n' +
+        '</div>\n' +
+        '<h4>Грунтование поверхности</h4>\n' +
+        '<p>Грунтовка улучшает адгезию, заполняет поры и выравнивает впитывающую способность.</p>\n' +
+        '<p><a href="#" data-sku="00-00009377" class="t-product-link">EURO-Balance primer</a> — грунтовка на акрилатной основе с антисептическими добавками.</p>\n' +
+        '<p><a href="#" data-sku="00-00009297" class="t-product-link">DEEP CONTACT</a> — адгезионная грунтовка для плотных оснований (бетон, кирпич, камень).</p>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Как выбрать краску для интерьера:</strong><br>\n' +
+        '• <strong>Потолки в сухих помещениях:</strong> матовые водоразбавляемые краски (<a href="#" data-sku="00-00008953" class="t-product-link">CABINET-Royal</a>, <a href="#" data-sku="00-01100281" class="t-product-link">EURO-Balance 2</a>)<br>\n' +
+        '• <strong>Стены в сухих помещениях:</strong> матовые, полуматовые (<a href="#" data-sku="00-01101606" class="t-product-link">AQUA-Marina</a>, <a href="#" data-sku="00-01100282" class="t-product-link">EURO-Balance 7</a>)<br>\n' +
+        '• <strong>Влажные помещения (кухни, ванные):</strong> полуматовые, полуглянцевые с повышенной стойкостью к мытью (<a href="#" data-sku="00-01100263" class="t-product-link">EURO-Life</a>)<br>\n' +
+        '• <strong>Детские комнаты:</strong> экологически чистые, сертифицированные\n' +
+        '</div>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Подберите краску для интерьера</strong>\n' +
+        '<p>Матовые, полуматовые, влагостойкие — для любых помещений.</p>\n' +
+        '<a href="/kraski-interiernye" class="info-shop-btn">Перейти в каталог →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section4">\n' +
+        '<h2>3. Лакировка деревянных поверхностей</h2>\n' +
+        '<p>Дерево — материал, созданный природой. Оно безопасно, поддерживает кислородный баланс и оптимальную влажность.</p>\n' +
+        '<h3>Нагрузки, падающие на древесину</h3>\n' +
+        '<ul>\n' +
+        '<li><strong>Повышенная влажность</strong> — гниение, плесень, грибки</li>\n' +
+        '<li><strong>Чрезмерная сухость</strong> — растрескивание, щели</li>\n' +
+        '<li><strong>УФ-излучение</strong> — потемнение и разрушение</li>\n' +
+        '<li><strong>Механические нагрузки</strong> — истирание, износ</li>\n' +
+        '</ul>\n' +
+        '<h3>Лакировка</h3>\n' +
+        '<p>Для сохранения текстуры и защиты поверхности требуется обработка дерева бесцветными или колеруемыми лаками.</p>\n' +
+        '<div class="info-scheme">\n' +
+        '<div class="info-scheme-item"><strong>Без покрытия</strong></div>\n' +
+        '<div class="info-scheme-item"><strong>Лак на акриловой основе</strong></div>\n' +
+        '<div class="info-scheme-item"><strong>Лак на алкидной основе</strong></div>\n' +
+        '</div>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Советы по лакировке:</strong><br>\n' +
+        '• Очистить от грязи и пыли<br>\n' +
+        '• Удалить смолу с сучков<br>\n' +
+        '• Заделать неровности шпатлёвкой по дереву<br>\n' +
+        '• Отшлифовать и удалить пыль\n' +
+        '</div>\n' +
+        '<h4>Ассортимент лаков SYMPHONY</h4>\n' +
+        '<ul>\n' +
+        '<li><a href="#" data-sku="00-01100994" class="t-product-link">RESTAVRATOR</a> — лак-антисептик для панелей, вагонки, досок, брёвен</li>\n' +
+        '<li><a href="#" data-sku="00-00013100" class="t-product-link">PREMIERA</a> — лак для мебели, дверей, стен</li>\n' +
+        '<li><a href="#" data-sku="00-00012980" class="t-product-link">HARDWOOD Aqua</a> — полиуретановый лак для паркета и полов</li>\n' +
+        '<li><a href="#" data-sku="00-00010734" class="t-product-link">NORDIC Sauna</a> — защитный состав для саун и бань</li>\n' +
+        '<li><a href="#" data-sku="00-00009554" class="t-product-link">HARDWOOD яхтный</a> — полиуретановый лак для наружных работ</li>\n' +
+        '</ul>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Подобрать лак для дерева</strong>\n' +
+        '<p>Акриловые, полиуретановые, яхтные — для любых задач.</p>\n' +
+        '<a href="/laki" class="info-shop-btn">Смотреть лаки SYMPHONY →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section5">\n' +
+        '<h2>4. Защита и окраска деревянных фасадов</h2>\n' +
+        '<p>Древесина обладает высокой прочностью, упругостью, низкой теплопроводностью, экологичностью и красивой текстурой.</p>\n' +
+        '<h3>Факторы, разрушающие древесину</h3>\n' +
+        '<ul>\n' +
+        '<li><strong>УФ-излучение</strong> — деструкция лигнина</li>\n' +
+        '<li><strong>Атмосферные осадки</strong> — гниение</li>\n' +
+        '<li><strong>Перепады температур</strong> — деформация, растрескивание</li>\n' +
+        '<li><strong>Биологические факторы</strong> — грибки, плесень, насекомые</li>\n' +
+        '</ul>\n' +
+        '<h3>Антисептики</h3>\n' +
+        '<p><a href="/antiseptiki" class="t-cat-link">Антисептики</a> — ЛКМ с биоцидными, фунгицидными и инсектицидными свойствами.</p>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Последовательность работ:</strong><br>\n' +
+        '1. Очистка от грязи, пыли, синевы<br>\n' +
+        '2. Удаление смолы из сучков<br>\n' +
+        '3. Обработка шляпок гвоздей грунтовкой<br>\n' +
+        '4. Грунтовочный антисептик<br>\n' +
+        '5. Покрывной материал в 2 слоя\n' +
+        '</div>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Защитить деревянный фасад</strong>\n' +
+        '<p>Антисептики для наружных работ.</p>\n' +
+        '<a href="/antiseptiki" class="info-shop-btn">Каталог антисептиков →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section6">\n' +
+        '<h2>5. Защита и окраска каменных фасадов</h2>\n' +
+        '<p>Окраска фасадов — важный этап. Правильный выбор фасадной краски обеспечивает защиту от атмосферных воздействий.</p>\n' +
+        '<h3>Требования к фасадным краскам</h3>\n' +
+        '<ul>\n' +
+        '<li><strong>Паропроницаемость</strong> — покрытие должно «дышать»</li>\n' +
+        '<li><strong>Водостойкость</strong> — не пропускать воду</li>\n' +
+        '<li><strong>Щелочестойкость</strong> — устойчивость к щелочной среде</li>\n' +
+        '<li><strong>Стойкость к УФ</strong> — сохранение цвета</li>\n' +
+        '</ul>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Ассортимент фасадных красок SYMPHONY:</strong><br>\n' +
+        '• <a href="#" data-sku="00-01101608" class="t-product-link">EURO-Balance Facade Aqua</a> — водоразбавляемая акриловая<br>\n' +
+        '• <a href="#" data-sku="00-00010827" class="t-product-link">EURO-Balance Facade Nord</a> — акриловая на растворителях (до -20°С)<br>\n' +
+        '• <a href="#" data-sku="00-01100250" class="t-product-link">EURO-Balance Facade Siloxan</a> — силоксанмодифицированная\n' +
+        '</div>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Выбрать фасадную краску</strong>\n' +
+        '<p>Для фасадов, цоколей и заборов.</p>\n' +
+        '<a href="/kraski-fasadnye" class="info-shop-btn">Каталог фасадных красок →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section7">\n' +
+        '<h2>6. Защита от коррозии металла</h2>\n' +
+        '<p><strong>Коррозия</strong> — разрушение металлов при взаимодействии с внешней средой.</p>\n' +
+        '<h3>Способы защиты</h3>\n' +
+        '<ol>\n' +
+        '<li><strong>Легирование</strong> — введение никеля, хрома, титана</li>\n' +
+        '<li><strong>Металлические покрытия</strong> — гальваника</li>\n' +
+        '<li><strong>Лакокрасочные покрытия</strong> — грунтовка + финиш</li>\n' +
+        '</ol>\n' +
+        '<h4>Антикоррозионные материалы SYMPHONY</h4>\n' +
+        '<ul>\n' +
+        '<li><a href="#" data-sku="00-00011318" class="t-product-link">FerOx-Stopper</a> — противокоррозионная грунтовка для чёрных металлов</li>\n' +
+        '<li><a href="#" data-sku="00-00009949" class="t-product-link">WINNER</a> — полиуретановая эмаль с противокоррозионными пигментами</li>\n' +
+        '</ul>\n' +
+        '<div class="info-shop-link">\n' +
+        '<span class="info-shop-icon">КАТАЛОГ</span>\n' +
+        '<div>\n' +
+        '<strong>Защитить металл от коррозии</strong>\n' +
+        '<p>Грунтовки и эмали для стали, оцинковки и алюминия.</p>\n' +
+        '<a href="/alkidnye-kraski" class="info-shop-btn">Каталог эмалей →</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section8">\n' +
+        '<h2>7. Малярный инструмент</h2>\n' +
+        '<h4>Виды кистей</h4>\n' +
+        '<ul>\n' +
+        '<li><strong>Маховые</strong> — для больших поверхностей</li>\n' +
+        '<li><strong>Ручники</strong> — для окон, дверей, плинтусов</li>\n' +
+        '<li><strong>Флейцевые</strong> — для ровного нанесения</li>\n' +
+        '<li><strong>Филеночные</strong> — для узких полосок</li>\n' +
+        '</ul>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Как выбрать кисть:</strong><br>\n' +
+        '• Для алкидных и масляных красок — натуральный ворс<br>\n' +
+        '• Для акриловых и водно-дисперсионных — искусственный ворс\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-article" id="section9">\n' +
+        '<h2>8. Дефекты лакокрасочных покрытий</h2>\n' +
+        '<p>Дефекты возникают из-за низкого качества краски, плохой подготовки, некачественного инструмента, нарушения температурного режима.</p>\n' +
+        '<h4>Основные дефекты</h4>\n' +
+        '<ul>\n' +
+        '<li><strong>Следы от кисти</strong> — густая краска. Устранение: зачистка и повторная окраска</li>\n' +
+        '<li><strong>Потеки и наплывы</strong> — жидкая краска. Наносить 2 тонких слоя</li>\n' +
+        '<li><strong>«Крокодилова кожа»</strong> — неравномерная толщина. Зачистка и окраска</li>\n' +
+        '<li><strong>Отслаивание</strong> — плохое обезжиривание. Снятие покрытия, грунтование</li>\n' +
+        '</ul>\n' +
+        '<div class="info-highlight">\n' +
+        '<strong>Важно помнить:</strong><br>\n' +
+        '• Правильная подготовка — 70% успеха<br>\n' +
+        '• Соблюдение температурного режима обязательно<br>\n' +
+        '• Качественный инструмент — ровное покрытие\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-related">\n' +
+        '<h3>Читайте также:</h3>\n' +
+        '<div class="info-related-grid">\n' +
+        '<a href="#section1" class="info-related-link">Основные сведения о ЛКМ</a>\n' +
+        '<a href="#section2" class="info-related-link">Окраска интерьера</a>\n' +
+        '<a href="#section4" class="info-related-link">Лакировка дерева</a>\n' +
+        '<a href="#section5" class="info-related-link">Защита деревянных фасадов</a>\n' +
+        '<a href="#section6" class="info-related-link">Защита каменных фасадов</a>\n' +
+        '<a href="#section7" class="info-related-link">Антикоррозионная защита</a>\n' +
+        '<a href="#section8" class="info-related-link">Малярный инструмент</a>\n' +
+        '<a href="#section9" class="info-related-link">Дефекты покрытий</a>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '<div class="info-faq">\n' +
+        '<h3 class="info-faq-title">Часто задаваемые вопросы</h3>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">1. Какую краску выбрать для ванной?</strong>\n' +
+        '<p class="info-faq-a">Выбирайте влагостойкие краски с пометкой «для влажных помещений». Подойдут <a href="#" data-sku="00-01100263" class="t-product-link">EURO-Life</a>.</p>\n' +
+        '</div>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">2. Нужно ли грунтовать стены перед покраской?</strong>\n' +
+        '<p class="info-faq-a">Да! Грунтовка улучшает сцепление, выравнивает впитываемость и продлевает срок службы. Выбирайте <a href="#" data-sku="00-00009377" class="t-product-link">EURO-Balance primer</a> или <a href="#" data-sku="00-00009297" class="t-product-link">DEEP CONTACT</a>.</p>\n' +
+        '</div>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">3. Чем отличается акриловая краска от алкидной?</strong>\n' +
+        '<p class="info-faq-a">Акриловая — на водной основе, без запаха. Алкидная — на растворителе, прочнее, но с запахом.</p>\n' +
+        '</div>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">4. Как рассчитать расход краски?</strong>\n' +
+        '<p class="info-faq-a">Площадь × расход (на банке) + 10–15% запаса. Обычно 1 литр на 8–12 м² в один слой.</p>\n' +
+        '</div>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">5. Чем обработать дерево на улице?</strong>\n' +
+        '<p class="info-faq-a">Антисептиками с УФ-фильтром для наружных работ. Например, <a href="/antiseptiki" class="t-cat-link">антисептики SYMPHONY</a>.</p>\n' +
+        '</div>\n' +
+        '<div class="info-faq-item">\n' +
+        '<strong class="info-faq-q">6. Как защитить металл от коррозии?</strong>\n' +
+        '<p class="info-faq-a">Система «грунтовка + финишный слой». Например, <a href="#" data-sku="00-00011318" class="t-product-link">FerOx-Stopper</a> + <a href="#" data-sku="00-00009949" class="t-product-link">WINNER</a>.</p>\n' +
+        '</div>\n' +
+        '</div>\n' +
+
+        '</div>\n' +
+        renderHitsBlock() + '\n' +
+        renderFooter() + '\n' +
+        '</main>\n' +
+        renderSidebarRight() + '\n' +
+        '</div>\n</div>\n' +
+        renderCartFab() + '\n' +
+        renderCartModal() + '\n' +
+        renderAccountModal() + '\n' +
+        '<div class="toast" id="toast">Товар добавлен в корзину</div>\n' +
+        renderCartScript() + '\n' +
+        renderHitsScript() + '\n' +
+        renderSearchScript() + '\n' +
+        '</body>\n</html>';
+}
+
+// ============================================================
+// СТРАНИЦА: КАТЕГОРИЯ
+// ============================================================
 function renderCategoryPage(category, products) {
     const categoryName = CATEGORIES[category] || category;
     const categoryUrl = SITE_URL + '/' + category;
@@ -2293,17 +2676,26 @@ app.get('/', (req, res) => {
 
 // Статика — ПЕРЕД /:category, чтобы /dostavka.html и другие .html отдавались как файлы
 app.use(express.static(ROOT));
+
 // ------------------------------------------------------------
 // Роут: страница «Доставка и оплата»
 // ------------------------------------------------------------
 app.get('/dostavka', (req, res) => {
     res.send(renderDeliveryPage());
 });
+
 // ------------------------------------------------------------
 // Роут: страница «Каталог цветов»
 // ------------------------------------------------------------
 app.get('/catalog-colors', (req, res) => {
     res.send(renderCatalogColorsPage());
+});
+
+// ------------------------------------------------------------
+// Роут: страница «Полезная информация»
+// ------------------------------------------------------------
+app.get('/info', (req, res) => {
+    res.send(renderInfoPage());
 });
 
 app.get('/:category', (req, res) => {
